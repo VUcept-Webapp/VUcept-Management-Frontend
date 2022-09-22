@@ -3,6 +3,10 @@
 ## Description
 This is the frontend code base for VUcept Management system.
 
+## Tech Stack
+Language: HTML, CSS, JavaScript
+Framework: React, React Router
+
 ## Deployment
 
 1. Make sure that you are using the correct versions<br/>
@@ -14,11 +18,3 @@ This is the frontend code base for VUcept Management system.
 
 2. run `npm install`
 3. run `npm start`
-
-## Working Convention
-
-1. Create your own branch
-2. Open up a pull request for your implementation
-3. Make sure that your PR passed all tests and got at least 1 approval
-4. Only merge the PR after tests have passed and the PR has been approved
-
