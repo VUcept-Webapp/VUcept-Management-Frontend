@@ -1,0 +1,100 @@
+@value font from "../../index.module.css";
+
+.page {
+    height: 97vh;
+    width: 100%;
+    display: flex;
+}
+
+.control {
+    height: 100%;
+    width: 68px;
+    background-color: #FFE6A6;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.control.small {
+    width: 40px;
+}
+
+.controlIcon {
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+    margin-bottom: 15px;
+}
+
+.controlIcon.small {
+    width: 30px;
+    height: 30px;
+}
+
+.wrapper {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 68px;
+    display: flex;
+}
+
+.wrapper.small {
+    left: 40px;
+}
+
+.leftBar {
+    width: 230px;
+    height: 100%;
+    background-color: #FFFFFF;
+    padding: 130px 10px 0px 10px;
+    display: none;
+}
+
+.leftBar.small {
+    position: absolute;
+    left: 0;
+    top: 0;
+}
+
+.leftBar.show {
+    display: block;
+}
+
+.navItem {
+    box-sizing: border-box;
+    display: flex;
+    width: 100%;
+    height: 40px;
+    padding: 5px 10px;
+    align-items: center;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.navItem.selected {
+    background-color: #F1F1F1;
+}
+
+.navItemIcon {
+    width: 13px;
+    height: 13px;
+    margin-right: 10px;
+}
+
+.navItemLabel {
+    composes: font;
+}
+
+
+.main {
+    flex-grow: 1;
+    height: 100%;
+    background-color: #F1F1F1;
+}

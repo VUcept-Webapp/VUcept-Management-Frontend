@@ -1,0 +1,87 @@
+@value font from "../../index.module.css";
+
+.page {
+    height: 97vh;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.container {
+    width: 70%;
+    height: 70%;
+    display: flex;
+    min-height: 400px;
+}
+
+.container.mobile {
+    height: 50%;
+    min-height: 360px;
+}
+
+.logoContainer {
+    width: 40%;
+    height: 100%;
+    background-color: #CFAE70;
+    border-radius: 20px 0px 0px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    width: 100%;
+}
+
+.inputsContainer {
+    flex-grow: 1;
+    height: 100%;
+    background-color: #E4E4E4;
+    border-radius: 0px 20px 20px 00px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.inputsContainer.smallScreen {
+    border-radius: 20px;
+}
+
+.inputsWrapper {
+    height: fit-content;
+    width: 65%;
+}
+
+.inputBlock {
+    margin-bottom: 12px;
+}
+
+.logIn {
+    margin-top: 36px;
+}
+
+.oneTimeLinks {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+.verticalDividor {
+    border: 0.25px solid #777777;
+    height: 25px;
+    width: 0;
+}
+
+.oneTimeLink {
+    composes: font;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.oneTimeLink.vertical {
+    width: 100%;
+    text-align: center;
+}
