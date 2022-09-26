@@ -1,0 +1,10 @@
+@value font from "../../index.module.css";
+
+.block {
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 90%;
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.25);
+    background-color: rgba(255, 255, 255, 1);
+    border-radius: 19px;
+}

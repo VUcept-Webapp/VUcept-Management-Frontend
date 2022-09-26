@@ -4,10 +4,11 @@
     height: 97vh;
     width: 100%;
     display: flex;
+    overflow-y: hidden;
 }
 
 .control {
-    height: 100%;
+    min-height: 100%;
     width: 68px;
     background-color: #FFE6A6;
     position: absolute;
@@ -97,4 +98,12 @@
     flex-grow: 1;
     height: 100%;
     background-color: #F1F1F1;
+}
+
+.main:not(.mobile) {
+    min-width: 500px;
+}
+
+.main.mobile {
+    max-width: 400px;
 }

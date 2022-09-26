@@ -28,3 +28,12 @@ export const ROUTES = {
     DASHBOARD: 'dashBoard',
     USER_MANAGEMENT: 'userManagement'
 }
+
+export const CAPTIONS = {
+    USER_MANAGEMENT: 'User Management'
+}
+
+export const BUTTONS = {
+    NEW_USER: '+ New User',
+    IMPORT: 'Import'
+}

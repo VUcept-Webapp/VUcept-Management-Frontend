@@ -1,0 +1,40 @@
+.container {
+    height: 100%;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 70px 40px 80px 40px;
+}
+
+.container.mobile {
+    padding: 30px 10px 30px 20px;
+}
+
+.caption {
+    margin-bottom: 40px;
+}
+
+.boardControl {
+    display: flex;
+    flex-wrap: wrap;
+    width: 100%;
+    height: fit-content;
+    box-sizing: border-box;
+    padding: 27px 19px;
+}
+
+.tableButtons {
+    display: flex;
+    flex-grow: 1;
+    margin-left: 30px;
+    column-gap: 30px;
+}
+
+.tableButtons.small {
+    width: 100%;
+    margin-left: 0;
+    margin-top: 10px;
+    height: 25px;
+}
+
+.tableButton {
+}

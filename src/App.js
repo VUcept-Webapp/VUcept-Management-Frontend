@@ -19,7 +19,7 @@ export const App = () => {
           <Route path='resetPassword' element={<ResetPassword />}/>
         </Route>
         <Route path='home' element={<HomeLayout />}>
-          <Route path='dashBoard' element={<DashBoard />}/>
+          <Route index path='dashBoard' element={<DashBoard />}/>
           <Route path='userManagement' element={<UserManagement />}/>
         </Route>
       </Routes>

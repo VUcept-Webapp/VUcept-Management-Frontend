@@ -1,0 +1,13 @@
+@value font from "../../index.module.css";
+
+.caption {
+    width: 100%;
+    height: fit-content;
+    composes: font;
+    font-size: 36px;
+    font-weight: 700;
+}
+
+.caption.mobile {
+    font-size: 25px;
+}

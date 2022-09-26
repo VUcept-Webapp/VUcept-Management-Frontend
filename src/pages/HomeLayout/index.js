@@ -60,9 +60,10 @@ export const HomeLayout = () => {
                 </div>  
             </div>
             <div
-                className={cx(styles.main)}
+                className={cx(styles.main, {
+                    [styles.mobile]: isMobile
+                })}
             >
-                1212
                 <Outlet />
             </div>
         </div>
