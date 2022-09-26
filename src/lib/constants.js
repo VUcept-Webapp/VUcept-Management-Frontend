@@ -37,3 +37,41 @@ export const BUTTONS = {
     NEW_USER: '+ New User',
     IMPORT: 'Import'
 }
+
+export const TABLE = {
+    ROW_PER_PAGE: 50
+}
+
+export const USER_MANAGEMENT_COLUMNS = [
+    {
+        label: 'Name',
+        sort: true,
+    },
+    {
+        label: 'Email',
+        sort: true,
+    },
+    {
+        label: 'User Type',
+        sort: true,
+    },
+    {
+        label: 'Status',
+        sort: true,
+    },
+    {
+        label: 'Operation',
+        sort: true,
+    }
+];
+
+/*
+
+columns: [{
+        label,
+        sort
+        filter: [{label, value}]
+        className,
+        style
+    }]
+*/

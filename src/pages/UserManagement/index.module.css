@@ -13,13 +13,19 @@
     margin-bottom: 40px;
 }
 
+.block {
+    display: flex;
+    flex-direction: column;
+    padding: 27px 19px;
+}
+
 .boardControl {
     display: flex;
     flex-wrap: wrap;
     width: 100%;
     height: fit-content;
     box-sizing: border-box;
-    padding: 27px 19px;
+    padding: 0 19px 27px;
 }
 
 .tableButtons {
