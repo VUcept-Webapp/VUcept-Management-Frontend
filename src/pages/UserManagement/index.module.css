@@ -28,6 +28,11 @@
     padding: 0 19px 27px;
 }
 
+.table {
+    width: 100%;
+    flex-grow: 1;
+}
+
 .tableButtons {
     display: flex;
     flex-grow: 1;

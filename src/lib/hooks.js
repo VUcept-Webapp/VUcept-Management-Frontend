@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react"
+import { useContext, useEffect, useRef, useState } from "react"
 import { WINDOW_TYPE } from "./constants";
 
 export const useWindowSize = () => {
@@ -35,4 +35,11 @@ export const useWindowSize = () => {
         ...windowSize,
         type: WINDOW_TYPE.WEB
     };
+}
+
+export const useColumns = (columns) => {
+    return columns.map(col => ({
+        ...col,
+        // ref: useRef()
+    }))
 }

@@ -39,7 +39,8 @@ export const BUTTONS = {
 }
 
 export const TABLE = {
-    ROW_PER_PAGE: 50
+    ROW_PER_PAGE: 50,
+    MIN_COLUMN_WIDTH: 130
 }
 
 export const USER_MANAGEMENT_COLUMNS = [
@@ -59,11 +60,31 @@ export const USER_MANAGEMENT_COLUMNS = [
         label: 'Status',
         sort: true,
     },
-    {
-        label: 'Operation',
-        sort: true,
-    }
 ];
+
+export const USER_MANAGEMENT_ROWS_TEST = [
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Board','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','VUceptor','Unregistered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
+]
 
 /*
 
