@@ -1,5 +1,3 @@
-@value font from '../../index.module.css';
-
 .boardControl {
     display: flex;
     height: fit-content;

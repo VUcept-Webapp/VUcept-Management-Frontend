@@ -1,24 +1,35 @@
 @value font from "../../index.module.css";
 
+.headerOperatorWrapper {
+    box-sizing: border-box;
+    margin-right: 5px;
+    height: 25px;
+    width: 25px;
+    position: relative;
+}
+
+.headerOperationIcon {
+    box-sizing: border-box;
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+}
+
 .container {
     composes: font;
     display: flex;
     align-items: center;
     width: fit-content;
     height: 25px;
-}
-
-.container.small {
-    width: 100%;
-}
-
-.label {
-    font-size: 14px;
-    margin-right: 10px;
+    position: absolute;
+    z-index: 10;
+    top: 25px;
+    right: 0px;
+    background-color: #FFFFFF;
 }
 
 .searchBox {
-    flex-grow: 1;
+    width: 140px;
     height: 100%;
     display: flex;
     align-items: center;
@@ -27,9 +38,6 @@
     border: 1px solid rgba(111, 111, 111, 1);
 }
 
-.searchBox.small {
-    width: 100%;
-}
 .input {
     border: none;
     outline: none;
@@ -43,4 +51,5 @@
     width: 15px;
     height: 15px;
     margin-left: 0;
+    cursor: pointer;
 }

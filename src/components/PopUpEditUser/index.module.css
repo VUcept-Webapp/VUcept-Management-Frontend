@@ -1,0 +1,59 @@
+@value font from '../../index.module.css';
+
+.editPopUp {
+    background-color: #FFFFFF;
+    width: 40vw;
+    min-height: 0;
+    height: fit-content;
+    composes: font;
+    padding: 30px;
+}
+
+.editPopUp>div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.editCaption {
+    font-size: 23px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.editField {
+    display: flex;
+    align-items: center;
+    width: 50%;
+    margin-bottom: 20px;
+}
+
+.editLabel {
+    margin-right: 10px;
+    width: 70px;
+}
+
+.editInput {
+    width: 50%;
+    height: 22px;
+    border: 1px solid rgba(111, 111, 111, 1);
+    outline: none;
+    padding: 2px 8px;
+    border-radius: 5px;
+}
+
+.editInput.warn {
+    border-color: red;
+}
+
+.editButtons {
+    column-gap: 20px;
+    margin-top: 30px;
+}
+
+.editButton {
+    height: 37px;
+    width: 100px;
+    border-radius: 19px;
+    font-weight: bold;
+}

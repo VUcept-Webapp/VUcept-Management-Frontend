@@ -1,0 +1,31 @@
+.blocker {
+    position: fixed;
+    opacity: 0;
+    height: 100vh;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    z-index: 20;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    display: none;
+}
+
+.blocker.show {
+    display: block;
+}
+
+.popUp {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 100;
+    opacity: 1;
+    display: none;
+}
+
+.popUp.show {
+    display: block;
+}

@@ -1,5 +1,6 @@
 import { useContext, useEffect, useRef, useState } from "react"
-import { WINDOW_TYPE } from "./constants";
+import { useLocation } from "react-router-dom";
+import { CAPTIONS, ROUTES, WINDOW_TYPE } from "./constants";
 
 export const useWindowSize = () => {
     const [windowSize, setWindowSize] = useState({
@@ -37,9 +38,15 @@ export const useWindowSize = () => {
     };
 }
 
-export const useColumns = (columns) => {
-    return columns.map(col => ({
-        ...col,
-        // ref: useRef()
-    }))
+export const useCaption = () => {
+    const { pathname } = useLocation();
+    switch(pathname) {
+        case(ROUTES.CALENDAR): return CAPTIONS.HOME;
+        case(ROUTES.LOG_VISIONS): return CAPTIONS.LOG_VISIONS_ATTENDANCE;
+        case(ROUTES.VISION_GROUPING): return null;
+        case(ROUTES.FIRST_YEAR_ATTENDANCE): return CAPTIONS.FIRST_YEAR_ATTENDANCE;
+        case(ROUTES.VUCEPTOR_ATTENDANCE): return CAPTIONS.VUCEPTOR_ATTENDANCE;
+        case(ROUTES.USER_MANAGEMENT): return CAPTIONS.USER_MANAGEMENT
+        default: return CAPTIONS.HOME;
+    }
 }

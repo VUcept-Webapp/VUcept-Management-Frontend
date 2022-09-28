@@ -8,6 +8,7 @@ import TrashIcon from '../../assets/icons/trash.svg';
 import PenIcon from '../../assets/icons/pen.svg';
 import { ColumnFilter } from '../ColumnFilter';
 import { ColumnSort } from '../ColumnSort';
+import { ColumnSearch } from '../ColumnSearch';
 const cx = classNames.bind(styles);
 
 const createCols = (columns) => {
@@ -19,10 +20,12 @@ const createCols = (columns) => {
 
 export const Table = (props) => {
     const {
-        height = 200,
         columns = [],
         rows = [],
+        rawRows = [],
         rowNumber = 0,
+        onEditRow,
+        onDeleteRow,
     } = props;
 
     const totalPageNumber = Math.ceil(rowNumber / TABLE.ROW_PER_PAGE) || 1;
@@ -98,7 +101,6 @@ export const Table = (props) => {
 
     return <div
         className={cx(styles.container)}
-        style={{ height: `${height}px` }}
     >
         <div className={cx(styles.tableContainer)}>
             <table className={cx(styles.table)} ref={tableRef} cellSpacing="0" cellPadding="0">
@@ -110,6 +112,7 @@ export const Table = (props) => {
                                 <div className={cx(styles.headerOperators)}>
                                     {col.sort && <ColumnSort />}
                                     {col.filter && <ColumnFilter options={col.filter}/>}
+                                    {col.search && <ColumnSearch />}
                                 </div>
                                 {i !== cols.length - 1 && <div
                                     style={{height:`${tableHeight}px`}}
@@ -127,8 +130,8 @@ export const Table = (props) => {
                             {i === row.length - 1 && <div className={cx(styles.rowOperators, {
                                 [styles.show]: hoverRow === rowI
                             })}>
-                                <img src={TrashIcon} className={cx(styles.rowIcon)}/>
-                                <img src={PenIcon} className={cx(styles.rowIcon)}/>
+                                {typeof onDeleteRow === 'function' && <img src={TrashIcon} className={cx(styles.rowIcon)} onClick={() => onDeleteRow(rawRows[rowI])}/>}
+                                {typeof onEditRow === 'function' && <img src={PenIcon} className={cx(styles.rowIcon)} onClick={() => onEditRow(rawRows[rowI])}/>}
                             </div>}
                         </td>)}
                     </tr>)}

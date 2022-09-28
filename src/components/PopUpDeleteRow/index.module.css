@@ -1,0 +1,38 @@
+@value font from '../../index.module.css';
+
+.deletePopUp {
+    background-color: #FFFFFF;
+    width: 40%;
+    min-height: 0;
+    height: fit-content;
+    composes: font;
+    padding: 30px;
+}
+
+.deletePopUp>div {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+.deleteCaption {
+    font-size: 23px;
+    font-weight: 600;
+    margin-bottom: 30px;
+}
+
+.deleteText {
+    margin-bottom: 20px;
+}
+
+.deleteButtons {
+    column-gap: 20px;
+    margin-top: 30px;
+}
+
+.deleteButton {
+    height: 37px;
+    width: 100px;
+    border-radius: 19px;
+    font-weight: bold;
+}
