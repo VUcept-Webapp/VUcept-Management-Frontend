@@ -1,0 +1,59 @@
+.advisor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    background-color: #715D35;
+    color: #FFFFFF;
+    border-radius: 15px;
+}
+
+.board {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    background-color: #E0D5C0;
+    color: #000000;
+    border-radius: 15px;
+}
+
+.vuceptor {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    background-color: #CFAE70;
+    color: #FFFFFF;
+    border-radius: 15px;
+}
+
+.registered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    background-color: #8BA18E;
+    color: #FFFFFF;
+    border-radius: 15px;
+}
+
+.unregistered {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    background-color: #ECB748;
+    color: #FFFFFF;
+    border-radius: 15px;
+}

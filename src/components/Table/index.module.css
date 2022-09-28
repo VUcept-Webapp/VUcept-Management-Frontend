@@ -44,8 +44,14 @@
 .table th,
 .table td {
     height: 40px;
-    text-align: center;
-    line-height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.table th {
+    z-index: 5;
 }
 
 .table tbody tr:nth-child(odd)>td {
@@ -57,16 +63,38 @@
     overflow: hidden;
 }
 
+.header {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.headerOperators {
+    float: right;
+    height: 100%;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+.rowOperators {
+    display: none;
+    height: 100%;
+    width: fit-content;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+
+.rowOperators.show {
+    display: flex;
+    align-items: center;
+}
+
 .rowIcon {
     height: 20px;
     margin: 10px 0px;
     margin-right: 5px;
-    float: right;
-    display: none;
-}
-
-tr td:hover>.rowIcon {
-    display: block;
 }
 
 .headerLabel {

@@ -40,7 +40,7 @@ export const BUTTONS = {
 
 export const TABLE = {
     ROW_PER_PAGE: 50,
-    MIN_COLUMN_WIDTH: 130
+    MIN_COLUMN_WIDTH: 150
 }
 
 export const USER_MANAGEMENT_COLUMNS = [
@@ -53,12 +53,13 @@ export const USER_MANAGEMENT_COLUMNS = [
         sort: true,
     },
     {
-        label: 'User Type',
-        sort: true,
+        label: 'Type',
+        filter: ['VUCeptor', 'Advisor', 'Board']
     },
     {
         label: 'Status',
         sort: true,
+        filter: ['Registered', 'Unregistered']
     },
 ];
 

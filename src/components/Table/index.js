@@ -1,28 +1,14 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import { useState, useRef, useEffect, useCallback } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import LeftDoubleArrowIcon from '../../assets/icons/leftDoubleArrow.svg';
 import RightDoubleArrowIcon from '../../assets/icons/rightDoubleArrow.svg';
 import { TABLE } from '../../lib/constants';
 import TrashIcon from '../../assets/icons/trash.svg';
 import PenIcon from '../../assets/icons/pen.svg';
-import { useColumns } from '../../lib/hooks';
-
+import { ColumnFilter } from '../ColumnFilter';
+import { ColumnSort } from '../ColumnSort';
 const cx = classNames.bind(styles);
-
-/*
-    columns: [{
-        label,
-        sort
-        filter: [{label, value}]
-        className,
-        style
-    }]
-    rows: {
-        label: (label) => <></>
-    }
-    rowNumber
-*/
 
 const createCols = (columns) => {
     return columns.map((column) => ({
@@ -43,6 +29,7 @@ export const Table = (props) => {
     const [curPage, setCurPage] = useState(1);
     const [tableHeight, setTableHeight] = useState('auto');
     const [activeIndex, setActiveIndex] = useState(-1);
+    const [hoverRow, setHoverRow] = useState(-1);
     const tableRef = useRef(null);
     const resizeStartX = useRef(null);
     const resizeLeft = useRef(null);
@@ -52,10 +39,6 @@ export const Table = (props) => {
     useEffect(() => {
         if(tableRef?.current?.offsetHeight) setTableHeight(tableRef?.current?.offsetHeight);
     }, [tableRef?.current?.offsetHeight]);
-
-    useEffect(() => {
-        console.log(tableHeight);
-    }, [tableHeight])
 
     useEffect(() => {
         const gridTemplateColumns = new Array(cols.length).fill('1fr').join(' ');
@@ -95,6 +78,14 @@ export const Table = (props) => {
         removeListeners();
     };
 
+    const onRowMouseOver = (rowI) => {
+        setHoverRow(rowI);
+    }
+
+    const onRowMouseOut = (rowI) => {
+        if(hoverRow === rowI) setHoverRow(-1)
+    }
+
     useEffect(() => {
         if (activeIndex !== -1) {
           window.addEventListener("mousemove", onResizeMouseMove);
@@ -116,6 +107,10 @@ export const Table = (props) => {
                         {cols.map((col, i) => <th ref={col.ref}>
                             <div className={cx(styles.header)}>
                                 <span className={cx(styles.headerLabel)}>{col.label}</span>
+                                <div className={cx(styles.headerOperators)}>
+                                    {col.sort && <ColumnSort />}
+                                    {col.filter && <ColumnFilter options={col.filter}/>}
+                                </div>
                                 {i !== cols.length - 1 && <div
                                     style={{height:`${tableHeight}px`}}
                                     className={cx(styles.resizeHandler)}
@@ -126,13 +121,15 @@ export const Table = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map(row => <tr>
+                    {rows.map((row, rowI) => <tr onMouseOver={() => onRowMouseOver(rowI)} onMouseOut={() => onRowMouseOut(rowI)}>
                         {row.map((td, i) => <td>
                             {td}
-                            {i === row.length - 1 && <>
+                            {i === row.length - 1 && <div className={cx(styles.rowOperators, {
+                                [styles.show]: hoverRow === rowI
+                            })}>
                                 <img src={TrashIcon} className={cx(styles.rowIcon)}/>
                                 <img src={PenIcon} className={cx(styles.rowIcon)}/>
-                            </>}
+                            </div>}
                         </td>)}
                     </tr>)}
                 </tbody>

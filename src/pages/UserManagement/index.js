@@ -8,7 +8,12 @@ import { TableSearch } from '../../components/TableSearch';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useRef } from 'react';
+import { TableItem } from '../../components/TableItem';
 const cx = classNames.bind(styles);
+
+const constructRows = (rows) => {
+    return rows.map(row => row.map((item, i) => <TableItem item={item}/>));
+}
 
 export const UserManagement = () => {
     const { width, type } = useWindowSize();
@@ -40,7 +45,7 @@ export const UserManagement = () => {
                 <Table
                     rowNumber={200}
                     columns={USER_MANAGEMENT_COLUMNS}
-                    rows={USER_MANAGEMENT_ROWS_TEST}
+                    rows={constructRows(USER_MANAGEMENT_ROWS_TEST)}
                     height={tableContainerRef?.current?.offsetHeight}
                 />
             </div>
