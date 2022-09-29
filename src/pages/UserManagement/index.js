@@ -137,7 +137,7 @@ export const UserManagement = ({ toast }) => {
                 columns={USER_MANAGEMENT_COLUMNS}
                 onEditRow={onEditRow}
                 onDeleteRow={onDeleteRow}
-                rows={rows}
+                rows={USER_MANAGEMENT_ROWS_TEST}
             />
         </div>
         {showDeletePopUp && <PopUpDeleteRow
