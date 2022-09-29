@@ -103,6 +103,12 @@ export const USER_MANAGEMENT_COLUMNS = [
         render: (val) => <TableItem item={val} />
     },
     {
+        key: 'visions',
+        label: 'Visions',
+        // filter: ['Registered', 'Unregistered'],
+        render: (val) => <TableItem item={val} />
+    },
+    {
         key: 'status',
         label: 'Status',
         filter: ['Registered', 'Unregistered'],
@@ -160,6 +166,13 @@ export const ATTENDANCE_STATUS_OPTIONS = [
     { label: 'Other', value: 'Other' },
 ];
 
+export const RESPONSE_MESSAGE = {
+    VIEW_USER_SUCCESS: 'view user success',
+    USER_EDIT_SUCCESS: 'user edited successfully',
+    ADD_USER_SUCCESS: 'user created successfully',
+    USER_DELETE_SUCCESS: 'user deleted successfully',
+}
+
 export const LOG_ATTENDANCE_ROWS_TEST = [
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
@@ -182,24 +195,24 @@ export const LOG_ATTENDANCE_ROWS_TEST = [
 ];
 
 export const USER_MANAGEMENT_ROWS_TEST = [
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
 ];
 
 export const FIRST_YEAR_ROWS_TEST = [

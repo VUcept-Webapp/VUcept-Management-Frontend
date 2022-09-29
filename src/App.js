@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
 import { AuthLayout } from "./pages/AuthLayout";
 import { DashBoard } from "./pages/DashBoard";
 import { FirstYear } from "./pages/FirstYear";
@@ -17,19 +18,20 @@ export const App = () => {
   }, []);
 
   return <>
+    <ToastContainer position="top-center" autoClose={3000} hideProgressBar={true}/>
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<AuthLayout />}>
-          <Route index element={<LogIn />}/>
-          <Route path='signUp' element={<SignUp />}/>
-          <Route path='resetPassword' element={<ResetPassword />}/>
+        <Route path='/' element={<AuthLayout/>}>
+          <Route index element={<LogIn toast={toast}/>}/>
+          <Route path='signUp' element={<SignUp toast={toast}/>}/>
+          <Route path='resetPassword' element={<ResetPassword toast={toast}/>}/>
         </Route>
         <Route path='home' element={<HomeLayout />}>
-          <Route index path='dashBoard' element={<DashBoard />}/>
-          <Route path='firstyearAttendance' element={<FirstYear />}/>
-          <Route path='vuceptorAttendance' element={<VUceptorAttendance />}/>
-          <Route path='logVisions' element={<LogAttendance />}/>
-          <Route path='userManagement' element={<UserManagement />}/>
+          <Route index path='dashBoard' element={<DashBoard toast={toast}/>}/>
+          <Route path='firstyearAttendance' element={<FirstYear toast={toast}/>}/>
+          <Route path='vuceptorAttendance' element={<VUceptorAttendance toast={toast}/>}/>
+          <Route path='logVisions' element={<LogAttendance toast={toast}/>}/>
+          <Route path='userManagement' element={<UserManagement toast={toast}/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

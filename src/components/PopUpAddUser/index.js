@@ -8,17 +8,15 @@ import { USER_TYPE_OPTIONS } from '../../lib/constants';
 const cx = classNames.bind(styles);
 
 
-export const PopUpEditUser = (props) => {
+export const PopUpAddUser = (props) => {
     const {
-        row = {},
         title,
         show,
         setShow,
-        onSave,
+        onAdd,
     } = props;
 
-    const { name = "", email = "", type = "", visions = "" } = row || {};
-    const [selectedType, setSelectType] = useState(type);
+    const [selectedType, setSelectType] = useState("");
     const [warnName, setWarnName] = useState(false);
     const [warnEmail, setWarnEmail] = useState(false);
     const [warnType, setWarnType] = useState(false);
@@ -26,11 +24,10 @@ export const PopUpEditUser = (props) => {
     const emailRef = useRef();
 
     useEffect(() => {
-        setSelectType({ label: type, value: type });
-        if(type && warnType) setWarnType(false);
-    }, [type]);
+        if(selectedType && warnType) setWarnType(false);
+    }, [selectedType]);
 
-    const onSaveEdit = () => {
+    const onSaveAdd = () => {
         const inputName = nameRef.current.value;
         const inputEmail = emailRef.current.value;
         const inputType = selectedType?.value || "";
@@ -38,7 +35,7 @@ export const PopUpEditUser = (props) => {
         if(!inputEmail) setWarnEmail(true);
         if(!inputType) setWarnEmail(true);
         if(inputName && inputEmail && inputType) {
-            onSave({ inputName, inputEmail, inputType, visions });
+            onAdd({ inputName, inputEmail, inputType });
         }
     }
 
@@ -52,7 +49,6 @@ export const PopUpEditUser = (props) => {
             <span className={cx(styles.editLabel)}>Name: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnName})} 
-                defaultValue={name} 
                 ref={nameRef}
                 onChange={(e) => {
                     if(warnName && e.target.value) setWarnName(false);
@@ -63,7 +59,6 @@ export const PopUpEditUser = (props) => {
             <span className={cx(styles.editLabel)}>Email: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnEmail})} 
-                defaultValue={email} 
                 ref={emailRef}
                 onChange={(e) => {
                     if(warnEmail && e.target.value) setWarnEmail(false);
@@ -83,7 +78,7 @@ export const PopUpEditUser = (props) => {
         </div>
         <div className={cx(styles.editButtons)}>
             <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)}/>
-            <TableButton className={cx(styles.editButton)} label={'Save'} onClick={onSaveEdit}/>
+            <TableButton className={cx(styles.editButton)} label={'Add'} onClick={onSaveAdd}/>
         </div>
     </PopUp>
 }

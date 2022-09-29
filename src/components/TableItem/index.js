@@ -10,14 +10,12 @@ export const TableItem = (props) => {
         item
     } = props;
 
-    console.log(item);
-
     const renderItem = () => {
-        if(item === 'Advisor') return <span className={cx(styles.advisor, className)} style={style}>{item}</span>
-        else if(item === 'Board') return <span className={cx(styles.board, className)} style={style}>{item}</span>
-        else if(item === 'VUceptor') return <span className={cx(styles.vuceptor, className)} style={style}>{item}</span>
-        else if(item === 'Registered') return <span className={cx(styles.registered, className)} style={style}>{item}</span>
-        else if(item === 'Unregistered') return <span className={cx(styles.unregistered, className)} style={style}>{item}</span>
+        if(item === 'Advisor') return <span className={cx(styles.advisor, className)} style={style}>Advisor</span>
+        else if(item === 'Board') return <span className={cx(styles.board, className)} style={style}>Board</span>
+        else if(item === 'VUceptor') return <span className={cx(styles.vuceptor, className)} style={style}>VUceptor</span>
+        else if(item === 'Registered') return <span className={cx(styles.registered, className)} style={style}>Registered</span>
+        else if(item === 'Unregistered') return <span className={cx(styles.unregistered, className)} style={style}>Unregistered</span>
 
         else return <span className={cx(className)} style={style}>{item}</span>
     }

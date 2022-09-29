@@ -18,6 +18,10 @@ export const PopUpDeleteRow = (props) => {
 
     const { name = "" } = row || {};
 
+    const onRemove = () => {
+        onDelete(row);
+    }
+
     return <PopUp 
         className={cx(styles.deletePopUp)}
         show={show}
@@ -28,7 +32,7 @@ export const PopUpDeleteRow = (props) => {
         <div className={cx(styles.deleteName)}>{name}</div>
         <div className={cx(styles.deleteButtons)}>
             <TableButton className={cx(styles.deleteButton)} label={'Cancel'} onClick={() => setShow(false)}/>
-            <TableButton className={cx(styles.deleteButton)} label={'Remove'} onClick={onDelete}/>
+            <TableButton className={cx(styles.deleteButton)} label={'Remove'} onClick={onRemove}/>
         </div>
     </PopUp>
 }
