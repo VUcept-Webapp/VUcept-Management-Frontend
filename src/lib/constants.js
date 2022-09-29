@@ -1,3 +1,5 @@
+import { TableItem } from "../components/TableItem";
+
 export const WINDOW_TYPE = {
     WEB: 'WEB',
     MOBILE: 'MOBILE'
@@ -48,7 +50,8 @@ export const CAPTIONS = {
 
 export const BUTTONS = {
     NEW_USER: '+ New User',
-    IMPORT: 'Import'
+    IMPORT: 'Import',
+    EXPORT: 'Export',
 }
 
 export const TABLE = {
@@ -56,50 +59,169 @@ export const TABLE = {
     MIN_COLUMN_WIDTH: 150
 }
 
-export const USER_MANAGEMENT_COLUMNS = [
+export const LOG_ATTENDANCE_COLUMNS = [
     {
+        key: 'name',
         label: 'Name',
         sort: true,
         search: true,
+        render: (val) => <TableItem item={val} />
     },
     {
+        key: 'email',
         label: 'Email',
         sort: true,
         search: true,
+        render: (val) => <TableItem item={val} />
     },
     {
-        label: 'Type',
-        filter: ['VUCeptor', 'Advisor', 'Board']
-    },
-    {
-        label: 'Status',
-        filter: ['Registered', 'Unregistered']
+        key: 'attendance',
+        label: 'Attendance',
+        render: (val) => <TableItem item={val} />
     },
 ];
 
+export const USER_MANAGEMENT_COLUMNS = [
+    {
+        key: 'name',
+        label: 'Name',
+        sort: true,
+        search: true,
+        render: (val) => <TableItem item={val} />
+    },
+    {
+        key: 'email',
+        label: 'Email',
+        sort: true,
+        search: true,
+        render: (val) => <TableItem item={val} />
+    },
+    {
+        key: 'type',
+        label: 'Type',
+        filter: ['VUCeptor', 'Advisor', 'Board'],
+        render: (val) => <TableItem item={val} />
+    },
+    {
+        key: 'status',
+        label: 'Status',
+        filter: ['Registered', 'Unregistered'],
+        render: (val) => <TableItem item={val} />
+    },
+];
+
+export const FIRST_YEAR_COLUMNS = [
+    {
+        key: 'name',
+        label: 'Name',
+        sort: true,
+        search: true,
+        render: (val) => <TableItem item={val} />
+    },
+    {
+        key: 'email',
+        label: 'Email',
+        sort: true,
+        search: true,
+        render: (val) => <TableItem item={val} />
+    },
+    {
+        key: 'group',
+        label: 'Group',
+        sort: true,
+        render: (val) => <TableItem item={val} />
+        // filter: ['VUCeptor', 'Advisor', 'Board']
+    },
+    {
+        key: 'week',
+        label: 'Week',
+        sort: true,
+        render: (val) => <TableItem item={val} />
+        // filter: ['Registered', 'Unregistered']
+    },
+    {
+        key: 'status',
+        label: 'Status',
+        render: (val) => <TableItem item={val} />
+        // filter: ['Registered', 'Unregistered']
+    },
+];
+
+export const USER_TYPE_OPTIONS = [
+    { label: 'Advisor', value: 'Advisor' },
+    { label: 'Board', value: 'Board' },
+    { label: 'VUceptor', value: 'VUceptor' },
+];
+
+export const ATTENDANCE_STATUS_OPTIONS = [
+    { label: 'Present', value: 'Present' },
+    { label: 'Excused', value: 'Excused' },
+    { label: 'Absent', value: 'Absent' },
+    { label: 'Other', value: 'Other' },
+];
+
+export const LOG_ATTENDANCE_ROWS_TEST = [
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+];
+
 export const USER_MANAGEMENT_ROWS_TEST = [
-    ['oiajwefoi','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['weajf','awioejf.awefioja@vanderbilt.edu','Board','Registered'],
-    ['wglka','awioejf.awefioja@vanderbilt.edu','VUceptor','Unregistered'],
-    ['giojw','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['io3jgio','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['awejfio','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['aio4jgio34','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['awkena','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['xchvioijo','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['nwgjknawoig','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['awklvm3rg','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['aweoifja','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['3io4jgoinfdkvc','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['amwnkarv','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['awiojglkrenv','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['woievjoiw','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['mmawknvjkw','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['ofopjogiaijf','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['awonaosnc','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['aweiofjoiawg','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-    ['oiajwfeio','awioejf.awefioja@vanderbilt.edu','Advisor','Registered'],
-]
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered'},
+];
+
+export const FIRST_YEAR_ROWS_TEST = [
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Absent'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Excused'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
+];
 
 /*
 

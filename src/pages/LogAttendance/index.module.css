@@ -22,25 +22,11 @@
     margin-left: auto;
 }
 
-.selectContainer {
-    display: flex;
-    margin-right: 20px;
-}
-
-.selectContainer.small {
-    margin-bottom: 10px;
-}
-
 .selectLabel {
     composes: font;
     margin-right: 15px;
 }
 
-.selectLabel.small {
-    display: inline-block;
-    width: 100px;
-}
-
 .select {
-    width: 200px;
+    width: 300px;
 }

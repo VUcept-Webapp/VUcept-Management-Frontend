@@ -2,37 +2,43 @@ import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import { PopUp } from '../PopUp';
 import { TableButton } from '../TableButton';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { TableSelect } from '../TableSelect';
+import { USER_TYPE_OPTIONS } from '../../lib/constants';
 const cx = classNames.bind(styles);
 
 
 export const PopUpEditUser = (props) => {
     const {
+        row,
         title,
         show,
         setShow,
-        name = "",
-        email = "",
-        type = "",
         onSave,
     } = props;
 
+    const { name = "", email = "", type = "" } = row || {};
+    const [selectedType, setSelectType] = useState("");
     const [warnName, setWarnName] = useState(false);
     const [warnEmail, setWarnEmail] = useState(false);
     const [warnType, setWarnType] = useState(false);
     const nameRef = useRef();
     const emailRef = useRef();
-    const typeRef = useRef();
+
+    useEffect(() => {
+        setSelectType({ label: type, value: type });
+        if(type && warnType) setWarnType(false);
+    }, [type]);
 
     const onSaveEdit = () => {
         const inputName = nameRef.current.value;
         const inputEmail = emailRef.current.value;
-        const inputType = typeRef.current.value;
+        const inputType = selectedType?.value || "";
         if(!inputName) setWarnName(true);
         if(!inputEmail) setWarnEmail(true);
-        if(!inputType) setWarnType(true);
+        if(!inputType) setWarnEmail(true);
         if(inputName && inputEmail && inputType) {
-            onSave();
+            onSave({ inputName, inputEmail, inputType });
         }
     }
 
@@ -66,13 +72,13 @@ export const PopUpEditUser = (props) => {
         </div>
         <div className={cx(styles.editField)}>
             <span className={cx(styles.editLabel)}>Type: </span>
-            <input 
-                className={cx(styles.editInput, {[styles.warn]: warnType})}
-                defaultValue={type}
-                ref={typeRef}
-                onChange={(e) => {
-                    if(warnType && e.target.value) setWarnType(false);
-                }}
+            <TableSelect
+                options={USER_TYPE_OPTIONS}
+                className={cx(styles.select)}
+                height={25}
+                selected={selectedType}
+                warn={warnType}
+                onChange={setSelectType}
             />
         </div>
         <div className={cx(styles.editButtons)}>

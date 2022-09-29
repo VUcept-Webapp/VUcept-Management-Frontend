@@ -4,10 +4,12 @@ import { AuthLayout } from "./pages/AuthLayout";
 import { DashBoard } from "./pages/DashBoard";
 import { FirstYear } from "./pages/FirstYear";
 import { HomeLayout } from "./pages/HomeLayout";
+import { LogAttendance } from "./pages/LogAttendance";
 import { LogIn } from "./pages/LogIn";
 import { ResetPassword } from "./pages/ResetPassword";
 import { SignUp } from "./pages/SignUp";
 import { UserManagement } from "./pages/UserManagement";
+import { VUceptorAttendance } from "./pages/VUceptorAttendance";
 
 export const App = () => {
   useEffect(() => {
@@ -25,6 +27,8 @@ export const App = () => {
         <Route path='home' element={<HomeLayout />}>
           <Route index path='dashBoard' element={<DashBoard />}/>
           <Route path='firstyearAttendance' element={<FirstYear />}/>
+          <Route path='vuceptorAttendance' element={<VUceptorAttendance />}/>
+          <Route path='logVisions' element={<LogAttendance />}/>
           <Route path='userManagement' element={<UserManagement />}/>
         </Route>
       </Routes>

@@ -35,6 +35,7 @@
     width: 100%;
     border-top: 1px solid #6F6F6F;
     border-bottom: 1px solid #6F6F6F;
+    z-index: 5;
 }
 
 .table thead,
@@ -50,10 +51,6 @@
     align-items: center;
     justify-content: center;
     position: relative;
-}
-
-.table th {
-    z-index: 5;
 }
 
 .table tbody tr:nth-child(odd)>td {

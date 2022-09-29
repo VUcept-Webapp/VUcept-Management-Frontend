@@ -10,7 +10,7 @@ import { TableSelect } from '../../components/TableSelect';
 import { useWindowSize } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
-export const FirstYear = () => {
+export const VUceptorAttendance = () => {
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
     const isSmall = width < 840 || isMobile

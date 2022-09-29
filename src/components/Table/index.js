@@ -22,7 +22,6 @@ export const Table = (props) => {
     const {
         columns = [],
         rows = [],
-        rawRows = [],
         rowNumber = 0,
         onEditRow,
         onDeleteRow,
@@ -44,7 +43,7 @@ export const Table = (props) => {
     }, [tableRef?.current?.offsetHeight]);
 
     useEffect(() => {
-        const gridTemplateColumns = new Array(cols.length).fill('1fr').join(' ');
+        const gridTemplateColumns = new Array(Object.keys(cols).length).fill('1fr').join(' ');
         tableRef.current.style.gridTemplateColumns = gridTemplateColumns;
     }, []);
 
@@ -124,14 +123,14 @@ export const Table = (props) => {
                     </tr>
                 </thead>
                 <tbody>
-                    {rows.map((row, rowI) => <tr onMouseOver={() => onRowMouseOver(rowI)} onMouseOut={() => onRowMouseOut(rowI)}>
-                        {row.map((td, i) => <td>
-                            {td}
-                            {i === row.length - 1 && <div className={cx(styles.rowOperators, {
+                    {rows.map((rawRow, rowI) => <tr onMouseOver={() => onRowMouseOver(rowI)} onMouseOut={() => onRowMouseOut(rowI)}>
+                        {cols.map((col, colI) => <td>
+                            {col.render(rawRow[col.key], rowI, colI)}
+                            {colI === columns.length - 1 && <div className={cx(styles.rowOperators, {
                                 [styles.show]: hoverRow === rowI
                             })}>
-                                {typeof onDeleteRow === 'function' && <img src={TrashIcon} className={cx(styles.rowIcon)} onClick={() => onDeleteRow(rawRows[rowI])}/>}
-                                {typeof onEditRow === 'function' && <img src={PenIcon} className={cx(styles.rowIcon)} onClick={() => onEditRow(rawRows[rowI])}/>}
+                                {typeof onDeleteRow === 'function' && <img src={TrashIcon} className={cx(styles.rowIcon)} onClick={() => onDeleteRow(rows[rowI])}/>}
+                                {typeof onEditRow === 'function' && <img src={PenIcon} className={cx(styles.rowIcon)} onClick={() => onEditRow(rows[rowI])}/>}
                             </div>}
                         </td>)}
                     </tr>)}

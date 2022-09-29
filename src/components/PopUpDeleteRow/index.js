@@ -8,13 +8,15 @@ const cx = classNames.bind(styles);
 
 export const PopUpDeleteRow = (props) => {
     const {
+        row,
         show,
         setShow,
         title,
         description,
-        content,
         onDelete,
     } = props;
+
+    const { name = "" } = row || {};
 
     return <PopUp 
         className={cx(styles.deletePopUp)}
@@ -23,7 +25,7 @@ export const PopUpDeleteRow = (props) => {
     >
         <div className={cx(styles.deleteCaption)}>{title}</div>
         <div className={cx(styles.deleteText)}>{description}</div>
-        <div className={cx(styles.deleteName)}>{content}</div>
+        <div className={cx(styles.deleteName)}>{name}</div>
         <div className={cx(styles.deleteButtons)}>
             <TableButton className={cx(styles.deleteButton)} label={'Cancel'} onClick={() => setShow(false)}/>
             <TableButton className={cx(styles.deleteButton)} label={'Remove'} onClick={onDelete}/>

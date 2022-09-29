@@ -17,19 +17,18 @@ const filterSelectStyles = {
         borderRadius: '10px',
         border: '1px solid rgba(221, 223, 226, 1)',
     }),
+    option: (provided) => ({
+        ...provided,
+        fontFamily: 'Open Sans, sans-serif',
+        fontSize: '13.3px',
+        letterSpacing: '0.6px',
+    }),
     placeholder: (provided) => ({
         ...provided,
         fontSize: '13.3px',
-        fontFamily: 'Open Sans, sans-serif',
-        fontWeight: '600',
-        letterSpacing: '0.6px',
         color: 'rgba(186, 188, 193, 1)',
         lineHeight: '25px'
     }),
-    menuPortal: (provided) => ({
-        ...provided,
-        zIndex: 50,
-    })
 }
 
 export const ColumnFilter = (props) => {
@@ -55,6 +54,7 @@ export const ColumnFilter = (props) => {
                     if(typeof onChange === 'function') onChange(options);
                 }}
                 isClearable
+                menuPortalTarget={document.body}
             />
         </div>}
     </div>

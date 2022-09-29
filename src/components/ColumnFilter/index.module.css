@@ -15,7 +15,7 @@
 
 .filterSelect {
     position: absolute;
-    z-index: 10;
+    z-index: 1000;
     top: 25px;
     right: 0px;
     height: fit-content;
