@@ -55,10 +55,6 @@
     background-color: #FFFFFF;
     padding: 130px 10px 0px 10px;
     display: none;
-    position: absolute;
-    left: 0;
-    top: 0;
-    z-index: 40;
 }
 
 .leftBar.small {

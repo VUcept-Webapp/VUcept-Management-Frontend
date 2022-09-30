@@ -55,12 +55,16 @@ export const Table = (props) => {
     }
 
     const onResizeMouseMove = (e) => {
+        let totalWidth = 0;
+        for(const col of cols) {
+            totalWidth += col.ref.current.offsetWidth;
+        }
         const gridColumns = cols.map((col, i) => {
             const delta = e.clientX - resizeStartX.current;
             const validWidth = resizeLeft.current + delta >= TABLE.MIN_COLUMN_WIDTH && resizeRight.current - delta >= TABLE.MIN_COLUMN_WIDTH;
-            if (i === activeIndex && validWidth) return `${resizeLeft.current + delta}px`;
-            else if(i === activeIndex + 1 && validWidth) return `${resizeRight.current - delta}px`;
-            else return `${col.ref.current.offsetWidth}px`;
+            if (i === activeIndex && validWidth) return `${(resizeLeft.current + delta) / totalWidth}fr`;
+            else if(i === activeIndex + 1 && validWidth) return `${(resizeRight.current - delta) / totalWidth}fr`;
+            else return `${col.ref.current.offsetWidth / totalWidth}fr`;
         });
 
         tableRef.current.style.gridTemplateColumns = `${gridColumns.join(" ")}`;

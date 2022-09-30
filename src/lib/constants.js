@@ -163,7 +163,7 @@ export const ATTENDANCE_STATUS_OPTIONS = [
     { label: 'Present', value: 'Present' },
     { label: 'Excused', value: 'Excused' },
     { label: 'Absent', value: 'Absent' },
-    { label: 'Other', value: 'Other' },
+    { label: 'Select', value: 'Select' },
 ];
 
 export const RESPONSE_MESSAGE = {
@@ -175,6 +175,11 @@ export const RESPONSE_MESSAGE = {
 
 export const LOG_ATTENDANCE_ROWS_TEST = [
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Excused'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Absent'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Present'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    /*{email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
@@ -185,13 +190,7 @@ export const LOG_ATTENDANCE_ROWS_TEST = [
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
+    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},*/
 ];
 
 export const USER_MANAGEMENT_ROWS_TEST = [

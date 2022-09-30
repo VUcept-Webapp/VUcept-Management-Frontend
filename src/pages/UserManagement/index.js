@@ -90,8 +90,8 @@ export const UserManagement = ({ toast }) => {
             .catch(err => toast('Internal error'));
     }
 
-    const onSaveEdit = ({ inputName, inputEmail, inputType, visions }) => {
-        editUser({ name: inputName, email: inputEmail, type: inputType, visions })
+    const onSaveEdit = ({ inputName, inputEmail, inputType, inputVisions }) => {
+        editUser({ name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
             .then(res => {
                 setShowEditPopUp(false);
                 const { message } = res;
@@ -108,8 +108,8 @@ export const UserManagement = ({ toast }) => {
             .catch(err => console.log('err', err));
     }
 
-    const onAddUser = ({ inputName, inputEmail, inputType }) => {
-        addUser({ name: inputName, email: inputEmail, type: inputType, visions: "" })
+    const onAddUser = ({ inputName, inputEmail, inputType, inputVisions }) => {
+        addUser({ name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
             .then(res => {
                 setShowAddPopUp(false);
                 const { message } = res;

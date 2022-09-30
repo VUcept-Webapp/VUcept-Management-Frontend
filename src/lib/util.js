@@ -47,3 +47,92 @@ export const importUsersToJSON = (data) => {
         return 'error';
     }
 }
+
+export const getAttendanceStatusStyle = (val) => {
+    let backgroundColor = "";
+    let color = "";
+    if(val === 'Present') {
+        backgroundColor = '#8BA18E';
+        color = '#FFFFFF';
+    }
+    else if(val === 'Absent') {
+        backgroundColor = '#EC6648';
+        color = '#FFFFFF';
+    }
+    else if(val === 'Excused') {
+        backgroundColor = '#ECB748';
+        color = '#FFFFFF';
+    }
+    else if(val === 'Select') {
+        backgroundColor = '#E4E4E4';
+        color = '#000000';
+    }
+    else {
+        backgroundColor = '#3E3E3E';
+        color = '#FFFFFF';
+    }
+    return {
+        container: (provided) => ({
+            ...provided,
+            width: "90px",
+            minHeight: `20px`,
+            height: `20px`,
+            lineHeight: '20px',
+            fontSize: '13.3px',
+            fontFamily: 'Open Sans, sans-serif',
+            letterSpacing: '0.6px',
+            textAlign: 'center',
+            color
+        }),
+        control: (provided) => ({
+            ...provided,
+            borderRadius: '15px',
+            minHeight: `20px`,
+            height: `20px`,
+            backgroundColor,
+            color
+        }),
+        singleValue: (provided) => ({
+            ...provided,
+            color
+        }),
+        option: (provided) => ({
+            ...provided,
+            fontSize: '13.3px',
+            fontFamily: 'Open Sans, sans-serif',
+            letterSpacing: '0.6px',
+        }),
+        valueContainer: (provided, state) => ({
+            ...provided,
+            padding: '0'
+        }),
+        input: (provided) => ({
+            ...provided,
+            height: '20px',
+            lineHeight: '20px',
+            padding: '0 5px',
+            overflow: 'hidden',
+            textOverflow: 'hidden',
+            marginTop: '-1px',
+            color,
+        }),
+        placeholder: () => ({
+            display: 'none'
+        }),
+        indicatorsContainer: (provided, state) => ({
+            ...provided,
+            display: 'none'
+        }),
+        menuPortal: (provided, state) => ({ 
+            ...provided,
+            zIndex: 1000
+        })
+    }
+}
+
+export const checkInputRows = (inputRows) => {
+    for(const r of inputRows) {
+        if(r.attendance === 'Select') return false;
+    }
+    return true;
+}

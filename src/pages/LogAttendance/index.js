@@ -1,14 +1,50 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import { LOG_ATTENDANCE_COLUMNS, LOG_ATTENDANCE_ROWS_TEST, USER_TYPE_OPTIONS } from '../../lib/constants';
+import { LOG_ATTENDANCE_ROWS_TEST, USER_TYPE_OPTIONS } from '../../lib/constants';
 import { Table } from '../../components/Table';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { TableSelect } from '../../components/TableSelect';
+import { LogButton } from '../../components/LogButton';
+import { TableItem } from '../../components/TableItem';
+import { TableButton } from '../../components/TableButton';
+import { checkInputRows } from '../../lib/util';
 const cx = classNames.bind(styles);
 
-export const LogAttendance = () => {
+export const LogAttendance = ({ toast }) => {
     const [event, setEvent] = useState(null);
     const [rows, setRows] = useState(LOG_ATTENDANCE_ROWS_TEST);
+    const rowsRef = useRef(rows);
+
+    const LOG_ATTENDANCE_COLUMNS = [
+        {
+            key: 'name',
+            label: 'Name',
+            sort: true,
+            search: true,
+            render: (val) => <TableItem item={val} />
+        },
+        {
+            key: 'email',
+            label: 'Email',
+            sort: true,
+            search: true,
+            render: (val) => <TableItem item={val} />
+        },
+        {
+            key: 'attendance',
+            label: 'Attendance',
+            render: (val, rowI) => <LogButton val={val} rowI={rowI} rows={rows} setRows={setRows} ref={rowsRef}/>
+        },
+    ];
+
+    const onSubmit = () => {
+        const inputRows = rowsRef?.current || [];
+        if(!checkInputRows(inputRows)) {
+            toast('Please log all students');
+            return;
+        }
+        console.log(rowsRef.current);
+    }
     
     
     return <>
@@ -30,5 +66,6 @@ export const LogAttendance = () => {
                 rows={rows}
             />
         </div>
+        <div className={cx(styles.submitContainer)}><TableButton onClick={onSubmit} label={'Submit'} className={cx(styles.submit)}/></div>
     </>
 }

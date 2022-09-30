@@ -19,9 +19,11 @@ export const PopUpEditUser = (props) => {
 
     const { name = "", email = "", type = "", visions = "" } = row || {};
     const [selectedType, setSelectType] = useState(type);
+    const [selectedVisions, setSelectedVisions] = useState(visions);
     const [warnName, setWarnName] = useState(false);
     const [warnEmail, setWarnEmail] = useState(false);
     const [warnType, setWarnType] = useState(false);
+    const [warnVisions, setWarnVisions] = useState(false);
     const nameRef = useRef();
     const emailRef = useRef();
 
@@ -30,15 +32,22 @@ export const PopUpEditUser = (props) => {
         if(type && warnType) setWarnType(false);
     }, [type]);
 
+    useEffect(() => {
+        setSelectedVisions({ label: visions, value: visions });
+        if(visions && warnVisions) setWarnVisions(false);
+    }, [visions]);
+
     const onSaveEdit = () => {
         const inputName = nameRef.current.value;
         const inputEmail = emailRef.current.value;
         const inputType = selectedType?.value || "";
+        const inputVisions = inputType === 'VUceptor' ? (selectedVisions?.value || "") : "";
         if(!inputName) setWarnName(true);
         if(!inputEmail) setWarnEmail(true);
         if(!inputType) setWarnEmail(true);
-        if(inputName && inputEmail && inputType) {
-            onSave({ inputName, inputEmail, inputType, visions });
+        if(!inputVisions) setWarnEmail(true);
+        if(inputName && inputEmail && inputType && inputVisions) {
+            onSave({ inputName, inputEmail, inputType, inputVisions });
         }
     }
 
@@ -81,6 +90,17 @@ export const PopUpEditUser = (props) => {
                 onChange={setSelectType}
             />
         </div>
+        {selectedType?.value === 'VUceptor' && <div className={cx(styles.editField)}>
+            <span className={cx(styles.editLabel)}>Visions: </span>
+            <TableSelect
+                options={USER_TYPE_OPTIONS}
+                className={cx(styles.select)}
+                height={25}
+                selected={selectedVisions}
+                warn={warnVisions}
+                onChange={setSelectedVisions}
+            />
+        </div>}
         <div className={cx(styles.editButtons)}>
             <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)}/>
             <TableButton className={cx(styles.editButton)} label={'Save'} onClick={onSaveEdit}/>
