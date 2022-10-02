@@ -136,3 +136,60 @@ export const checkInputRows = (inputRows) => {
     }
     return true;
 }
+
+export const getMonday = (d) => {
+    const date = new Date(d.getTime());
+    let day = date.getDay() || 7;  
+    if(day !== 1) date.setHours(-24 * (day - 1)); 
+    return date;
+}
+
+export const getSunday = (d) => {
+    const date = new Date(d.getTime());
+    const first = date.getDate() - date.getDay() + 1;
+    const last = first + 6;
+    date.setDate(last);
+    return date;
+}
+
+export const getPrevMonday = (d) => {
+    const date = new Date(d.getTime());
+    date.setDate(date.getDate() - (date.getDay() + 6) % 7);
+    return date;
+}
+
+export const getNextMonday = (d) => {
+    const date = new Date(date.getTime());
+    date.setDate(date.getDate() + ((7 - date.getDay()) % 7 + 1) % 7);
+    return date;
+}
+
+export const getCalendarColumnWidth = (containerWidth = 0) => {
+    let width = (containerWidth - 40) / 7 + 1;
+    return width > 80 ? width : 80;
+}
+
+export const getLeftFromDay = ({ day, columnWidth }) => {
+    return 40 + (day - 1) * columnWidth;
+}
+
+export const getAlignedLeft = ({ newLeft, left, columnWidth }) => {
+    if((newLeft - 40) % columnWidth < 10) {
+        console.log(newLeft);
+        const tmp = Math.floor((newLeft - 40) / columnWidth);
+        return tmp * columnWidth + 40;
+        // return newLeft;
+    }
+    return left;
+}
+
+export const nonDraggingPropsChange = (prevProps, nextProps) => {
+    for(const key in prevProps) {
+        if(key === 'hoverCol') continue;
+        if(key === 'dragging') continue;
+        if(prevProps[key] !== nextProps[key]) return true;
+    }
+    return false;
+}
+
+// newLeft = x * columnWidth + 40

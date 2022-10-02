@@ -43,7 +43,6 @@ export const LogAttendance = ({ toast }) => {
             toast('Please log all students');
             return;
         }
-        console.log(rowsRef.current);
     }
     
     

@@ -51,13 +51,7 @@ export const loadFromCsv = (inputs) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(inputs),
         }).then(response => response.json())
-        .then(response => {
-            console.log(response)
-            resolve(response)
-        })
-        .catch(err => {
-            console.log(err);
-            reject(err)
-        });
+        .then(response => resolve(response))
+        .catch(err => reject(err));
     })
 }

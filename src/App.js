@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { AuthLayout } from "./pages/AuthLayout";
+import { Calendar } from "./pages/Calendar";
 import { DashBoard } from "./pages/DashBoard";
 import { FirstYear } from "./pages/FirstYear";
 import { HomeLayout } from "./pages/HomeLayout";
@@ -15,7 +16,7 @@ import { VUceptorAttendance } from "./pages/VUceptorAttendance";
 
 export const App = () => {
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    document.body.style.overflowY = "hidden";
   }, []);
 
   return <>
@@ -29,6 +30,7 @@ export const App = () => {
         </Route>
         <Route path='home' element={<HomeLayout />}>
           <Route index path='dashBoard' element={<DashBoard toast={toast}/>}/>
+          <Route path='calendar' element={<Calendar toast={toast}/>}/>
           <Route path='firstyearAttendance' element={<FirstYear toast={toast}/>}/>
           <Route path='vuceptorAttendance' element={<VUceptorAttendance toast={toast}/>}/>
           <Route path='logVisions' element={<LogAttendance toast={toast}/>}/>
