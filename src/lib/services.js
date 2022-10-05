@@ -1,6 +1,9 @@
-export const viewAllUsers = () => {
+import { appendParams } from "./util";
+
+export const readUser = (inputs = {}) => {
+    console.log()
     return new Promise((resolve, reject) => {
-        fetch(process.env.REACT_APP_HOST_URL + '/viewallusers', {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/readUser', inputs), {
             method: 'GET',
         }).then(response => response.json())
         .then(response => resolve(response))
@@ -8,9 +11,9 @@ export const viewAllUsers = () => {
     })
 }
 
-export const editUser = (inputs) => {
+export const updateUser = (inputs) => {
     return new Promise((resolve, reject) => {
-        fetch(process.env.REACT_APP_HOST_URL + '/edituser', {
+        fetch(process.env.REACT_APP_HOST_URL + '/updateUser', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(inputs),
@@ -20,9 +23,9 @@ export const editUser = (inputs) => {
     })
 }
 
-export const addUser = (inputs) => {
+export const createUser = (inputs) => {
     return new Promise((resolve, reject) => {
-        fetch(process.env.REACT_APP_HOST_URL + '/adduser', {
+        fetch(process.env.REACT_APP_HOST_URL + '/createUser', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(inputs),
@@ -34,7 +37,7 @@ export const addUser = (inputs) => {
 
 export const deleteUser = (inputs) => {
     return new Promise((resolve, reject) => {
-        fetch(process.env.REACT_APP_HOST_URL + '/deleteuser', {
+        fetch(process.env.REACT_APP_HOST_URL + '/deleteUser', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(inputs),
@@ -44,9 +47,9 @@ export const deleteUser = (inputs) => {
     })
 }
 
-export const loadFromCsv = (inputs) => {
+export const userLoadfromcsv = (inputs) => {
     return new Promise((resolve, reject) => {
-        fetch(process.env.REACT_APP_HOST_URL + '/loadfromcsv', {
+        fetch(process.env.REACT_APP_HOST_URL + '/userLoadfromcsv', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(inputs),

@@ -1,13 +1,13 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Papa from "papaparse";
-import { BUTTONS, RESPONSE_MESSAGE, USER_MANAGEMENT_COLUMNS, USER_MANAGEMENT_ROWS_TEST, WINDOW_TYPE } from '../../lib/constants';
+import { BUTTONS, RESPONSE_MESSAGE, RESPONSE_STATUS, TABLE, USER_MANAGEMENT_COLUMNS, USER_MANAGEMENT_ROWS_TEST, WINDOW_TYPE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
 import { PopUpEditUser } from '../../components/PopUpEditUser';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
-import { addUser, deleteUser, editUser, loadFromCsv, viewAllUsers } from '../../lib/services';
+import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser } from '../../lib/services';
 import { importUsersToJSON, toUpperRows } from '../../lib/util';
 import { PopUpAddUser } from '../../components/PopUpAddUser';
 const cx = classNames.bind(styles);
@@ -20,17 +20,22 @@ export const UserManagement = ({ toast }) => {
     const [deleteRow, setDeleteRow] = useState(null);
     const [editRow, setEditRow] = useState(null);
     const [importFile, setImportFile] = useState(null);
+    const [tablePage, setTablePage] = useState(0);
     const uploadRef = useRef();
 
-    useEffect(() => {
-        viewAllUsers()
+    const getUser = () => {
+        return readUser({ row_start: tablePage * TABLE.ROW_PER_PAGE, row_num: TABLE.ROW_PER_PAGE })
             .then(res => {
-                const { message, data } = res;
-                if(message === RESPONSE_MESSAGE.VIEW_USER_SUCCESS) setRows(toUpperRows(data));
+                const { status, message: data } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) setRows(toUpperRows(data));
                 else toast('Internal error');
             })
             .catch(err => toast('Internal error'));
-    }, []);
+    }
+
+    useEffect(() => {
+        getUser();
+    }, [tablePage]);
 
     useEffect(() => {
         if(importFile) {
@@ -43,9 +48,12 @@ export const UserManagement = ({ toast }) => {
                         setImportFile(null);
                         return;
                     }
-                    loadFromCsv({ file: inputObj })
+                    userLoadfromcsv({ file: inputObj })
                         .then(res => {
-                            console.log(res)
+                            const { status } = res;
+                            if(status === RESPONSE_STATUS.SUCCESS) getUser();
+                            else if(status === RESPONSE_STATUS.EMAIL_USED) toast('Repeated email');
+                            else toast('Internal error');
                         })
                         .catch(err => toast('Internal error'));
                     setImportFile(null);
@@ -75,56 +83,49 @@ export const UserManagement = ({ toast }) => {
         deleteUser({ email: row?.email || "" })
             .then(res => {
                 setShowDeletePopUp(false);
-                const { message } = res;
-                if(message === RESPONSE_MESSAGE.USER_DELETE_SUCCESS) {
-                    viewAllUsers()
-                        .then(res => {
-                            console.log('view', res);
-                            const { message, data } = res;
-                            if(message === RESPONSE_MESSAGE.VIEW_USER_SUCCESS) setRows(toUpperRows(data));
-                            else toast('Internal error');
-                        })
-                        .catch(err => toast('Internal error'));
-                }
+                const { status } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) getUser();
+                else if(status === RESPONSE_STATUS.INCORRECT_USER_EMAIL) toast('Email is not found');
+                else  toast('Internal error');
             })
             .catch(err => toast('Internal error'));
     }
 
-    const onSaveEdit = ({ inputName, inputEmail, inputType, inputVisions }) => {
-        editUser({ name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
+    const onSaveEdit = ({ inputName, inputEmail, inputType, inputVisions, inputStatus, oldEmail }) => {
+        updateUser({ old_email: oldEmail, name: inputName, email: inputEmail, type: inputType, visions: inputVisions, status: inputStatus  })
             .then(res => {
-                setShowEditPopUp(false);
-                const { message } = res;
-                if(message === RESPONSE_MESSAGE.USER_EDIT_SUCCESS) {
-                    viewAllUsers()
-                        .then(res => {
-                            const { message, data } = res;
-                            if(message === RESPONSE_MESSAGE.VIEW_USER_SUCCESS) setRows(toUpperRows(data));
-                            else toast('Internal error');
-                        })
-                        .catch(err => toast('Internal error'));
+                const { status } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    setShowEditPopUp(false);
+                    getUser();
                 }
+                else if(status === RESPONSE_STATUS.INCORRECT_USER_EMAIL) toast('Email is incorrect');
+                else toast('Internal error');
             })
-            .catch(err => console.log('err', err));
+            .catch(err => toast('Internal error'));
     }
 
     const onAddUser = ({ inputName, inputEmail, inputType, inputVisions }) => {
-        addUser({ name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
+        createUser({ name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
             .then(res => {
                 setShowAddPopUp(false);
-                const { message } = res;
-                if(message === RESPONSE_MESSAGE.ADD_USER_SUCCESS) {
-                    viewAllUsers()
-                        .then(res => {
-                            const { message, data } = res;
-                            if(message === RESPONSE_MESSAGE.VIEW_USER_SUCCESS) setRows(toUpperRows(data));
-                            else toast('Internal error');
-                        })
-                        .catch(err => toast('Internal error'));
+                const { status } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    setShowAddPopUp(false);
+                    getUser();
+                }
+                else if(status === RESPONSE_STATUS.EMAIL_USED) toast('Email taken. Please provide another email');
+                else {
+                    toast('Internal error');
+                    setShowAddPopUp(false);
                 }
             })
             .catch(err => toast('Internal error'));
     }   
+
+    const onPageChange = (curPage) => {
+        setTablePage(curPage - 1);
+    }
 
     return <>
         <div className={cx(styles.boardControl)}>
@@ -137,7 +138,8 @@ export const UserManagement = ({ toast }) => {
                 columns={USER_MANAGEMENT_COLUMNS}
                 onEditRow={onEditRow}
                 onDeleteRow={onDeleteRow}
-                rows={USER_MANAGEMENT_ROWS_TEST}
+                rows={rows}
+                onPageChange={onPageChange}
             />
         </div>
         {showDeletePopUp && <PopUpDeleteRow
@@ -154,6 +156,7 @@ export const UserManagement = ({ toast }) => {
             show={showEditPopUp} 
             setShow={setShowEditPopUp}
             onSave={onSaveEdit}
+            oldEmail={editRow?.email}
         />}
         {showAddPopUp && <PopUpAddUser 
             title={'Add User'}

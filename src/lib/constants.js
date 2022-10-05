@@ -17,6 +17,16 @@ export const AUTH_INPUT_LABELS = {
     SEND_EMAIL: 'Send Email',
 }
 
+export const RESPONSE_STATUS = {
+    SUCCESS: 'SUCCESS',
+    INCORRECT_STATUS: 'INCORRECT_STATUS',
+    INCORRECT_TYPE: 'INCORRECT_TYPE',
+    UNKNOWN_SORT: 'UNKNOWN_SORT',
+    EMAIL_USED: 'EMAIL_USED',
+    ERROR: 'ERROR',
+    INCORRECT_USER_EMAIL: 'INCORRECT_USER_EMAIL',
+}
+
 export const AUTH_INPUT_ERRORS = {
     EMAIL: 'Email',    
 }
@@ -157,6 +167,11 @@ export const USER_TYPE_OPTIONS = [
     { label: 'Advisor', value: 'Advisor' },
     { label: 'Board', value: 'Board' },
     { label: 'VUceptor', value: 'VUceptor' },
+];
+
+export const USER_STATUS_OPTIONS = [
+    { label: 'Registered', value: 'Registered' },
+    { label: 'Unregistered', value: 'Unregistered' },
 ];
 
 export const ATTENDANCE_STATUS_OPTIONS = [

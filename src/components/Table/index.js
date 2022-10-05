@@ -25,6 +25,7 @@ export const Table = (props) => {
         rowNumber = 0,
         onEditRow,
         onDeleteRow,
+        onPageChange,
     } = props;
 
     const totalPageNumber = Math.ceil(rowNumber / TABLE.ROW_PER_PAGE) || 1;
@@ -39,13 +40,17 @@ export const Table = (props) => {
     const cols = createCols(columns);
 
     useEffect(() => {
-        if(tableRef?.current?.offsetHeight) setTableHeight(tableRef?.current?.offsetHeight);
-    }, [tableRef?.current?.offsetHeight]);
+        setTableHeight(tableRef?.current?.offsetHeight || 'auto');
+    }, [rows.length]);
 
     useEffect(() => {
         const gridTemplateColumns = new Array(Object.keys(cols).length).fill('1fr').join(' ');
         tableRef.current.style.gridTemplateColumns = gridTemplateColumns;
     }, []);
+
+    useEffect(() => {
+        if(typeof onPageChange === 'function') onPageChange(curPage)
+    }, [curPage]);
 
     const onResizeMouseDown = (e, i) => {
         resizeStartX.current = e.clientX;
@@ -61,9 +66,18 @@ export const Table = (props) => {
         }
         const gridColumns = cols.map((col, i) => {
             const delta = e.clientX - resizeStartX.current;
+            let width = 0;
             const validWidth = resizeLeft.current + delta >= TABLE.MIN_COLUMN_WIDTH && resizeRight.current - delta >= TABLE.MIN_COLUMN_WIDTH;
-            if (i === activeIndex && validWidth) return `${(resizeLeft.current + delta) / totalWidth}fr`;
-            else if(i === activeIndex + 1 && validWidth) return `${(resizeRight.current - delta) / totalWidth}fr`;
+            if (i === activeIndex && validWidth) {
+                width = resizeLeft.current + delta;
+                if(width < TABLE.MIN_COLUMN_WIDTH) width = TABLE.MIN_COLUMN_WIDTH;
+                return `${width / totalWidth}fr`;
+            }
+            else if(i === activeIndex + 1 && validWidth) {
+                width = resizeLeft.current - delta;
+                if(width < TABLE.MIN_COLUMN_WIDTH) width = TABLE.MIN_COLUMN_WIDTH;
+                return `${width / totalWidth}fr`;
+            }
             else return `${col.ref.current.offsetWidth / totalWidth}fr`;
         });
 
@@ -110,7 +124,7 @@ export const Table = (props) => {
                 <thead>
                     <tr>
                         {cols.map((col, i) => <th ref={col.ref}>
-                            <div className={cx(styles.header)}>
+                            <div className={cx(styles.header)} style={{minWidth: `${TABLE.MIN_COLUMN_WIDTH}px`}}>
                                 <span className={cx(styles.headerLabel)}>{col.label}</span>
                                 <div className={cx(styles.headerOperators)}>
                                     {col.sort && <ColumnSort />}

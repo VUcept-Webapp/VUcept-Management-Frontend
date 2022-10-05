@@ -1,4 +1,4 @@
-export const appendParams = (url, params) => {
+export const appendParams = (url, params = {}) => {
     let res = url + '?';
     const keys = Object.keys(params);
     for(const key of keys) {
@@ -190,6 +190,14 @@ export const nonDraggingPropsChange = (prevProps, nextProps) => {
         if(prevProps[key] !== nextProps[key]) return true;
     }
     return false;
+}
+
+export const capitalizeUserType = (type) => {
+    console.log(type);
+    if(type === 'vuceptor') return 'VUceptor';
+    if(type === 'board') return 'Board';
+    if(type === 'advisor') return 'Advisor';
+    else return type;
 }
 
 // newLeft = x * columnWidth + 40

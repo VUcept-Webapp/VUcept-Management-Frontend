@@ -36,13 +36,13 @@ export const PopUpAddUser = (props) => {
     const onSaveAdd = () => {
         const inputName = nameRef.current.value;
         const inputEmail = emailRef.current.value;
-        const inputType = selectedType?.value || "";
-        const inputVisions = inputType === 'VUceptor' ? (selectedVisions?.value || "") : "";
+        const inputType = selectedType?.value.toLowerCase() || "";
+        const inputVisions = inputType === 'vuceptor' ? (selectedVisions || "0") : "0";
         if(!inputName) setWarnName(true);
         if(!inputEmail) setWarnEmail(true);
         if(!inputType) setWarnType(true);
         if(!inputVisions) setWarnVisions(true);
-        if(inputName && inputEmail && inputType & inputVisions) {
+        if(inputName && inputEmail && inputType) {
             onAdd({ inputName, inputEmail, inputType, inputVisions });
         }
     }
@@ -86,13 +86,12 @@ export const PopUpAddUser = (props) => {
         </div>
         {selectedType?.value === 'VUceptor' && <div className={cx(styles.editField)}>
             <span className={cx(styles.editLabel)}>Visions: </span>
-            <TableSelect
-                options={USER_TYPE_OPTIONS}
-                className={cx(styles.select)}
-                height={25}
-                selected={selectedVisions}
-                warn={warnVisions}
-                onChange={setSelectedVisions}
+            <input 
+                className={cx(styles.editInput, {[styles.warn]: warnVisions})} 
+                value={selectedVisions}
+                onChange={(e) => {
+                    setSelectedVisions(e.target.value);
+                }}
             />
         </div>}
         <div className={cx(styles.editButtons)}>
