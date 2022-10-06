@@ -1,0 +1,29 @@
+@value font from "../../index.module.css";
+
+.blocker {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 300;
+    background-color: rgba(255, 255, 255, 0.7);
+    height: 100%;
+    width: 100%;
+    border-radius: 19px;
+}
+
+@keyframes spinning {
+    from { transform: rotate(0deg) }
+    to { transform: rotate(360deg) }
+}
+
+.loading {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 301;
+    height: 50px;
+    width: 50px;
+    animation:spinning 4s linear infinite;
+}

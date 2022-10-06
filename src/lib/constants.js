@@ -62,6 +62,7 @@ export const BUTTONS = {
     NEW_USER: '+ New User',
     IMPORT: 'Import',
     EXPORT: 'Export',
+    RESET: 'Reset',
 }
 
 export const TABLE = {

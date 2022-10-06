@@ -58,3 +58,13 @@ export const userLoadfromcsv = (inputs) => {
         .catch(err => reject(err));
     })
 }
+
+export const resetDatabase = () => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/resetDatabase', {
+            method: 'POST',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}

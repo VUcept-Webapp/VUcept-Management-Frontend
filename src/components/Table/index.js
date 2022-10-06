@@ -20,6 +20,7 @@ const createCols = (columns) => {
 
 export const Table = (props) => {
     const {
+        totalPage,
         columns = [],
         rows = [],
         rowNumber = 0,
@@ -28,7 +29,6 @@ export const Table = (props) => {
         onPageChange,
     } = props;
 
-    const totalPageNumber = Math.ceil(rowNumber / TABLE.ROW_PER_PAGE) || 1;
     const [curPage, setCurPage] = useState(1);
     const [tableHeight, setTableHeight] = useState('auto');
     const [activeIndex, setActiveIndex] = useState(-1);
@@ -127,9 +127,9 @@ export const Table = (props) => {
                             <div className={cx(styles.header)} style={{minWidth: `${TABLE.MIN_COLUMN_WIDTH}px`}}>
                                 <span className={cx(styles.headerLabel)}>{col.label}</span>
                                 <div className={cx(styles.headerOperators)}>
-                                    {col.sort && <ColumnSort />}
-                                    {col.filter && <ColumnFilter options={col.filter}/>}
-                                    {col.search && <ColumnSearch />}
+                                    {col.sort && typeof col.sort === 'function' && <ColumnSort />}
+                                    {col.filter && typeof col.filter === 'function' && <ColumnFilter options={col.filter}/>}
+                                    {col.search && typeof col.search === 'function' && <ColumnSearch onSearch={col.search} />}
                                 </div>
                                 {i !== cols.length - 1 && <div
                                     style={{height:`${tableHeight}px`}}
@@ -172,7 +172,7 @@ export const Table = (props) => {
             >
                 {curPage}
             </span>
-            {curPage + 1 <= totalPageNumber && <span 
+            {curPage + 1 <= totalPage && <span 
                 className={cx(styles.page)} 
                 onClick={() => setCurPage(curPage + 1)}
             >
@@ -181,7 +181,7 @@ export const Table = (props) => {
             <img 
                 src={RightDoubleArrowIcon} 
                 className={cx(styles.arrowIcon, styles.rightDoubleArrow)} 
-                onClick={() => setCurPage(curPage + 1 <= totalPageNumber ? curPage + 1 : curPage)}
+                onClick={() => setCurPage(curPage + 1 <= totalPage ? curPage + 1 : curPage)}
             />
         </div>
     </div>;

@@ -22,12 +22,10 @@ export const PopUpEditUser = (props) => {
     const { name = "", email = "", type = "", visions = "", status = "" } = row || {};
     const [selectedType, setSelectType] = useState(capitalizeUserType(type));
     const [selectedVisions, setSelectedVisions] = useState(visions);
-    const [selectedStatus, setSelectedStatus] = useState(status);
     const [warnName, setWarnName] = useState(false);
     const [warnEmail, setWarnEmail] = useState(false);
     const [warnType, setWarnType] = useState(false);
     const [warnVisions, setWarnVisions] = useState(false);
-    const [warnStatus, setWarnStatus] = useState(false);
     const nameRef = useRef();
     const emailRef = useRef();
 
@@ -35,11 +33,6 @@ export const PopUpEditUser = (props) => {
         setSelectType({ label: capitalizeUserType(type), value: capitalizeUserType(type) });
         if(type && warnType) setWarnType(false);
     }, [type]);
-
-    useEffect(() => {
-        setSelectedStatus({ label: status, value: status });
-        if(status && warnStatus) setWarnStatus(false);
-    }, [status]);
 
     useEffect(() => {
         if(visions && warnVisions) setWarnVisions(false);
@@ -50,14 +43,12 @@ export const PopUpEditUser = (props) => {
         const inputEmail = emailRef.current.value;
         const inputType = selectedType?.value?.toLowerCase() || "";
         const inputVisions = inputType === 'vuceptor' ? (selectedVisions || "0") : "0";
-        const inputStatus = selectedStatus?.value?.toLowerCase() || "";
         if(!inputName) setWarnName(true);
         if(!inputEmail) setWarnEmail(true);
         if(!inputType) setWarnEmail(true);
         if(!inputVisions) setWarnEmail(true);
-        if(inputType !== 'VUceptor' && !inputStatus) setWarnStatus(true);
-        if(inputName && inputEmail && inputType && inputStatus) {
-            onSave({ inputName, inputEmail, inputType, inputVisions, inputStatus, oldEmail });
+        if(inputName && inputEmail && inputType) {
+            onSave({ inputName, inputEmail, inputType, inputVisions, oldEmail });
         }
     }
 
@@ -110,17 +101,6 @@ export const PopUpEditUser = (props) => {
                 }}
             />
         </div>}
-        <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Status: </span>
-            <TableSelect
-                options={USER_STATUS_OPTIONS}
-                className={cx(styles.select)}
-                height={25}
-                selected={selectedStatus}
-                warn={warnStatus}
-                onChange={setSelectedStatus}
-            />
-        </div>
         <div className={cx(styles.editButtons)}>
             <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)}/>
             <TableButton className={cx(styles.editButton)} label={'Save'} onClick={onSaveEdit}/>
