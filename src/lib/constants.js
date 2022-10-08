@@ -15,6 +15,7 @@ export const AUTH_INPUT_LABELS = {
     CONFIRM_PASSWORD: 'Confirm Password',
     RESET_PASSWORD: 'Enter email to reset password',
     SEND_EMAIL: 'Send Email',
+    VERIFICATION_CODE: 'Verification Code'
 }
 
 export const RESPONSE_STATUS = {
@@ -25,6 +26,10 @@ export const RESPONSE_STATUS = {
     EMAIL_USED: 'EMAIL_USED',
     ERROR: 'ERROR',
     INCORRECT_USER_EMAIL: 'INCORRECT_USER_EMAIL',
+    INVALID_EMAIl: 'INVALID_EMAIL',
+    USER_EXISTENT: 'USER_EXISTENT',
+    INVALID_PASSWORD: 'INVALID_PASSWORD',
+    REQUEST_SIGN_UP: 'REQUEST_SIGN_UP'
 }
 
 export const AUTH_INPUT_ERRORS = {

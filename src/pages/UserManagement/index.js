@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Papa from "papaparse";
-import { BUTTONS, RESPONSE_STATUS, TABLE, USER_MANAGEMENT_COLUMNS } from '../../lib/constants';
+import { BUTTONS, RESPONSE_STATUS, TABLE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';

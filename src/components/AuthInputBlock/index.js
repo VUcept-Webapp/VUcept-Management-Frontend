@@ -8,6 +8,8 @@ export const AuthInputBlock = React.forwardRef((props, ref) => {
         label,
         containerClassName,
         containerStyle,
+        value,
+        onChange,
     } = props;
     
     return <div
@@ -21,6 +23,8 @@ export const AuthInputBlock = React.forwardRef((props, ref) => {
         </p>
         <input 
             className={cx(styles.input)}
+            value={value}
+            onChange={(event) => onChange(event.target.value)}
         />
     </div>
 })
