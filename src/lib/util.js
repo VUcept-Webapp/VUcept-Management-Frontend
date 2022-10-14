@@ -1,3 +1,5 @@
+import { SORT } from "./constants";
+
 export const appendParams = (url, params = {}) => {
     let res = url + '?';
     const keys = Object.keys(params);
@@ -175,7 +177,6 @@ export const getLeftFromDay = ({ day, columnWidth }) => {
 
 export const getAlignedLeft = ({ newLeft, left, columnWidth }) => {
     if((newLeft - 40) % columnWidth < 10) {
-        console.log(newLeft);
         const tmp = Math.floor((newLeft - 40) / columnWidth);
         return tmp * columnWidth + 40;
         // return newLeft;
@@ -193,11 +194,31 @@ export const nonDraggingPropsChange = (prevProps, nextProps) => {
 }
 
 export const capitalizeUserType = (type) => {
-    console.log(type);
     if(type === 'vuceptor') return 'VUceptor';
     if(type === 'board') return 'Board';
     if(type === 'advisor') return 'Advisor';
     else return type;
+}
+
+export const getSortParam = (sort) => {
+    if(sort === SORT.NO_SORT) return null;
+    else if(sort === SORT.ASCEND) return 'ASC';
+    else return 'DESC';
+}
+
+export const getOptionValue = (options) => {
+    return options.map(option => option.value.toLowerCase());
+}
+
+export const updateOrder = ({ order, value, key }) => {
+    const index = order.indexOf(key);
+    if(value === SORT.NO_SORT) {
+        if(index !== -1) order.splice(index, 1);
+    }
+    else {
+        if(index !== -1) order.splice(index, 1);
+        order.unshift(key);
+    }
 }
 
 // newLeft = x * columnWidth + 40

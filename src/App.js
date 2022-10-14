@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { AuthProvider } from "./lib/contexts";
 import { AuthLayout } from "./pages/AuthLayout";
 import { Calendar } from "./pages/Calendar";
 import { DashBoard } from "./pages/DashBoard";
@@ -19,7 +20,7 @@ export const App = () => {
     document.body.style.overflowY = "hidden";
   }, []);
 
-  return <>
+  return <AuthProvider>
     <ToastContainer position="top-center" autoClose={3000} hideProgressBar={true}/>
     <BrowserRouter>
       <Routes>
@@ -38,5 +39,5 @@ export const App = () => {
         </Route>
       </Routes>
     </BrowserRouter>
-    </>
+    </AuthProvider>
 }

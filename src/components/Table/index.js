@@ -127,8 +127,8 @@ export const Table = (props) => {
                             <div className={cx(styles.header)} style={{minWidth: `${TABLE.MIN_COLUMN_WIDTH}px`}}>
                                 <span className={cx(styles.headerLabel)}>{col.label}</span>
                                 <div className={cx(styles.headerOperators)}>
-                                    {col.sort && typeof col.sort === 'function' && <ColumnSort />}
-                                    {col.filter && typeof col.filter === 'function' && <ColumnFilter options={col.filter}/>}
+                                    {col.sort && typeof col.sort === 'function' && <ColumnSort onSort={col.sort}/>}
+                                    {col.filter && typeof col.filter === 'object' && <ColumnFilter options={col.filter.options} onFilter={col.filter.callback}/>}
                                     {col.search && typeof col.search === 'function' && <ColumnSearch onSearch={col.search} />}
                                 </div>
                                 {i !== cols.length - 1 && <div

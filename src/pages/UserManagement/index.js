@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Papa from "papaparse";
-import { BUTTONS, RESPONSE_STATUS, TABLE } from '../../lib/constants';
+import { BUTTONS, RESPONSE_STATUS, SORT, TABLE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
@@ -9,7 +9,7 @@ import { PopUpEditUser } from '../../components/PopUpEditUser';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
 import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser, resetDatabase } from '../../lib/services';
-import { importUsersToJSON, toUpperRows } from '../../lib/util';
+import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
 import { PopUpAddUser } from '../../components/PopUpAddUser';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
@@ -27,30 +27,46 @@ export const UserManagement = ({ toast }) => {
     const [tablePage, setTablePage] = useState(0);
     const [totalPage, setTotalPage] = useState(1);
     const [disableTable, setDisableTable] = useState(false);
-    const [nameSort, setNameSort] = useState();
+    const [nameSort, setNameSort] = useState(null);
     const [nameSearch, setNameSearch] = useState("");
+    const [emailSort, setEmailSort] = useState(null);
+    const [emailSearch, setEmailSearch] = useState("");
+    const [typeFilter, setTypeFilter] = useState([]);
+    const [statusFilter, setStatusFilter] = useState([]);
     const uploadRef = useRef();
+    const orderRef = useRef([]);
+
 
     const getUser = () => {
         return readUser({ 
             row_start: tablePage * TABLE.ROW_PER_PAGE, 
             row_num: TABLE.ROW_PER_PAGE,
-            name_search: nameSearch
+            name_search: nameSearch,
+            ...(nameSort && { name_sort: nameSort }),
+            email_search: emailSearch,
+            ...(emailSort && { email_sort: emailSort }),
+            // condition_order: orderRef.current,
         }).then(res => {
-                const { status, result: { rows = [], pages = 1 } } = res;
                 console.log(res);
+                const { status, result: { rows = [], pages = 1 } } = res;
+                setDisableTable(false);
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setRows(toUpperRows(rows));
                     setTotalPage(parseInt(pages));
                 }
                 else toast('Internal error');
             })
-            .catch(err => toast('Internal error'));
+            .catch(err => {
+                console.log(err);
+                setDisableTable(false);
+                toast('Internal error');
+            });
     }
 
     useEffect(() => {
+        setDisableTable(true);
         getUser();
-    }, [tablePage, nameSearch]);
+    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, typeFilter]);
 
     useEffect(() => {
         if(importFile) {
@@ -66,7 +82,7 @@ export const UserManagement = ({ toast }) => {
                     setDisableTable(true);
                     userLoadfromcsv({ file: inputObj })
                         .then(res => {
-                            const { status, result } = res;
+                            const { status } = res;
                             if(status === RESPONSE_STATUS.SUCCESS) getUser();
                             else if(status === RESPONSE_STATUS.EMAIL_USED) {
                                 toast('There were repeated emails. Only users with valid email were imported');
@@ -115,7 +131,6 @@ export const UserManagement = ({ toast }) => {
         resetDatabase()
             .then(res => {
                 const { status } = res;
-                console.log(res);
                 setShowDeleteAllPopUp(false);
                 if(status === RESPONSE_STATUS.SUCCESS) getUser();
                 else toast('Error resetting system');
@@ -162,33 +177,48 @@ export const UserManagement = ({ toast }) => {
         {
             key: 'name',
             label: 'Name',
-            sort: true,
             search: (value) => setNameSearch(value),
+            sort: (value) => {
+                updateOrder({ order: orderRef.current, value, key: 'name' });
+                setNameSort(getSortParam(value));
+            },
             render: (val) => <TableItem item={val} />
         },
         {
             key: 'email',
             label: 'Email',
-            sort: true,
-            search: true,
+            sort: (value) => {
+                updateOrder({ order: orderRef.current, value, key: 'email' });
+                setEmailSort(getSortParam(value));
+            },
+            search: (value) => setEmailSearch(value),
             render: (val) => <TableItem item={val} />
         },
         {
             key: 'type',
             label: 'Type',
-            filter: ['VUCeptor', 'Advisor', 'Board'],
+            filter: {
+                callback: (value) => setTypeFilter(getOptionValue(value)),
+                options: ['VUCeptor', 'Advisor', 'Board']
+            },
             render: (val) => <TableItem item={val} />
         },
         {
             key: 'visions',
             label: 'Visions',
-            // filter: ['Registered', 'Unregistered'],
+            filter: {
+                callback: (value) => setTypeFilter(getOptionValue(value)),
+                options: ['VUCeptor', 'Advisor', 'Board']
+            },
             render: (val) => <TableItem item={val} />
         },
         {
             key: 'status',
             label: 'Status',
-            filter: ['Registered', 'Unregistered'],
+            filter: {
+                callback: (value) => setStatusFilter(getOptionValue(value)),
+                options: ['Registered', 'Unregistered']
+            },
             render: (val) => <TableItem item={val} />
         },
     ];

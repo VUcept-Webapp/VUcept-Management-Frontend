@@ -1,7 +1,6 @@
 import { appendParams } from "./util";
 
 export const readUser = (inputs = {}) => {
-    console.log()
     return new Promise((resolve, reject) => {
         fetch(appendParams(process.env.REACT_APP_HOST_URL + '/readUser', inputs), {
             method: 'GET',
@@ -94,7 +93,6 @@ export const signUp = (inputs) => {
 }
 
 export const login = (inputs = {}) => {
-    console.log(inputs)
     return new Promise((resolve, reject) => {
         fetch(appendParams(process.env.REACT_APP_HOST_URL + '/login', inputs), {
             method: 'GET',

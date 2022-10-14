@@ -24,7 +24,6 @@ export const AuthCode = React.forwardRef((props, ref) => {
         if(timeCount === 60) {
             let cur = 60;
             timer.current = setInterval(() => {
-                console.log(timeCount);
                 cur--;
                 setTimeCount(cur);
             }, 1000);

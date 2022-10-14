@@ -1,6 +1,7 @@
-import { useContext, useEffect, useRef, useState } from "react"
+import { createContext, useContext, useEffect, useRef, useState } from "react"
 import { useLocation } from "react-router-dom";
 import { CAPTIONS, ROUTES, WINDOW_TYPE } from "./constants";
+import { AuthContext } from "./contexts";
 import { getMonday, getNextMonday, getPrevMonday, getSunday } from "./util";
 
 export const useWindowSize = () => {
@@ -102,4 +103,11 @@ export const useWeek = () => {
     }
 
     return { currentWeek, setCurrentWeek, setPrevWeek, setNextWeek }
+}
+
+export const useAuth = () => {
+    const { auth, setAuth } = useContext(AuthContext);
+
+
+    return { auth, setAuth }
 }

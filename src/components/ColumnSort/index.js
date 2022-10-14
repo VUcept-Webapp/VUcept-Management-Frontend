@@ -5,24 +5,25 @@ import AscendSortIcon from '../../assets/icons/ascendSort.svg';
 import DescendSortIcon from '../../assets/icons/descendSort.svg';
 import Select from 'react-select';
 import { useEffect, useState } from 'react';
+import { SORT } from '../../lib/constants';
 const cx = classNames.bind(styles);
 
 export const ColumnSort = (props) => {
     const {
-        onChange
+        onSort
     } = props;
 
     const [sort, setSort] = useState(0);
 
     const getIcon = () => {
-        if(sort === 0) return SortIcon;
-        else if(sort === 1) return DescendSortIcon;
+        if(sort === SORT.NO_SORT) return SortIcon;
+        else if(sort === SORT.DESCEND) return DescendSortIcon;
         else return AscendSortIcon;
     }
 
     useEffect(() => {
-        if(typeof onChange === 'function') {
-            onChange(sort);
+        if(typeof onSort === 'function') {
+            onSort(sort);
         }
     }, [sort])
     

@@ -34,7 +34,7 @@ const filterSelectStyles = {
 export const ColumnFilter = (props) => {
     const {
         options,
-        onChange
+        onFilter,
     } = props;
 
     const [selected, setSelected] = useState();
@@ -51,7 +51,7 @@ export const ColumnFilter = (props) => {
                 value={selected}
                 onChange={(options) => {
                     setSelected(options);
-                    if(typeof onChange === 'function') onChange(options);
+                    if(typeof onFilter === 'function') onFilter(options);
                 }}
                 isClearable
                 menuPortalTarget={document.body}

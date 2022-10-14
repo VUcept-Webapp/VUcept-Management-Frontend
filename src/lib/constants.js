@@ -194,6 +194,12 @@ export const RESPONSE_MESSAGE = {
     USER_DELETE_SUCCESS: 'user deleted successfully',
 }
 
+export const SORT = {
+    NO_SORT: 0,
+    DESCEND: 2,
+    ASCEND: 1,
+}
+
 export const LOG_ATTENDANCE_ROWS_TEST = [
     {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
     {email: 'awejfoiaw', name: 'hi', attendance: 'Excused'},
