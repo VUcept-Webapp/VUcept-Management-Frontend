@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PopUpEditUser } from '../../components/PopUpEditUser';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
-import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser, resetDatabase } from '../../lib/services';
+import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser, resetDatabase, visionsNums } from '../../lib/services';
 import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
 import { PopUpAddUser } from '../../components/PopUpAddUser';
 import { BlockBlocker } from '../../components/BlockBlocker';
@@ -33,40 +33,53 @@ export const UserManagement = ({ toast }) => {
     const [emailSearch, setEmailSearch] = useState("");
     const [typeFilter, setTypeFilter] = useState([]);
     const [statusFilter, setStatusFilter] = useState([]);
+    const [visionsFilter, setVisionsFilter] = useState([]);
+    const [visionOptions, setVisionOptions] = useState([]);
     const uploadRef = useRef();
     const orderRef = useRef([]);
 
 
     const getUser = () => {
-        return readUser({ 
+        visionsNums().then(res => {
+            const { status, result } = res;
+            if(status === RESPONSE_STATUS.SUCCESS) {
+                const { list } = result;
+                setVisionOptions(list.map(option => option.visions.toString()));
+            }
+            else toast('Error fetching visions options');
+        }).catch(err => toast('Error fetching visions options'));
+        readUser({ 
             row_start: tablePage * TABLE.ROW_PER_PAGE, 
             row_num: TABLE.ROW_PER_PAGE,
-            name_search: nameSearch,
+            ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
             ...(nameSort && { name_sort: nameSort }),
-            email_search: emailSearch,
+            ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
             ...(emailSort && { email_sort: emailSort }),
-            // condition_order: orderRef.current,
+            ...(typeFilter.length > 0 && { type_filter: JSON.stringify(typeFilter) }),
+            ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
+            ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
+            ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
         }).then(res => {
-                console.log(res);
-                const { status, result: { rows = [], pages = 1 } } = res;
-                setDisableTable(false);
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setRows(toUpperRows(rows));
-                    setTotalPage(parseInt(pages));
-                }
-                else toast('Internal error');
-            })
-            .catch(err => {
-                console.log(err);
-                setDisableTable(false);
-                toast('Internal error');
-            });
+            const { status, result: { rows = [], pages = 1 } } = res;
+            setDisableTable(false);
+            if(status === RESPONSE_STATUS.SUCCESS) {
+                setRows(toUpperRows(rows));
+                setTotalPage(parseInt(pages));
+            }
+            else toast('Internal error');
+        })
+        .catch(err => {
+            console.log(err);
+            setDisableTable(false);
+            toast('Internal error');
+        });
     }
 
     useEffect(() => {
         setDisableTable(true);
+        console.log(visionsFilter);
         getUser();
-    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, typeFilter]);
+    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, typeFilter, statusFilter, visionsFilter]);
 
     useEffect(() => {
         if(importFile) {
@@ -179,7 +192,7 @@ export const UserManagement = ({ toast }) => {
             label: 'Name',
             search: (value) => setNameSearch(value),
             sort: (value) => {
-                updateOrder({ order: orderRef.current, value, key: 'name' });
+                updateOrder({ order: orderRef.current, value, key: 'name_sort' });
                 setNameSort(getSortParam(value));
             },
             render: (val) => <TableItem item={val} />
@@ -188,7 +201,7 @@ export const UserManagement = ({ toast }) => {
             key: 'email',
             label: 'Email',
             sort: (value) => {
-                updateOrder({ order: orderRef.current, value, key: 'email' });
+                updateOrder({ order: orderRef.current, value, key: 'email_sort' });
                 setEmailSort(getSortParam(value));
             },
             search: (value) => setEmailSearch(value),
@@ -207,8 +220,8 @@ export const UserManagement = ({ toast }) => {
             key: 'visions',
             label: 'Visions',
             filter: {
-                callback: (value) => setTypeFilter(getOptionValue(value)),
-                options: ['VUCeptor', 'Advisor', 'Board']
+                callback: (value) => setVisionsFilter(getOptionValue(value)),
+                options: visionOptions,
             },
             render: (val) => <TableItem item={val} />
         },

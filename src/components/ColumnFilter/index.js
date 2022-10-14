@@ -2,7 +2,8 @@ import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import FilterIcon from '../../assets/icons/filter.svg';
 import Select from 'react-select';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 const cx = classNames.bind(styles);
 
 const filterSelectStyles = {
@@ -38,12 +39,26 @@ export const ColumnFilter = (props) => {
     } = props;
 
     const [selected, setSelected] = useState();
-
+    const [pos, setPos] = useState({left: 0, top: 0});
     const [showSelect, setShowSelect] = useState(false);
+    const containerRef = useRef();
+
+    useEffect(() => {
+        if(showSelect) {
+            const { left, top } = containerRef.current.getBoundingClientRect();
+            setPos({ left: left - 145, top: top + 25 });
+        }
+    }, [showSelect]);
     
-    return <div className={cx(styles.headerOperatorWrapper)}>
+    return <div className={cx(styles.headerOperatorWrapper)} ref={containerRef}>
         <img src={FilterIcon} className={cx(styles.headerOperationIcon)} onClick={() => setShowSelect(!showSelect)}/>
-        {showSelect && <div className={cx(styles.filterSelect)}>
+        {showSelect && createPortal(<div 
+            className={cx(styles.filterSelect)}
+            style={{
+                left: pos.left + 'px',
+                top: pos.top + 'px',
+            }}
+        >
             <Select 
                 options={options.map(option => ({label: option, value: option}))} 
                 styles={filterSelectStyles} 
@@ -56,6 +71,6 @@ export const ColumnFilter = (props) => {
                 isClearable
                 menuPortalTarget={document.body}
             />
-        </div>}
+        </div>, document.getElementById('root'))}
     </div>
 }

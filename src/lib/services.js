@@ -101,3 +101,13 @@ export const login = (inputs = {}) => {
         .catch(err => reject(err));
     })
 }
+
+export const visionsNums = () => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/visionsNums'), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
