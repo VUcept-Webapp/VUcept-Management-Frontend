@@ -7,13 +7,14 @@ export const WINDOW_TYPE = {
 
 export const AUTH_INPUT_LABELS = {
     EMAIL: 'Email',
+    NEW_PASSWORD: 'New Password',
     PASSWORD: 'Password',
     LOG_IN: 'Log In',
     SIGN_UP: 'Sign Up',
     CREATE_ACCOUNT: 'Create Account',
     FORGOT_PASSWORD: 'Forgot Password',
     CONFIRM_PASSWORD: 'Confirm Password',
-    RESET_PASSWORD: 'Enter email to reset password',
+    RESET_PASSWORD: 'Reset',
     SEND_EMAIL: 'Send Email',
     VERIFICATION_CODE: 'Verification Code'
 }
@@ -29,7 +30,9 @@ export const RESPONSE_STATUS = {
     INVALID_EMAIl: 'INVALID_EMAIL',
     USER_EXISTENT: 'USER_EXISTENT',
     INVALID_PASSWORD: 'INVALID_PASSWORD',
-    REQUEST_SIGN_UP: 'REQUEST_SIGN_UP'
+    REQUEST_SIGN_UP: 'REQUEST_SIGN_UP',
+    INCORRECT_USER_EMAIL: 'INCORRECT_USER_EMAIL',
+    REQUEST_SIGN_UP: 'REQUEST_SIGN_UP',
 }
 
 export const AUTH_INPUT_ERRORS = {
@@ -39,7 +42,7 @@ export const AUTH_INPUT_ERRORS = {
 export const HOME_NAV_LABELS = {
     HOME: 'Home',
     LOG_VISIONS_ATTENDANCE: 'Log Visions Attendance',
-    VISIONS_ASSIGNMENT_CHANGE: 'Visions Assignment Change',
+    VISIONS_ASSIGNMENT: 'Visions Assignment',
     FIRST_YEAR_ATTENDANCE: 'First-year Attendance Dashboard',
     VUCEPTOR_ATTENDANCE: 'VUceptor Attendance Dashboard',
     USER_MANAGEMENT: 'User Management',
@@ -50,7 +53,7 @@ export const ROUTES = {
     USER_MANAGEMENT: '/home/userManagement',
     CALENDAR: '/home/calendar',
     LOG_VISIONS: '/home/logVisions',
-    VISION_GROUPING: '/home/visionGrouping',
+    VISIONS_ASSIGNMENT: '/home/visionsAssignment',
     FIRST_YEAR_ATTENDANCE: '/home/firstyearAttendance',
     VUCEPTOR_ATTENDANCE: '/home/vuceptorAttendance'
 }
@@ -60,11 +63,13 @@ export const CAPTIONS = {
     LOG_VISIONS_ATTENDANCE: 'Log Visions Attendance',
     FIRST_YEAR_ATTENDANCE: 'First-year Attendance',
     VUCEPTOR_ATTENDANCE: 'VUceptor Attendance',
-    HOME: 'Home'
+    HOME: 'Home',
+    VISIONS_ASSIGNMENT: 'Visions Assignment',
 }
 
 export const BUTTONS = {
     NEW_USER: '+ New User',
+    NEW_FIRST_YEAR: 'New First Year',
     IMPORT: 'Import',
     EXPORT: 'Export',
     RESET: 'Reset',

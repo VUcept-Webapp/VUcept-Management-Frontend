@@ -14,7 +14,7 @@ export const PopUp = (props) => {
     } = props;
 
     return <>
-        <div 
+        <div
             className={cx(styles.blocker, {
                 [styles.show]: show
             })}

@@ -15,7 +15,7 @@ import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
 const cx = classNames.bind(styles);
 
-export const UserManagement = ({ toast }) => {
+export const VisionsAssignment = ({ toast }) => {
     const [rows, setRows] = useState([]);
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
     const [showDeleteAllPopUp, setShowDeleteAllPopUp] = useState(false);
@@ -31,10 +31,10 @@ export const UserManagement = ({ toast }) => {
     const [nameSearch, setNameSearch] = useState("");
     const [emailSort, setEmailSort] = useState(null);
     const [emailSearch, setEmailSearch] = useState("");
-    const [typeFilter, setTypeFilter] = useState([]);
-    const [statusFilter, setStatusFilter] = useState([]);
     const [visionsFilter, setVisionsFilter] = useState([]);
     const [visionOptions, setVisionOptions] = useState([]);
+    const [vuceptorFilter, setVuceptorFilter] = useState([]);
+    const [vuceptorSearch, setVuceptorSearch] = useState("");
     const uploadRef = useRef();
     const orderRef = useRef([]);
 
@@ -48,37 +48,12 @@ export const UserManagement = ({ toast }) => {
             }
             else toast('Error fetching visions options');
         }).catch(err => toast('Error fetching visions options'));
-        readUser({ 
-            row_start: tablePage * TABLE.ROW_PER_PAGE, 
-            row_num: TABLE.ROW_PER_PAGE,
-            ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
-            ...(nameSort && { name_sort: nameSort }),
-            ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
-            ...(emailSort && { email_sort: emailSort }),
-            ...(typeFilter.length > 0 && { type_filter: JSON.stringify(typeFilter) }),
-            ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
-            ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
-            ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
-        }).then(res => {
-            const { status, result: { rows = [], pages = 1 } } = res;
-            setDisableTable(false);
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                setRows(toUpperRows(rows));
-                setTotalPage(parseInt(pages));
-            }
-            else toast('Internal error');
-        })
-        .catch(err => {
-            console.log(err);
-            setDisableTable(false);
-            toast('Internal error');
-        });
     }
 
     useEffect(() => {
-        setDisableTable(true);
+        // setDisableTable(true);
         getUser();
-    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, typeFilter, statusFilter, visionsFilter]);
+    }, [tablePage]);
 
     useEffect(() => {
         if(importFile) {
@@ -188,7 +163,7 @@ export const UserManagement = ({ toast }) => {
     const columns = [
         {
             key: 'name',
-            label: 'Name',
+            label: 'First-year Name',
             search: (value) => setNameSearch(value),
             sort: (value) => {
                 updateOrder({ order: orderRef.current, value, key: 'name_sort' });
@@ -207,15 +182,6 @@ export const UserManagement = ({ toast }) => {
             render: (val) => <TableItem item={val} />
         },
         {
-            key: 'type',
-            label: 'Type',
-            filter: {
-                callback: (value) => setTypeFilter(getOptionValue(value)),
-                options: ['VUCeptor', 'Advisor', 'Board']
-            },
-            render: (val) => <TableItem item={val} />
-        },
-        {
             key: 'visions',
             label: 'Visions',
             filter: {
@@ -225,12 +191,13 @@ export const UserManagement = ({ toast }) => {
             render: (val) => <TableItem item={val} />
         },
         {
-            key: 'status',
-            label: 'Status',
+            key: 'vuceptor',
+            label: 'VUceptor',
             filter: {
-                callback: (value) => setStatusFilter(getOptionValue(value)),
+                callback: (value) => setVuceptorFilter(getOptionValue(value)),
                 options: ['Registered', 'Unregistered']
             },
+            search: (value) => setVuceptorSearch(value),
             render: (val) => <TableItem item={val} />
         },
     ];
@@ -238,9 +205,8 @@ export const UserManagement = ({ toast }) => {
     return <>
         <BlockBlocker show={disableTable}/>
         <div className={cx(styles.boardControl)}>
-            <TableButton className={cx(styles.tableButton)} label={BUTTONS.NEW_USER} onClick={() => setShowAddPopUp(true)}/>
+            <TableButton className={cx(styles.tableButton)} label={BUTTONS.NEW_FIRST_YEAR} onClick={() => setShowAddPopUp(true)}/>
             <TableButton className={cx(styles.tableButton)} label={BUTTONS.IMPORT} onClick={onImport}/>
-            <TableButton className={cx(styles.tableButton)} label={BUTTONS.RESET} onClick={() => setShowDeleteAllPopUp(true)}/>
         </div>
         <div className={styles.table}>
             <Table

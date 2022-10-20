@@ -41,6 +41,39 @@
     width: 100px;
 }
 
-.select {
-    width: 200px;
+.controlInput {
+    width: 40px;
+    height: 20px;
+    border-radius: 5px;
+    border: 1px solid black;
+    padding: 0 5px;
+    appearance: none;
+    outline: none;
+}
+
+.calendarLabel {
+    composes: font;
+    margin-right: 7px;
+}
+
+.calendarLabel.small {
+    display: inline-block;
+    width: 100px;
+}
+
+.calendarWrapper {
+    position: relative;
+}
+
+.calendarIcon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.calendar {
+    position: absolute;
+    z-index: 1000;
+    top: 20px;
+    right: 0px;
 }

@@ -65,11 +65,11 @@ export const HomeLayout = () => {
                     <img src={ClockIcon} className={cx(styles.navItemIcon)}/>
                     <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.LOG_VISIONS_ATTENDANCE}</span>
                 </div>  
-                <div onClick={() => navigate(ROUTES.VISION_GROUPING)} className={cx(styles.navItem, {
-                    [styles.selected]: pathname === ROUTES.VISION_GROUPING
+                <div onClick={() => navigate(ROUTES.VISIONS_ASSIGNMENT)} className={cx(styles.navItem, {
+                    [styles.selected]: pathname === ROUTES.VISIONS_ASSIGNMENT
                 })}>
                     <img src={UsersIcon} className={cx(styles.navItemIcon)}/>
-                    <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.VISIONS_ASSIGNMENT_CHANGE}</span>
+                    <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.VISIONS_ASSIGNMENT}</span>
                 </div> 
                 <div onClick={() => navigate(ROUTES.FIRST_YEAR_ATTENDANCE)} className={cx(styles.navItem, {
                     [styles.selected]: pathname === ROUTES.FIRST_YEAR_ATTENDANCE

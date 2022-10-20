@@ -221,4 +221,15 @@ export const updateOrder = ({ order, value, key }) => {
     }
 }
 
+export const debounce = (handler, delay = 500) => {
+    let timer = null;
+    return function(...args) {
+        clearTimeout(timer);
+        timer = setTimeout(() => {
+            handler.apply(this, args);
+            timer = null;
+        }, delay);
+    }
+}
+
 // newLeft = x * columnWidth + 40

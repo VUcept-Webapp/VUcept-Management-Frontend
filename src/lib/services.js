@@ -102,6 +102,18 @@ export const login = (inputs = {}) => {
     })
 }
 
+export const changePassword = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/changePassword', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
 export const visionsNums = () => {
     return new Promise((resolve, reject) => {
         fetch(appendParams(process.env.REACT_APP_HOST_URL + '/visionsNums'), {

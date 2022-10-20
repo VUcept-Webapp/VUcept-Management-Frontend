@@ -13,6 +13,7 @@ import { LogIn } from "./pages/LogIn";
 import { ResetPassword } from "./pages/ResetPassword";
 import { SignUp } from "./pages/SignUp";
 import { UserManagement } from "./pages/UserManagement";
+import { VisionsAssignment } from "./pages/VisionsAssignment";
 import { VUceptorAttendance } from "./pages/VUceptorAttendance";
 
 export const App = () => {
@@ -32,6 +33,7 @@ export const App = () => {
         <Route path='home' element={<HomeLayout />}>
           <Route index path='dashBoard' element={<DashBoard toast={toast}/>}/>
           <Route path='calendar' element={<Calendar toast={toast}/>}/>
+          <Route path='visionsAssignment' element={<VisionsAssignment toast={toast}/>}/>
           <Route path='firstyearAttendance' element={<FirstYear toast={toast}/>}/>
           <Route path='vuceptorAttendance' element={<VUceptorAttendance toast={toast}/>}/>
           <Route path='logVisions' element={<LogAttendance toast={toast}/>}/>
