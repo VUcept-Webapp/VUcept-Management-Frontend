@@ -5,14 +5,14 @@ import { BUTTONS, RESPONSE_STATUS, SORT, TABLE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
-import { PopUpEditUser } from '../../components/PopUpEditUser';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
-import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser, resetDatabase, visionsNums } from '../../lib/services';
+import { resetFy, visionsNums, createFy, readFy, updateFy, deleteFy, fyLoadfromcsv } from '../../lib/services';
 import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
-import { PopUpAddUser } from '../../components/PopUpAddUser';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
+import { PopUpAddFy } from '../../components/PopUpAddFy';
+import { PopUpEditFy } from '../../components/PopUpEditFy';
 const cx = classNames.bind(styles);
 
 export const VisionsAssignment = ({ toast }) => {
@@ -39,7 +39,7 @@ export const VisionsAssignment = ({ toast }) => {
     const orderRef = useRef([]);
 
 
-    const getUser = () => {
+    const getFy = () => {
         visionsNums().then(res => {
             const { status, result } = res;
             if(status === RESPONSE_STATUS.SUCCESS) {
@@ -48,12 +48,40 @@ export const VisionsAssignment = ({ toast }) => {
             }
             else toast('Error fetching visions options');
         }).catch(err => toast('Error fetching visions options'));
+        readFy({
+            row_start: tablePage * TABLE.ROW_PER_PAGE, 
+            row_num: TABLE.ROW_PER_PAGE,
+            ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
+            ...(nameSort && { name_sort: nameSort }),
+            ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
+            ...(emailSort && { email_sort: emailSort }),
+            ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
+            ...(vuceptorFilter.length > 0 && { vuceptor_filter: JSON.stringify(vuceptorFilter) }),
+            ...(vuceptorSearch && { vuceptor_search: JSON.stringify([vuceptorSearch]) }),
+            ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
+        }).then(res => {
+            const { status, result: { rows = [], pages = 1 } } = res;
+            console.log(res);
+            setDisableTable(false);
+            if(status === RESPONSE_STATUS.SUCCESS) {
+                setRows(toUpperRows(rows));
+                setTotalPage(parseInt(pages));
+            }
+            else if(status === RESPONSE_STATUS.INCORRECT_FY_NAME) toast('Incorrect search for First-year name');
+            else if(status === RESPONSE_STATUS.INCORRECT_FY_EMAIL) toast('Incorrect search for Email');
+            else if(status === RESPONSE_STATUS.INCORRECT_FY_VISIONS) toast('Incorrect filter for Visions');
+            else toast('Internal error');
+        })
+        .catch(err => {
+            setDisableTable(false);
+            toast('Internal error');
+        });
     }
 
     useEffect(() => {
-        // setDisableTable(true);
-        getUser();
-    }, [tablePage]);
+        setDisableTable(true);
+        getFy();
+    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, visionsFilter, vuceptorFilter, vuceptorSearch]);
 
     useEffect(() => {
         if(importFile) {
@@ -67,13 +95,14 @@ export const VisionsAssignment = ({ toast }) => {
                         return;
                     }
                     setDisableTable(true);
-                    userLoadfromcsv({ file: inputObj })
+                    fyLoadfromcsv({ file: inputObj })
                         .then(res => {
+                            console.log(res);
                             const { status } = res;
-                            if(status === RESPONSE_STATUS.SUCCESS) getUser();
+                            if(status === RESPONSE_STATUS.SUCCESS) getFy();
                             else if(status === RESPONSE_STATUS.EMAIL_USED) {
                                 toast('There were repeated emails. Only users with valid email were imported');
-                                getUser();
+                                getFy();
                             }
                             else toast('Internal error');
                             setDisableTable(false);
@@ -85,6 +114,7 @@ export const VisionsAssignment = ({ toast }) => {
                     setImportFile(null);
                 },
                 error: err => setImportFile(null)});
+            if(uploadRef?.current?.value) uploadRef.current.value = '';
         }
     }, [importFile]);
 
@@ -103,11 +133,11 @@ export const VisionsAssignment = ({ toast }) => {
     }
 
     const onConfirmDelete = (row) => {
-        deleteUser({ email: row?.email || "" })
+        deleteFy({ email: row?.fy_email || "" })
             .then(res => {
                 setShowDeletePopUp(false);
                 const { status } = res;
-                if(status === RESPONSE_STATUS.SUCCESS) getUser();
+                if(status === RESPONSE_STATUS.SUCCESS) getFy();
                 else if(status === RESPONSE_STATUS.INCORRECT_USER_EMAIL) toast('Email is not found');
                 else toast('Internal error');
             })
@@ -115,39 +145,40 @@ export const VisionsAssignment = ({ toast }) => {
     }
 
     const onConfirmClear = () => {
-        resetDatabase()
+        resetFy()
             .then(res => {
                 const { status } = res;
                 setShowDeleteAllPopUp(false);
-                if(status === RESPONSE_STATUS.SUCCESS) getUser();
+                if(status === RESPONSE_STATUS.SUCCESS) getFy();
                 else toast('Error resetting system');
             })
     }
 
-    const onSaveEdit = ({ inputName, inputEmail, inputType, inputVisions, oldEmail }) => {
-        updateUser({ old_email: oldEmail, name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
+    const onSaveEdit = ({ inputName, inputEmail, inputVisions, oldEmail }) => {
+        updateFy({ old_email: oldEmail, name: inputName, email: inputEmail, visions: inputVisions })
             .then(res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowEditPopUp(false);
-                    getUser();
+                    getFy();
                 }
-                else if(status === RESPONSE_STATUS.INCORRECT_USER_EMAIL) toast('Email is incorrect');
+                else if(status === RESPONSE_STATUS.EMAIL_USED) toast('Email is used');
+                else if(status === RESPONSE_STATUS.INCORRECT_FY_VISIONS) toast('Incorrect vision group');
                 else toast('Internal error');
             })
             .catch(err => toast('Internal error'));
     }
 
-    const onAddUser = ({ inputName, inputEmail, inputType, inputVisions }) => {
-        createUser({ name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
+    const onAddFy = ({ inputName, inputEmail, inputVisions }) => {
+        createFy({ name: inputName, email: inputEmail, visions: inputVisions })
             .then(res => {
-                setShowAddPopUp(false);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowAddPopUp(false);
-                    getUser();
+                    getFy();
                 }
                 else if(status === RESPONSE_STATUS.EMAIL_USED) toast('Email taken. Please provide another email');
+                else if(status === RESPONSE_STATUS.INCORRECT_FY_VISIONS) toast('Incorrect vision group');
                 else {
                     toast('Internal error');
                     setShowAddPopUp(false);
@@ -162,7 +193,7 @@ export const VisionsAssignment = ({ toast }) => {
 
     const columns = [
         {
-            key: 'name',
+            key: 'fy_name',
             label: 'First-year Name',
             search: (value) => setNameSearch(value),
             sort: (value) => {
@@ -172,7 +203,7 @@ export const VisionsAssignment = ({ toast }) => {
             render: (val) => <TableItem item={val} />
         },
         {
-            key: 'email',
+            key: 'fy_email',
             label: 'Email',
             sort: (value) => {
                 updateOrder({ order: orderRef.current, value, key: 'email_sort' });
@@ -191,7 +222,7 @@ export const VisionsAssignment = ({ toast }) => {
             render: (val) => <TableItem item={val} />
         },
         {
-            key: 'vuceptor',
+            key: 'vuceptor_name',
             label: 'VUceptor',
             filter: {
                 callback: (value) => setVuceptorFilter(getOptionValue(value)),
@@ -207,6 +238,7 @@ export const VisionsAssignment = ({ toast }) => {
         <div className={cx(styles.boardControl)}>
             <TableButton className={cx(styles.tableButton)} label={BUTTONS.NEW_FIRST_YEAR} onClick={() => setShowAddPopUp(true)}/>
             <TableButton className={cx(styles.tableButton)} label={BUTTONS.IMPORT} onClick={onImport}/>
+            <TableButton className={cx(styles.tableButton)} label={BUTTONS.RESET} onClick={() => setShowDeleteAllPopUp(true)}/>
         </div>
         <div className={styles.table}>
             <Table
@@ -222,38 +254,38 @@ export const VisionsAssignment = ({ toast }) => {
         {showDeletePopUp && <PopUpDeleteRow
             show={showDeletePopUp}
             setShow={setShowDeletePopUp}
-            title={'Remove User'}
-            description={'Confirm to remove user'}
+            title={'Remove First year'}
+            description={'Confirm to remove First-year student'}
             row={deleteRow}
             onDelete={onConfirmDelete}
         />}
-        {showEditPopUp && <PopUpEditUser 
+        {showEditPopUp && <PopUpEditFy 
             row={editRow}
-            title={'Edit User'}
+            title={'Edit First-year'}
             show={showEditPopUp} 
             setShow={setShowEditPopUp}
             onSave={onSaveEdit}
-            oldEmail={editRow?.email}
+            oldEmail={editRow?.fy_email}
         />}
-        {showAddPopUp && <PopUpAddUser 
-            title={'Add User'}
+        {showAddPopUp && <PopUpAddFy 
+            title={'Add First-year'}
             show={showAddPopUp} 
             setShow={setShowAddPopUp}
-            onAdd={onAddUser}
+            onAdd={onAddFy}
         />}
         {showDeleteAllPopUp && <PopUpDeleteAll
             show={showDeleteAllPopUp}
             setShow={setShowDeleteAllPopUp}
             title={'Clear'}
-            description={'Are you sure you want to clear the whole system?'}
+            description={'Are you sure you want to clear the whole table?'}
             onDelete={onConfirmClear}
         />}
         <input
-           type="file"
-           accept='.csv'
-           ref={uploadRef}
-           style={{ display: 'none' }}
-           onChange={(e) => setImportFile(e.target.files[0])}
+            type="file"
+            accept='.csv'
+            ref={uploadRef}
+            style={{ display: 'none' }}
+            onChange={(e) => setImportFile(e.target.files[0])}
         />
     </>
 }

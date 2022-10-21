@@ -58,9 +58,9 @@ export const userLoadfromcsv = (inputs) => {
     })
 }
 
-export const resetDatabase = () => {
+export const resetUsers = () => {
     return new Promise((resolve, reject) => {
-        fetch(process.env.REACT_APP_HOST_URL + '/resetDatabase', {
+        fetch(process.env.REACT_APP_HOST_URL + '/resetUsers', {
             method: 'POST',
         }).then(response => response.json())
         .then(response => resolve(response))
@@ -111,13 +111,81 @@ export const changePassword = (inputs) => {
         }).then(response => response.json())
         .then(response => resolve(response))
         .catch(err => reject(err));
-    })
+    });
 }
 
 export const visionsNums = () => {
     return new Promise((resolve, reject) => {
         fetch(appendParams(process.env.REACT_APP_HOST_URL + '/visionsNums'), {
             method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const createFy = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/createFy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    });
+}
+
+export const readFy = (inputs = {}) => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/readFy', inputs), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const updateFy = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/updateFy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const deleteFy = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/deleteFy', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const resetFy = () => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/resetFy', {
+            method: 'POST',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const fyLoadfromcsv = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/fyLoadfromcsv', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
         }).then(response => response.json())
         .then(response => resolve(response))
         .catch(err => reject(err));

@@ -8,7 +8,7 @@ import { useEffect, useRef, useState } from 'react';
 import { PopUpEditUser } from '../../components/PopUpEditUser';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
-import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser, resetDatabase, visionsNums } from '../../lib/services';
+import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser, resetUsers, visionsNums } from '../../lib/services';
 import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
 import { PopUpAddUser } from '../../components/PopUpAddUser';
 import { BlockBlocker } from '../../components/BlockBlocker';
@@ -110,6 +110,7 @@ export const UserManagement = ({ toast }) => {
                     setImportFile(null);
                 },
                 error: err => setImportFile(null)});
+            if(uploadRef?.current?.value) uploadRef.current.value = '';
         }
     }, [importFile]);
 
@@ -140,7 +141,7 @@ export const UserManagement = ({ toast }) => {
     }
 
     const onConfirmClear = () => {
-        resetDatabase()
+        resetUsers()
             .then(res => {
                 const { status } = res;
                 setShowDeleteAllPopUp(false);
