@@ -60,20 +60,3 @@
     display: inline-block;
     width: 100px;
 }
-
-.calendarWrapper {
-    position: relative;
-}
-
-.calendarIcon {
-    width: 20px;
-    height: 20px;
-    cursor: pointer;
-}
-
-.calendar {
-    position: absolute;
-    z-index: 1000;
-    top: 20px;
-    right: 0px;
-}

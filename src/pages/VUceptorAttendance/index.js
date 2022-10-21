@@ -1,6 +1,5 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import CalendarIcon from '../../assets/icons/calendarComponent.svg';
 import { BUTTONS, USER_TYPE_OPTIONS, WINDOW_TYPE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
@@ -11,9 +10,7 @@ import { TableSelect } from '../../components/TableSelect';
 import { useWindowSize } from '../../lib/hooks';
 import { debounce, getOptionValue, getSortParam, updateOrder } from '../../lib/util';
 import { TableItem } from '../../components/TableItem';
-import Calendar from 'react-calendar';
-import './calendar.css';
-
+import { CalendarComponent } from '../../components/CalendarComponent';
 const cx = classNames.bind(styles);
 
 export const VUceptorAttendance = () => {
@@ -38,6 +35,8 @@ export const VUceptorAttendance = () => {
     const [eventFilter, setEventFilter] = useState([]);
     const [eventSort, setEventSort] = useState(null);
     const [statusFilter, setStatusFilter] = useState([]);
+    const [startDate, setStartDate] = useState("");
+    const [endDate, setEndDate] = useState("");
     const orderRef = useRef([]);
 
     const onEditRow = (row) => {
@@ -136,24 +135,11 @@ export const VUceptorAttendance = () => {
         <div className={cx(styles.boardControl)}>
             <div className={cx(styles.selectContainer, {[styles.small]: isSmall})}>
                 <span className={cx(styles.calendarLabel, {[styles.small]: isSmall})}>Start Date:</span>
-                <div className={cx(styles.calendarWrapper)}>
-                    <img
-                        src={CalendarIcon}
-                        className={cx(styles.calendarIcon)}
-                    />
-                </div>
+                <CalendarComponent />
             </div>
             <div className={cx(styles.selectContainer, {[styles.small]: isSmall})}>
                 <span className={cx(styles.calendarLabel, {[styles.small]: isSmall})}>End Date:</span>
-                <div className={cx(styles.calendarWrapper)}>
-                    <img
-                        src={CalendarIcon}
-                        className={cx(styles.calendarIcon)}
-                    />
-                    <Calendar
-                        className={cx(styles.calendar)}
-                    />
-                </div>
+                <CalendarComponent />
             </div>
             <div className={cx(styles.selectContainer, {[styles.small]: isSmall})}>
                 <span className={cx(styles.selectLabel, {[styles.small]: isSmall})}>Absences:</span>

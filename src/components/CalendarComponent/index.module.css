@@ -1,0 +1,16 @@
+.calendarWrapper {
+    position: relative;
+}
+
+.calendarIcon {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.calendarHolder {
+    height: fit-content;
+    width: fit-content;
+    position: absolute;
+    z-index: 1000;
+}
