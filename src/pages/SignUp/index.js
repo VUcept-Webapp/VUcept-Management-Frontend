@@ -9,6 +9,7 @@ import { signUp } from '../../lib/services';
 import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
+// Sign up page for authentication
 export const SignUp = ({ toast }) => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");

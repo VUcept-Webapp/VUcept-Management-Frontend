@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Papa from "papaparse";
-import { BUTTONS, RESPONSE_STATUS, SORT, TABLE, WINDOW_TYPE } from '../../lib/constants';
+import { BUTTONS, RESPONSE_STATUS, TABLE, WINDOW_TYPE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
@@ -16,6 +16,7 @@ import { TableItem } from '../../components/TableItem';
 import { useWindowSize } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
+// User management page
 export const UserManagement = ({ toast }) => {
     const isMobile = useWindowSize().type === WINDOW_TYPE.MOBILE;
     const [rows, setRows] = useState([]);

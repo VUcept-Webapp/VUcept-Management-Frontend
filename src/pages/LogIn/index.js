@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { login } from '../../lib/services';
 const cx = classNames.bind(styles);
 
+// Log in page for authentication
 export const LogIn = ({ toast }) => {
     const navigate = useNavigate();
     const { width, type } = useWindowSize();

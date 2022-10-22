@@ -17,14 +17,17 @@ import { VUceptorAttendance } from "./pages/VUceptorAttendance";
 
 export const App = () => {
   return <AuthProvider>
+    {/* Pop up notification */}
     <ToastContainer position="top-center" autoClose={3000} hideProgressBar={true}/>
     <BrowserRouter>
       <Routes>
+        {/* Authentication routes */}
         <Route path='/' element={<AuthLayout/>}>
           <Route index element={<LogIn toast={toast}/>}/>
           <Route path='signUp' element={<SignUp toast={toast}/>}/>
           <Route path='resetPassword' element={<ResetPassword toast={toast}/>}/>
         </Route>
+        {/* Home page routes */}
         <Route path='home' element={<HomeLayout />}>
           <Route index path='dashBoard' element={<DashBoard toast={toast}/>}/>
           <Route path='calendar' element={<Calendar toast={toast}/>}/>
@@ -36,5 +39,5 @@ export const App = () => {
         </Route>
       </Routes>
     </BrowserRouter>
-    </AuthProvider>
+  </AuthProvider>
 }

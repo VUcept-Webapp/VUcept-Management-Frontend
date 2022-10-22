@@ -10,6 +10,7 @@ import { TableButton } from '../../components/TableButton';
 import { checkInputRows } from '../../lib/util';
 const cx = classNames.bind(styles);
 
+// Attendance logging page
 export const LogAttendance = ({ toast }) => {
     const [event, setEvent] = useState(null);
     const [rows, setRows] = useState(LOG_ATTENDANCE_ROWS_TEST);

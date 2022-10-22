@@ -12,6 +12,7 @@ import { getOptionValue, getSortParam, updateOrder } from '../../lib/util';
 import { TableItem } from '../../components/TableItem';
 const cx = classNames.bind(styles);
 
+// First-year attendance page
 export const FirstYear = () => {
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;

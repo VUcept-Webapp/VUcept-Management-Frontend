@@ -5,10 +5,10 @@ import RightArrowButton from '../../assets/icons/rightArrowButton.svg';
 import TimeIcon from '../../assets/icons/time.svg';
 import { useWeek, useWindowSize } from '../../lib/hooks';
 import { Event } from '../../components/Event';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { getCalendarColumnWidth } from '../../lib/util';
+import { useRef, useState } from 'react';
 const cx = classNames.bind(styles);
 
+// Calendar page
 export const Calendar = ({ toast }) => {
     const { width, type } = useWindowSize();
     const { currentWeek, setCurrentWeek, setPrevWeek, setNextWeek } = useWeek();

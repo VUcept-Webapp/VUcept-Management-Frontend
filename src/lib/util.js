@@ -232,9 +232,9 @@ export const getLeftFromDay = ({ day, columnWidth }) => {
 }
 
 /**
- * 
- * @param {*} param0 
- * @returns 
+ * Calculate the aligned left value
+ * @param {Object} input an object containing the params
+ * @returns the calculated aligned left
  */
 export const getAlignedLeft = ({ newLeft, left, columnWidth }) => {
     if((newLeft - 40) % columnWidth < 10) {
@@ -244,6 +244,12 @@ export const getAlignedLeft = ({ newLeft, left, columnWidth }) => {
     return left;
 }
 
+/**
+ * Optimize the dragging event, prevent unnecessary rerendering
+ * @param {Object} prevProps previous props
+ * @param {Object} nextProps next props
+ * @returns true if rerender
+ */
 export const nonDraggingPropsChange = (prevProps, nextProps) => {
     for(const key in prevProps) {
         if(key === 'hoverCol') continue;
@@ -253,6 +259,11 @@ export const nonDraggingPropsChange = (prevProps, nextProps) => {
     return false;
 }
 
+/**
+ * Capitalize user type
+ * @param {String} type original user type
+ * @returns capitalized user type
+ */
 export const capitalizeUserType = (type) => {
     if(type === 'vuceptor') return 'VUceptor';
     if(type === 'board') return 'Board';
@@ -260,16 +271,30 @@ export const capitalizeUserType = (type) => {
     else return type;
 }
 
+/**
+ * Get mySQL sort
+ * @param {Number} sort sort code in number
+ * @returns mySQL sort
+ */
 export const getSortParam = (sort) => {
     if(sort === SORT.NO_SORT) return null;
     else if(sort === SORT.ASCEND) return 'ASC';
     else return 'DESC';
 }
 
+/**
+ * Get the value of the options for react-select
+ * @param {Array} options options for react-select
+ * @returns an array of only the value of each option
+ */
 export const getOptionValue = (options) => {
     return options.map(option => option.value.toLowerCase());
 }
 
+/**
+ * Update the sort order
+ * @param {Object} param an object containing the original sort order array, value of the current sort, and key of the current sort
+ */
 export const updateOrder = ({ order, value, key }) => {
     const index = order.indexOf(key);
     if(value === SORT.NO_SORT) {
@@ -281,6 +306,12 @@ export const updateOrder = ({ order, value, key }) => {
     }
 }
 
+/**
+ * Get the debounced version of a function
+ * @param {Function} handler the function
+ * @param {Number} delay the deley time
+ * @returns the debounced function
+ */
 export const debounce = (handler, delay = 500) => {
     let timer = null;
     return function(...args) {

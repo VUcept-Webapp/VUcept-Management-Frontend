@@ -17,6 +17,7 @@ import { Caption } from '../../components/Caption';
 import { Block } from '../../components/Block';
 const cx = classNames.bind(styles);
 
+// Layout of home pages
 export const HomeLayout = () => {
     const { width, type } = useWindowSize();
     const [showMenu, setShowMenu] = useState(false);

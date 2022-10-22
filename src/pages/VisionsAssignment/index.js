@@ -1,13 +1,13 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Papa from "papaparse";
-import { BUTTONS, RESPONSE_STATUS, SORT, TABLE } from '../../lib/constants';
+import { BUTTONS, RESPONSE_STATUS, TABLE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
-import { resetFy, visionsNums, createFy, readFy, updateFy, deleteFy, fyLoadfromcsv, fyVisionsNums, vuceptorList } from '../../lib/services';
+import { resetFy, createFy, readFy, updateFy, deleteFy, fyLoadfromcsv, fyVisionsNums, vuceptorList } from '../../lib/services';
 import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
@@ -16,6 +16,7 @@ import { PopUpEditFy } from '../../components/PopUpEditFy';
 import { useWindowSize } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
+// Visions assignment page
 export const VisionsAssignment = ({ toast }) => {
     const isMobile = useWindowSize().type;
     const [rows, setRows] = useState([]);
@@ -57,8 +58,8 @@ export const VisionsAssignment = ({ toast }) => {
                 const { list } = result;
                 setVuceptorOptions(list.map(option => option.name?.toString()));
             }
-            else toast('Error fetching visions options');
-        }).catch(err => toast('Error fetching visions options'));
+            else toast('Error fetching VUceptor options');
+        }).catch(err => toast('Error fetching VUceptor options'));
     }, []);
 
     const getFy = () => {

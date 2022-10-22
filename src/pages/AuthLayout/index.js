@@ -6,6 +6,7 @@ import { WINDOW_TYPE } from '../../lib/constants';
 import { Outlet } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
+// Layout of authentication page
 export const AuthLayout = () => {
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;

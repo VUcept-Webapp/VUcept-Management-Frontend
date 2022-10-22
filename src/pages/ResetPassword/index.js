@@ -5,10 +5,11 @@ import { AuthInputBlock } from '../../components/AuthInputBlock';
 import { AuthButton } from '../../components/AuthButton';
 import { AuthCode } from '../../components/AuthCode';
 import { useEffect, useState } from 'react';
-import { changePassword, signUp } from '../../lib/services';
+import { changePassword } from '../../lib/services';
 import { useNavigate } from 'react-router-dom';
 const cx = classNames.bind(styles);
 
+// Forget password page for authentication
 export const ResetPassword = ({ toast }) => {
     const navigate = useNavigate();
     const [email, setEmail] = useState("");
