@@ -1,0 +1,46 @@
+@value font from '../../index.module.css';
+
+.boardControl {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    height: fit-content;
+    width: 100%;
+    box-sizing: border-box;
+    margin-bottom: 27px;
+}
+
+.table {
+    width: 100%;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.tableButton {
+    height: 25px;
+    margin-left: auto;
+}
+
+.selectContainer {
+    display: flex;
+    margin-right: 20px;
+}
+
+.selectContainer.small {
+    margin-bottom: 10px;
+}
+
+.selectLabel {
+    composes: font;
+    margin-right: 15px;
+}
+
+.selectLabel.small {
+    display: inline-block;
+    width: 100px;
+}
+
+.select {
+    width: 200px;
+}

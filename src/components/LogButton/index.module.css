@@ -1,0 +1,35 @@
+.button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    border-radius: 15px;
+    cursor: pointer;
+}
+
+.button.select {
+    background-color: #E4E4E4;
+    color: #000000;
+}
+
+.button.present {
+    background-color: #8BA18E;
+    color: #000000;
+}
+
+.button.excused {
+    background-color: #ECB748;
+    color: #FFFFFF;
+}
+
+.button.absent {
+    background-color: #EC6648;
+    color: #FFFFFF;
+}
+
+.button.other {
+    background-color: #3E3E3E;
+    color: #FFFFFF;
+}

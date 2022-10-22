@@ -1,0 +1,23 @@
+.headerOperatorWrapper {
+    box-sizing: border-box;
+    margin-right: 5px;
+    height: 25px;
+    width: 25px;
+    position: relative;
+}
+
+.headerOperationIcon {
+    box-sizing: border-box;
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+}
+
+.filterSelect {
+    position: absolute;
+    z-index: 1000;
+    top: 25px;
+    right: 0px;
+    height: fit-content;
+    width: fit-content;
+}
