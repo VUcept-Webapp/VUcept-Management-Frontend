@@ -7,7 +7,7 @@ import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
 // Verification code for authentication
-export const AuthCode = React.forwardRef((props, ref) => {
+export const AuthCode = props => {
     const {
         email,
         label,
@@ -38,25 +38,27 @@ export const AuthCode = React.forwardRef((props, ref) => {
 
     const onSend = () => {
         if(!email) toast('Please provide email');
-        else sendVerificationEmail({email})
-            .then(res => {
-                const { status, code } = res;
-                console.log('res', res);
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    onCodeChange(code.toString());
-                    setTimeCount(60);
-                }
-                else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'))
+        else sendVerificationEmail({ email })
+                .then(res => {
+                    const { status, code } = res;
+                    console.log('res', res);
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        onCodeChange(code.toString());
+                        setTimeCount(60);
+                    }
+                    else toast('Internal error');
+                })
+                .catch(err => toast('Internal error'))
     }
     
     return <div
         className={cx(styles.inputBlock, containerClassName)}
         style={containerStyle}
+        data-testid='auth-code-container'
     >
         <p
             className={cx(styles.label)}
+            data-testid='auth-code-label'
         >
             {label || ""}
         </p>
@@ -65,16 +67,18 @@ export const AuthCode = React.forwardRef((props, ref) => {
                 className={cx(styles.input)}
                 value={inputValue}
                 onChange={(event) => onInputChange(event.target.value)}
+                data-testid={'auth-code-input'}
             />
             <div 
                 className={cx(styles.button)}
                 onClick={timeCount === 0 ? onSend : null}
+                data-testid={'auth-code-button'}
             >
                 {timeCount === 0 ? 'Send' : `Resend (${timeCount})`}
             </div>
         </div>
     </div>
-});
+};
 
 AuthCode.propTypes = {
     email: PropTypes.string.isRequired,
@@ -84,5 +88,5 @@ AuthCode.propTypes = {
     inputValue: PropTypes.string,
     onInputChange: PropTypes.func.isRequired, // (value: String) => void
     onCodeChange: PropTypes.func.isRequired, // (value: String) => void
-    toast: PropTypes.func.isRequired // react-toastify npm
+    toast: PropTypes.func // react-toastify npm
 }

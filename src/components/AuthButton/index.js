@@ -16,6 +16,7 @@ export const AuthButton = (props) => {
         className={cx(styles.button, className)}
         style={style}
         onClick={onClick}
+        data-testid='auth-button-div'
     >
         {label}
     </div>;

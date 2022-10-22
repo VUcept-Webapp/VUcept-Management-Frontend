@@ -16,6 +16,7 @@ export const Block = React.forwardRef((props, ref) => {
         className={cx(styles.block, className)}
         style={style}
         ref={ref}
+        data-testid='block-div'
     >
         {children}
     </div>
