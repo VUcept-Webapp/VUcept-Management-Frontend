@@ -1,8 +1,10 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import React from 'react';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// Each block of table
 export const TableItem = (props) => {
     const {
         className,
@@ -21,4 +23,10 @@ export const TableItem = (props) => {
     }
     
     return renderItem();
+}
+
+TableItem.propTypes = {
+    className: PropTypes.string,
+    style: PropTypes.objectOf(PropTypes.string),
+    item: PropTypes.string.isRequired,
 }

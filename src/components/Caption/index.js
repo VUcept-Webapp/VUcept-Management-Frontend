@@ -3,8 +3,10 @@ import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import React from 'react';
 import { WINDOW_TYPE } from '../../lib/constants';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// The caption of each home page
 export const Caption = (props) => {
     const {
         text,
@@ -12,9 +14,8 @@ export const Caption = (props) => {
         style,
     } = props;
 
-    const { width, type } =  useWindowSize();
+    const { type } =  useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
-    const isSmall = width < 600 || isMobile;
     
     return <div
         className={cx(styles.caption, className, {
@@ -24,4 +25,10 @@ export const Caption = (props) => {
     >
         {text}
     </div>
+};
+
+Caption.propTypes = {
+    text: PropTypes.string.isRequired,
+    className: PropTypes.string,
+    style: PropTypes.objectOf(PropTypes.string),
 }

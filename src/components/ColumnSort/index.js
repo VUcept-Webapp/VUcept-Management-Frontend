@@ -3,11 +3,12 @@ import classNames from 'classnames/bind';
 import SortIcon from '../../assets/icons/sort.svg';
 import AscendSortIcon from '../../assets/icons/ascendSort.svg';
 import DescendSortIcon from '../../assets/icons/descendSort.svg';
-import Select from 'react-select';
 import { useEffect, useState } from 'react';
 import { SORT } from '../../lib/constants';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// Sort condition for table column
 export const ColumnSort = (props) => {
     const {
         onSort
@@ -30,4 +31,8 @@ export const ColumnSort = (props) => {
     return <div className={cx(styles.headerOperatorWrapper)}>
         <img src={getIcon()} className={cx(styles.headerOperationIcon)} onClick={() => setSort((sort + 1) % 3)}/>
     </div>
+};
+
+ColumnSort.propTypes = {
+    onSort: PropTypes.func.isRequired // (sort: Number) => void
 }

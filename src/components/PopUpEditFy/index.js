@@ -3,11 +3,10 @@ import classNames from 'classnames/bind';
 import { PopUp } from '../PopUp';
 import { TableButton } from '../TableButton';
 import { useEffect, useRef, useState } from 'react';
-import { TableSelect } from '../TableSelect';
-import { USER_TYPE_OPTIONS } from '../../lib/constants';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
-
+// Pop up for editing a first-year student
 export const PopUpEditFy = (props) => {
     const {
         row = {},
@@ -87,4 +86,13 @@ export const PopUpEditFy = (props) => {
             <TableButton className={cx(styles.editButton)} label={'Save'} onClick={onSaveEdit}/>
         </div>
     </PopUp>
+}
+
+PopUpEditFy.propTypes = {
+    row: PropTypes.object.isRequired, // row of table
+    oldEmail: PropTypes.string.isRequired,
+    title: PropTypes.string,
+    show: PropTypes.bool.isRequired,
+    setShow: PropTypes.func.isRequired, // (show: Bool) => void
+    onSave: PropTypes.func.isRequired // ({ inputName: String, inputEmail: String, inputVisions: String, oldEmail: String }) => void
 }

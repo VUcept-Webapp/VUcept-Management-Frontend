@@ -1,12 +1,13 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import React, { useState } from 'react';
-import Select from 'react-select';
-import Creatable, { useCreatable } from 'react-select/creatable';
+import Creatable from 'react-select/creatable';
 import { ATTENDANCE_STATUS_OPTIONS } from '../../lib/constants';
 import { getAttendanceStatusStyle } from '../../lib/util';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// Button for attendance logging
 export const LogButton = React.forwardRef((props, ref) => {
     const {
         className,
@@ -23,7 +24,7 @@ export const LogButton = React.forwardRef((props, ref) => {
     }
 
     return <div
-        className={cx(styles.but)}
+        className={cx(styles.but, className)}
         style={style}
         onClick={onClick}
     >
@@ -37,4 +38,12 @@ export const LogButton = React.forwardRef((props, ref) => {
             isCre
         />
     </div>;
-})
+});
+
+LogButton.propTypes = {
+    className: PropTypes.string,
+    style: PropTypes.objectOf(PropTypes.string),
+    val: PropTypes.string.isRequired,
+    rowI: PropTypes.number.isRequired,
+    onClick: PropTypes.func.isRequired // (event) => void
+};

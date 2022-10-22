@@ -9,8 +9,14 @@ import PenIcon from '../../assets/icons/pen.svg';
 import { ColumnFilter } from '../ColumnFilter';
 import { ColumnSort } from '../ColumnSort';
 import { ColumnSearch } from '../ColumnSearch';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+/**
+ * Fill each column object of the table with ref
+ * @param {Array} columns Array of column objects
+ * @returns An array of column objects with ref
+ */
 const createCols = (columns) => {
     return columns.map((column) => ({
         ...column,
@@ -18,6 +24,7 @@ const createCols = (columns) => {
     }));
 };
 
+// Table component
 export const Table = (props) => {
     const {
         tablePage,
@@ -38,15 +45,18 @@ export const Table = (props) => {
     const resizeRight = useRef(null);
     const cols = createCols(columns);
 
+    // dynamically update tableHeight to set height of the dividing vertical lines between columns
     useEffect(() => {
         setTableHeight(tableRef?.current?.offsetHeight || 'auto');
     }, [rows.length]);
 
+    // fill each column with 1fr initially
     useEffect(() => {
         const gridTemplateColumns = new Array(Object.keys(cols).length).fill('1fr').join(' ');
         tableRef.current.style.gridTemplateColumns = gridTemplateColumns;
     }, []);
 
+    // drag event starts
     const onResizeMouseDown = (e, i) => {
         resizeStartX.current = e.clientX;
         resizeLeft.current = cols[i].ref.current.offsetWidth;
@@ -54,6 +64,7 @@ export const Table = (props) => {
         setActiveIndex(i);
     }
 
+    // dragging
     const onResizeMouseMove = (e) => {
         let totalWidth = 0;
         for(const col of cols) {
@@ -85,6 +96,7 @@ export const Table = (props) => {
         window.removeEventListener("mouseup", removeListeners);
     };
 
+    // drop event
     const onResizeMouseUp = () => {
         setActiveIndex(-1);
         resizeStartX.current = null;
@@ -180,4 +192,14 @@ export const Table = (props) => {
             />
         </div>
     </div>;
+}
+
+Table.propTypes = {
+    tablePage: PropTypes.number.isRequired,
+    totalPage: PropTypes.number.isRequired,
+    columns: PropTypes.object.isRequired,
+    rows: PropTypes.array.isRequired,
+    onEditRow: PropTypes.func.isRequired, // (row: Row) => void
+    onDeleteRow: PropTypes.func.isRequired, // (row: Row) => void
+    onPageChange: PropTypes.func.isRequired // (page: Number) => void
 }

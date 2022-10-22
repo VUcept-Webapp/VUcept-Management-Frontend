@@ -5,8 +5,10 @@ import SearchIcon from '../../assets/icons/search.svg';
 import { createPortal } from 'react-dom';
 import { useOnClickOutside } from '../../lib/hooks';
 import { debounce } from '../../lib/util';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// Search condition for table column
 export const ColumnSearch = (props) => {
     const {
         searchValue,
@@ -66,4 +68,10 @@ export const ColumnSearch = (props) => {
             </div>, document.getElementById('root'))}
         </div>
     </>
+};
+
+ColumnSearch.propTypes = {
+    searchValue: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired, // (val: String) => void
+    onSearch: PropTypes.func.isRequired // (val: String) => void
 }

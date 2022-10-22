@@ -1,9 +1,13 @@
-import { createContext, useContext, useEffect, useRef, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom";
 import { CAPTIONS, ROUTES, WINDOW_TYPE } from "./constants";
 import { AuthContext } from "./contexts";
-import { getMonday, getNextMonday, getPrevMonday, getSunday } from "./util";
+import { getMonday, getSunday } from "./util";
 
+/**
+ * Get metadata about window
+ * @returns {Object} window metadata
+ */
 export const useWindowSize = () => {
     const [windowSize, setWindowSize] = useState({
         width: window?.innerWidth ?? 1200,
@@ -40,6 +44,10 @@ export const useWindowSize = () => {
     };
 }
 
+/**
+ * Get caption for each home page
+ * @returns {String} caption text
+ */
 export const useCaption = () => {
     const { pathname } = useLocation();
     switch(pathname) {
@@ -53,6 +61,10 @@ export const useCaption = () => {
     }
 }
 
+/**
+ * States related to calendar week
+ * @returns {Object} states and updaters
+ */
 export const useWeek = () => {
     const [currentWeek, setCurrentWeek] = useState({});
 
@@ -89,7 +101,6 @@ export const useWeek = () => {
         const { startYear, startMonth, startDate } = currentWeek;
         const nextWeek = new Date(startYear, startMonth - 1, startDate);
         nextWeek.setDate(nextWeek.getDate() + 7);
-        // const nextWeek = new Date(current.getTime() + (7 * 24 * 60 * 60 * 1000));
         const firstDay = getMonday(nextWeek);
         const lastDay = getSunday(nextWeek);
         setCurrentWeek({
@@ -105,6 +116,10 @@ export const useWeek = () => {
     return { currentWeek, setCurrentWeek, setPrevWeek, setNextWeek }
 }
 
+/**
+ * Update authentication context
+ * @returns {Object} states and updates of the context
+ */
 export const useAuth = () => {
     const { auth, setAuth } = useContext(AuthContext);
 
@@ -112,6 +127,11 @@ export const useAuth = () => {
     return { auth, setAuth }
 }
 
+/**
+ * Custom event for clicking outside of elements
+ * @param {Array} refs array of refs of elements to be excluded from the event
+ * @param {Function} handler event handler
+ */
 export const useOnClickOutside = (refs, handler) => {
     useEffect(() => {
         const listener = (event) => {

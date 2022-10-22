@@ -1,10 +1,12 @@
 import { TableItem } from "../components/TableItem";
 
+// Different types of window
 export const WINDOW_TYPE = {
     WEB: 'WEB',
     MOBILE: 'MOBILE'
 };
 
+// Labels for authentication
 export const AUTH_INPUT_LABELS = {
     EMAIL: 'Email',
     NEW_PASSWORD: 'New Password',
@@ -19,6 +21,7 @@ export const AUTH_INPUT_LABELS = {
     VERIFICATION_CODE: 'Verification Code'
 }
 
+// Different status codes
 export const RESPONSE_STATUS = {
     SUCCESS: 'SUCCESS',
     INCORRECT_STATUS: 'INCORRECT_STATUS',
@@ -45,6 +48,7 @@ export const AUTH_INPUT_ERRORS = {
     EMAIL: 'Email',    
 }
 
+// Labels for left nav bar
 export const HOME_NAV_LABELS = {
     HOME: 'Home',
     LOG_VISIONS_ATTENDANCE: 'Log Visions Attendance',
@@ -54,6 +58,7 @@ export const HOME_NAV_LABELS = {
     USER_MANAGEMENT: 'User Management',
 }
 
+// routes
 export const ROUTES = {
     DASHBOARD: 'dashBoard',
     USER_MANAGEMENT: '/home/userManagement',
@@ -64,6 +69,7 @@ export const ROUTES = {
     VUCEPTOR_ATTENDANCE: '/home/vuceptorAttendance'
 }
 
+// captions
 export const CAPTIONS = {
     USER_MANAGEMENT: 'User Management',
     LOG_VISIONS_ATTENDANCE: 'Log Visions Attendance',
@@ -73,6 +79,7 @@ export const CAPTIONS = {
     VISIONS_ASSIGNMENT: 'Visions Assignment',
 }
 
+// Texts of buttons
 export const BUTTONS = {
     NEW_USER: '+ New User',
     NEW_FIRST_YEAR: 'New First Year',
@@ -81,104 +88,11 @@ export const BUTTONS = {
     RESET: 'Reset',
 }
 
+// Table metadata
 export const TABLE = {
     ROW_PER_PAGE: 50,
     MIN_COLUMN_WIDTH: 170
 }
-
-export const LOG_ATTENDANCE_COLUMNS = [
-    {
-        key: 'name',
-        label: 'Name',
-        sort: true,
-        search: true,
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'email',
-        label: 'Email',
-        sort: true,
-        search: true,
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'attendance',
-        label: 'Attendance',
-        render: (val) => <TableItem item={val} />
-    },
-];
-
-export const USER_MANAGEMENT_COLUMNS = [
-    {
-        key: 'name',
-        label: 'Name',
-        sort: true,
-        search: true,
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'email',
-        label: 'Email',
-        sort: true,
-        search: true,
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'type',
-        label: 'Type',
-        filter: ['VUCeptor', 'Advisor', 'Board'],
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'visions',
-        label: 'Visions',
-        // filter: ['Registered', 'Unregistered'],
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'status',
-        label: 'Status',
-        filter: ['Registered', 'Unregistered'],
-        render: (val) => <TableItem item={val} />
-    },
-];
-
-export const FIRST_YEAR_COLUMNS = [
-    {
-        key: 'name',
-        label: 'Name',
-        sort: true,
-        search: true,
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'email',
-        label: 'Email',
-        sort: true,
-        search: true,
-        render: (val) => <TableItem item={val} />
-    },
-    {
-        key: 'group',
-        label: 'Group',
-        sort: true,
-        render: (val) => <TableItem item={val} />
-        // filter: ['VUCeptor', 'Advisor', 'Board']
-    },
-    {
-        key: 'week',
-        label: 'Week',
-        sort: true,
-        render: (val) => <TableItem item={val} />
-        // filter: ['Registered', 'Unregistered']
-    },
-    {
-        key: 'status',
-        label: 'Status',
-        render: (val) => <TableItem item={val} />
-        // filter: ['Registered', 'Unregistered']
-    },
-];
 
 export const USER_TYPE_OPTIONS = [
     { label: 'Advisor', value: 'Advisor' },
@@ -272,14 +186,3 @@ export const FIRST_YEAR_ROWS_TEST = [
     {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
     {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
 ];
-
-/*
-
-columns: [{
-        label,
-        sort
-        filter: [{label, value}]
-        className,
-        style
-    }]
-*/

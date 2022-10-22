@@ -1,5 +1,9 @@
 import { appendParams } from "./util";
 
+/*
+ * Each function corresponds to an API
+ * Refer to API file for details of each API
+ */
 export const readUser = (inputs = {}) => {
     return new Promise((resolve, reject) => {
         fetch(appendParams(process.env.REACT_APP_HOST_URL + '/readUser', inputs), {

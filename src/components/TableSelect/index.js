@@ -1,9 +1,11 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import Select from 'react-select';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// Dropdown select for Table
 export const TableSelect = (props) => {
     const {
         className,
@@ -62,4 +64,13 @@ export const TableSelect = (props) => {
             menuPortalTarget={document.body}
         />
     </div>
+}
+
+TableSelect.propTypes = {
+    className: PropTypes.string,
+    height: PropTypes.number.isRequired,
+    options: PropTypes.object.isRequired,
+    selected: PropTypes.object,
+    onChange: PropTypes.func.isRequired, // (option: Object) => void
+    warn: PropTypes.bool.isRequired
 }

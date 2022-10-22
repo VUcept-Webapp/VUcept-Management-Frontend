@@ -5,9 +5,10 @@ import { TableButton } from '../TableButton';
 import { useEffect, useRef, useState } from 'react';
 import { TableSelect } from '../TableSelect';
 import { ATTENDANCE_STATUS_OPTIONS, USER_TYPE_OPTIONS } from '../../lib/constants';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
-
+// Pop up for editing attendance record
 export const PopUpEditRecord = (props) => {
     const {
         row,
@@ -126,4 +127,12 @@ export const PopUpEditRecord = (props) => {
             <TableButton className={cx(styles.editButton)} label={'Save'} onClick={onSaveEdit}/>
         </div>
     </PopUp>
+}
+
+PopUpEditRecord.propTypes = {
+    row: PropTypes.object, // row of table
+    title: PropTypes.string.isRequired,
+    show: PropTypes.bool.isRequired,
+    setShow: PropTypes.func.isRequired, // (show: Bool) => void
+    onSave: PropTypes.func.isRequired, // ({ inputName: String, inputEmail: String, inputGroup: String, inputWeek: String, inputStatus: String }) => void
 }

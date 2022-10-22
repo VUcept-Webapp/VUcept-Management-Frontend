@@ -1,8 +1,10 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Loading from '../../assets/icons/loading.svg';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// Disable the table component and display the loading animation
 export const BlockBlocker = (props) => {
     const {
         className,
@@ -20,4 +22,10 @@ export const BlockBlocker = (props) => {
             </div>
         }
     </>
+};
+
+BlockBlocker.propTypes = {
+    className: PropTypes.string,
+    style: PropTypes.objectOf(PropTypes.string),
+    show: PropTypes.bool.isRequired
 }

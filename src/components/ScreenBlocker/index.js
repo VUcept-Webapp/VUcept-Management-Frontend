@@ -1,8 +1,9 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
-
+// Block the whole screen, preventing the click event from triggering
 export const ScreenBlocker = (props) => {
     const {
         show,
@@ -14,11 +15,13 @@ export const ScreenBlocker = (props) => {
             className={cx(styles.blocker, {
                 [styles.show]: show
             })}
-            onClick={() => {
-                console.log('click blocker');
-                onClick();
-            }}
+            onClick={() => onClick()}
         >
         </div>
     </>
+}
+
+ScreenBlocker.propTypes = {
+    show: PropTypes.bool.isRequired,
+    onClick: PropTypes.func.isRequired // () => void
 }

@@ -3,11 +3,10 @@ import classNames from 'classnames/bind';
 import { PopUp } from '../PopUp';
 import { TableButton } from '../TableButton';
 import { useEffect, useRef, useState } from 'react';
-import { TableSelect } from '../TableSelect';
-import { USER_TYPE_OPTIONS } from '../../lib/constants';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
-
+// Pop up for adding first-year student
 export const PopUpAddFy = (props) => {
     const {
         title,
@@ -82,4 +81,11 @@ export const PopUpAddFy = (props) => {
             <TableButton className={cx(styles.editButton)} label={'Add'} onClick={onSaveAdd}/>
         </div>
     </PopUp>
+}
+
+PopUpAddFy.propTypes = {
+    title: PropTypes.string.isRequired,
+    show: PropTypes.bool.isRequired,
+    setShow: PropTypes.func.isRequired, // (show: Bool) => void
+    onAdd: PropTypes.func.isRequired // ({ inputName: String, inputEmail: String, inputVisions: String }) => void
 }

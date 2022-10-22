@@ -1,9 +1,10 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import { Block } from '../Block';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
-
+// Pop up block
 export const PopUp = (props) => {
     const {
         className,
@@ -30,4 +31,12 @@ export const PopUp = (props) => {
             {children}
         </Block>
     </>
+}
+
+PopUp.propTypes = {
+    className: PropTypes.string,
+    style: PropTypes.objectOf(PropTypes.string),
+    show: PropTypes.bool.isRequired,
+    setShow: PropTypes.func.isRequired, // (show: Bool) => void
+    children: PropTypes.object // child components
 }

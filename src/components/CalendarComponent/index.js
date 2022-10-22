@@ -7,9 +7,10 @@ import { useState, useRef, useEffect } from 'react';
 import { useWindowSize } from '../../lib/hooks';
 import { createPortal } from 'react-dom';
 import { ScreenBlocker } from '../ScreenBlocker';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
-
+// Date selected with a calendar view
 export const CalendarComponent = (props) => {
     const {
         onDateChange
@@ -30,6 +31,7 @@ export const CalendarComponent = (props) => {
     const onClickIcon = () => {
         setDisplay(!display);
         setTop(imageEle.current.getBoundingClientRect().top + 23);
+        // dynamically set calendar location
         if(imageEle.current.getBoundingClientRect().right + 20 > 300) setLeft(imageEle.current.getBoundingClientRect().right - 300);
         else if(imageEle.current.getBoundingClientRect().left + 300 < width) setLeft(imageEle.current.getBoundingClientRect().left);
         else setLeft(Math.ceil(width / 2) - 150);
@@ -72,4 +74,8 @@ export const CalendarComponent = (props) => {
             </div>, document.getElementById('root'))}
         </div>
     </>
+};
+
+CalendarComponent.propTypes = {
+    onDateChange: PropTypes.func.isRequired // (date: string) => void
 }

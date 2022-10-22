@@ -3,8 +3,10 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useRef, useState } from 'react';
 import { sendVerificationEmail } from '../../lib/services';
 import { RESPONSE_STATUS } from '../../lib/constants';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
+// Verification code for authentication
 export const AuthCode = React.forwardRef((props, ref) => {
     const {
         email,
@@ -72,4 +74,15 @@ export const AuthCode = React.forwardRef((props, ref) => {
             </div>
         </div>
     </div>
-})
+});
+
+AuthCode.propTypes = {
+    email: PropTypes.string.isRequired,
+    label: PropTypes.string,
+    containerClassName: PropTypes.string,
+    containerStyle: PropTypes.objectOf(PropTypes.string),
+    inputValue: PropTypes.string,
+    onInputChange: PropTypes.func.isRequired, // (value: String) => void
+    onCodeChange: PropTypes.func.isRequired, // (value: String) => void
+    toast: PropTypes.func.isRequired // react-toastify npm
+}

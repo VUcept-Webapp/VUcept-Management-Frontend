@@ -1,10 +1,10 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import React, { useEffect, useRef, useState } from 'react';
-import { getAlignedLeft, getLeftFromDay, nonDraggingPropsChange } from '../../lib/util';
+import { getLeftFromDay, nonDraggingPropsChange } from '../../lib/util';
 const cx = classNames.bind(styles);
 
-
+// Each event on the calendar page
 export const Event = React.memo((props) => {
     const {
         day,
@@ -82,4 +82,4 @@ export const Event = React.memo((props) => {
     if(nonDraggingPropsChange(prevProps, nextProps)) return false;
     if(!prevProps.dragging && !nextProps.dragging) return true;
     return false;
-})
+});

@@ -1,5 +1,11 @@
 import { SORT } from "./constants";
 
+/**
+ * Construct the url for GET request
+ * @param {string} url original url
+ * @param {Object} params params to be appended to url
+ * @returns {String} url appended with params
+ */
 export const appendParams = (url, params = {}) => {
     let res = url + '?';
     const keys = Object.keys(params);
@@ -11,6 +17,11 @@ export const appendParams = (url, params = {}) => {
     return res.substring(0, res.length - 1);
 }
 
+/**
+ * Capitalize table content
+ * @param {Array} rows rows of the table
+ * @returns {Array} capitalized rows
+ */
 export const toUpperRows = (rows) => {
     return rows.map(row => {
         let r = { ...row };
@@ -29,6 +40,11 @@ export const toUpperRows = (rows) => {
     })
 }
 
+/**
+ * Parse csv file into JSON object
+ * @param {Array} data csv file
+ * @returns {Object} JSON version of the file
+ */
 export const importUsersToJSON = (data) => {
     try {
         if(data?.length === 0) return {};
@@ -50,6 +66,11 @@ export const importUsersToJSON = (data) => {
     }
 }
 
+/**
+ * Get the style for each attendance status
+ * @param {String} val attendance status
+ * @returns {Object} style for the react-select component
+ */
 export const getAttendanceStatusStyle = (val) => {
     let backgroundColor = "";
     let color = "";
@@ -132,6 +153,11 @@ export const getAttendanceStatusStyle = (val) => {
     }
 }
 
+/**
+ * Check if all rows are logged
+ * @param {Array} inputRows rows of attendance logging
+ * @returns {Boolean} true if all rows are logged
+ */
 export const checkInputRows = (inputRows) => {
     for(const r of inputRows) {
         if(r.attendance === 'Select') return false;
@@ -139,6 +165,11 @@ export const checkInputRows = (inputRows) => {
     return true;
 }
 
+/**
+ * Get the Monday of the week
+ * @param {Date} d Date object of the week
+ * @returns {Date} the Monday of the week
+ */
 export const getMonday = (d) => {
     const date = new Date(d.getTime());
     let day = date.getDay() || 7;  
@@ -146,6 +177,11 @@ export const getMonday = (d) => {
     return date;
 }
 
+/**
+ * Get the Sunday of the week
+ * @param {Date} d Date object of the week
+ * @returns {Date} the Sunday of the week
+ */
 export const getSunday = (d) => {
     const date = new Date(d.getTime());
     const first = date.getDate() - date.getDay() + 1;
@@ -154,32 +190,56 @@ export const getSunday = (d) => {
     return date;
 }
 
+/**
+ * Get the Monday of last week
+ * @param {Date} d Date object of the week
+ * @returns {Date} the Monday of last week
+ */
 export const getPrevMonday = (d) => {
     const date = new Date(d.getTime());
     date.setDate(date.getDate() - (date.getDay() + 6) % 7);
     return date;
 }
 
+/**
+ * Get the Monday of next week
+ * @param {Date} d Date object of the week
+ * @returns {Date} the Monday of next week
+ */
 export const getNextMonday = (d) => {
     const date = new Date(date.getTime());
     date.setDate(date.getDate() + ((7 - date.getDay()) % 7 + 1) % 7);
     return date;
 }
 
+/**
+ * Get the width of each calendar column in pixel
+ * @param {Number} containerWidth width of the container in pixel
+ * @returns {Number} the width of each calendar column in pixel
+ */
 export const getCalendarColumnWidth = (containerWidth = 0) => {
     let width = (containerWidth - 40) / 7 + 1;
     return width > 80 ? width : 80;
 }
 
+/**
+ * Get the left in pixel based on day
+ * @param {Object} params day and column width
+ * @returns {Number} the left in pixel based on day
+ */
 export const getLeftFromDay = ({ day, columnWidth }) => {
     return 40 + (day - 1) * columnWidth;
 }
 
+/**
+ * 
+ * @param {*} param0 
+ * @returns 
+ */
 export const getAlignedLeft = ({ newLeft, left, columnWidth }) => {
     if((newLeft - 40) % columnWidth < 10) {
         const tmp = Math.floor((newLeft - 40) / columnWidth);
         return tmp * columnWidth + 40;
-        // return newLeft;
     }
     return left;
 }
@@ -231,5 +291,3 @@ export const debounce = (handler, delay = 500) => {
         }, delay);
     }
 }
-
-// newLeft = x * columnWidth + 40
