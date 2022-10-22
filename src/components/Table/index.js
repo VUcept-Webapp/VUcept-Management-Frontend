@@ -20,16 +20,15 @@ const createCols = (columns) => {
 
 export const Table = (props) => {
     const {
+        tablePage,
         totalPage,
         columns = [],
         rows = [],
-        rowNumber = 0,
         onEditRow,
         onDeleteRow,
         onPageChange,
     } = props;
 
-    const [curPage, setCurPage] = useState(1);
     const [tableHeight, setTableHeight] = useState('auto');
     const [activeIndex, setActiveIndex] = useState(-1);
     const [hoverRow, setHoverRow] = useState(-1);
@@ -47,10 +46,6 @@ export const Table = (props) => {
         const gridTemplateColumns = new Array(Object.keys(cols).length).fill('1fr').join(' ');
         tableRef.current.style.gridTemplateColumns = gridTemplateColumns;
     }, []);
-
-    useEffect(() => {
-        if(typeof onPageChange === 'function') onPageChange(curPage)
-    }, [curPage]);
 
     const onResizeMouseDown = (e, i) => {
         resizeStartX.current = e.clientX;
@@ -159,29 +154,29 @@ export const Table = (props) => {
             <img 
                 src={LeftDoubleArrowIcon} 
                 className={cx(styles.arrowIcon, styles.leftDoubleArrow)} 
-                onClick={() => setCurPage(curPage - 1 > 0 ? curPage - 1 : curPage)}
+                onClick={() => onPageChange(tablePage - 1 > 0 ? tablePage - 1 : tablePage)}
             />
-            {curPage - 1 > 0 && <span 
+            {tablePage - 1 > 0 && <span 
                 className={cx(styles.page)} 
-                onClick={() => setCurPage(curPage - 1)}
+                onClick={() => onPageChange(tablePage - 1)}
             >
-                {curPage - 1}
+                {tablePage - 1}
             </span>}
             <span 
                 className={cx(styles.page, styles.selectedPage)}
             >
-                {curPage}
+                {tablePage}
             </span>
-            {curPage + 1 <= totalPage && <span 
+            {tablePage + 1 <= totalPage && <span 
                 className={cx(styles.page)} 
-                onClick={() => setCurPage(curPage + 1)}
+                onClick={() => onPageChange(tablePage + 1)}
             >
-                {curPage + 1}
+                {tablePage + 1}
             </span>}
             <img 
                 src={RightDoubleArrowIcon} 
                 className={cx(styles.arrowIcon, styles.rightDoubleArrow)} 
-                onClick={() => setCurPage(curPage + 1 <= totalPage ? curPage + 1 : curPage)}
+                onClick={() => onPageChange(tablePage + 1 <= totalPage ? tablePage + 1 : tablePage)}
             />
         </div>
     </div>;

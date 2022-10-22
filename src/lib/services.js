@@ -191,3 +191,23 @@ export const fyLoadfromcsv = (inputs) => {
         .catch(err => reject(err));
     })
 }
+
+export const fyVisionsNums = () => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/fyVisionsNums'), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const vuceptorList = () => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/vuceptorList'), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}

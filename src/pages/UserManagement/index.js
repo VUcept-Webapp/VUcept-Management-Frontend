@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Papa from "papaparse";
-import { BUTTONS, RESPONSE_STATUS, SORT, TABLE } from '../../lib/constants';
+import { BUTTONS, RESPONSE_STATUS, SORT, TABLE, WINDOW_TYPE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
@@ -13,9 +13,11 @@ import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrd
 import { PopUpAddUser } from '../../components/PopUpAddUser';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
+import { useWindowSize } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
 export const UserManagement = ({ toast }) => {
+    const isMobile = useWindowSize().type === WINDOW_TYPE.MOBILE;
     const [rows, setRows] = useState([]);
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
     const [showDeleteAllPopUp, setShowDeleteAllPopUp] = useState(false);
@@ -41,10 +43,11 @@ export const UserManagement = ({ toast }) => {
 
     const getUser = () => {
         visionsNums().then(res => {
+            console.log(res);
             const { status, result } = res;
             if(status === RESPONSE_STATUS.SUCCESS) {
                 const { list } = result;
-                setVisionOptions(list.map(option => option.visions.toString()));
+                setVisionOptions(list.filter(val => val?.visions !== null).map(option => option.visions.toString()));
             }
             else toast('Error fetching visions options');
         }).catch(err => toast('Error fetching visions options'));
@@ -190,7 +193,10 @@ export const UserManagement = ({ toast }) => {
         {
             key: 'name',
             label: 'Name',
-            search: (value) => setNameSearch(value),
+            search: (value) => {
+                setTablePage(0);
+                setNameSearch(value);
+            },
             sort: (value) => {
                 updateOrder({ order: orderRef.current, value, key: 'name_sort' });
                 setNameSort(getSortParam(value));
@@ -204,14 +210,20 @@ export const UserManagement = ({ toast }) => {
                 updateOrder({ order: orderRef.current, value, key: 'email_sort' });
                 setEmailSort(getSortParam(value));
             },
-            search: (value) => setEmailSearch(value),
+            search: (value) => {
+                setTablePage(0);
+                setEmailSearch(value);
+            },
             render: (val) => <TableItem item={val} />
         },
         {
             key: 'type',
             label: 'Type',
             filter: {
-                callback: (value) => setTypeFilter(getOptionValue(value)),
+                callback: (value) => {
+                    setTablePage(0);
+                    setTypeFilter(getOptionValue(value));
+                },
                 options: ['VUCeptor', 'Advisor', 'Board']
             },
             render: (val) => <TableItem item={val} />
@@ -220,7 +232,10 @@ export const UserManagement = ({ toast }) => {
             key: 'visions',
             label: 'Visions',
             filter: {
-                callback: (value) => setVisionsFilter(getOptionValue(value)),
+                callback: (value) => {
+                    setTablePage(0);
+                    setVisionsFilter(getOptionValue(value));
+                },
                 options: visionOptions,
             },
             render: (val) => <TableItem item={val} />
@@ -229,7 +244,10 @@ export const UserManagement = ({ toast }) => {
             key: 'status',
             label: 'Status',
             filter: {
-                callback: (value) => setStatusFilter(getOptionValue(value)),
+                callback: (value) => {
+                    setTablePage(0);
+                    setStatusFilter(getOptionValue(value));
+                },
                 options: ['Registered', 'Unregistered']
             },
             render: (val) => <TableItem item={val} />
@@ -238,13 +256,14 @@ export const UserManagement = ({ toast }) => {
 
     return <>
         <BlockBlocker show={disableTable}/>
-        <div className={cx(styles.boardControl)}>
-            <TableButton className={cx(styles.tableButton)} label={BUTTONS.NEW_USER} onClick={() => setShowAddPopUp(true)}/>
-            <TableButton className={cx(styles.tableButton)} label={BUTTONS.IMPORT} onClick={onImport}/>
-            <TableButton className={cx(styles.tableButton)} label={BUTTONS.RESET} onClick={() => setShowDeleteAllPopUp(true)}/>
+        <div className={cx(styles.boardControl, {[styles.mobile]: isMobile})}>
+            <TableButton className={cx(styles.tableButton, {[styles.mobile]: isMobile})} label={isMobile ? '+ New' : BUTTONS.NEW_USER} onClick={() => setShowAddPopUp(true)}/>
+            <TableButton className={cx(styles.tableButton, {[styles.mobile]: isMobile})} label={BUTTONS.IMPORT} onClick={onImport}/>
+            <TableButton className={cx(styles.tableButton, {[styles.mobile]: isMobile})} label={BUTTONS.RESET} onClick={() => setShowDeleteAllPopUp(true)}/>
         </div>
         <div className={styles.table}>
             <Table
+                tablePage={tablePage + 1}
                 totalPage={totalPage}
                 rowNumber={200}
                 columns={columns}

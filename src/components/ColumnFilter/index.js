@@ -2,8 +2,9 @@ import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import FilterIcon from '../../assets/icons/filter.svg';
 import Select from 'react-select';
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import { useOnClickOutside } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
 const filterSelectStyles = {
@@ -42,6 +43,12 @@ export const ColumnFilter = (props) => {
     const [pos, setPos] = useState({left: 0, top: 0});
     const [showSelect, setShowSelect] = useState(false);
     const containerRef = useRef();
+    const selectRef = useRef();
+
+    useOnClickOutside([containerRef, selectRef], useCallback(() => {
+        console.log('click outside');
+        setShowSelect(false);
+    }, []));
 
     useEffect(() => {
         if(showSelect) {
@@ -58,6 +65,7 @@ export const ColumnFilter = (props) => {
                 left: pos.left + 'px',
                 top: pos.top + 'px',
             }}
+            ref={selectRef}
         >
             <Select 
                 options={options.map(option => ({label: option, value: option}))} 

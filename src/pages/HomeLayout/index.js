@@ -26,8 +26,15 @@ export const HomeLayout = () => {
     const isSmall = width < 600 || isMobile;
     const caption = useCaption();
 
+    const goTo = (route) => {
+        navigate(route);
+        setShowMenu(false);
+    }
+
     return <div
-        className={cx(styles.page)}
+        className={cx(styles.page, {
+            [styles.mobile]: isMobile
+        })}
     >
         <div
             className={cx(styles.control, {
@@ -53,37 +60,37 @@ export const HomeLayout = () => {
                     [styles.show]: showMenu
                 })}
             >
-                <div onClick={() => navigate(ROUTES.CALENDAR)} className={cx(styles.navItem, {
+                <div onClick={() => goTo(ROUTES.CALENDAR)} className={cx(styles.navItem, {
                     [styles.selected]: pathname === ROUTES.CALENDAR
                 })}>
                     <img src={CalendarIcon} className={cx(styles.navItemIcon)}/>
                     <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.HOME}</span>
                 </div>  
-                <div onClick={() => navigate(ROUTES.LOG_VISIONS)} className={cx(styles.navItem, {
+                <div onClick={() => goTo(ROUTES.LOG_VISIONS)} className={cx(styles.navItem, {
                     [styles.selected]: pathname === ROUTES.LOG_VISIONS
                 })}>
                     <img src={ClockIcon} className={cx(styles.navItemIcon)}/>
                     <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.LOG_VISIONS_ATTENDANCE}</span>
                 </div>  
-                <div onClick={() => navigate(ROUTES.VISIONS_ASSIGNMENT)} className={cx(styles.navItem, {
+                <div onClick={() => goTo(ROUTES.VISIONS_ASSIGNMENT)} className={cx(styles.navItem, {
                     [styles.selected]: pathname === ROUTES.VISIONS_ASSIGNMENT
                 })}>
                     <img src={UsersIcon} className={cx(styles.navItemIcon)}/>
                     <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.VISIONS_ASSIGNMENT}</span>
                 </div> 
-                <div onClick={() => navigate(ROUTES.FIRST_YEAR_ATTENDANCE)} className={cx(styles.navItem, {
+                <div onClick={() => goTo(ROUTES.FIRST_YEAR_ATTENDANCE)} className={cx(styles.navItem, {
                     [styles.selected]: pathname === ROUTES.FIRST_YEAR_ATTENDANCE
                 })}>
                     <img src={DashboardIcon} className={cx(styles.navItemIcon)}/>
                     <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.FIRST_YEAR_ATTENDANCE}</span>
                 </div>
-                <div onClick={() => navigate(ROUTES.VUCEPTOR_ATTENDANCE)} className={cx(styles.navItem, {
+                <div onClick={() => goTo(ROUTES.VUCEPTOR_ATTENDANCE)} className={cx(styles.navItem, {
                     [styles.selected]: pathname === ROUTES.VUCEPTOR_ATTENDANCE
                 })}>
                     <img src={BoyIcon} className={cx(styles.navItemIcon)}/>
                     <span className={cx(styles.navItemLabel)}>{HOME_NAV_LABELS.VUCEPTOR_ATTENDANCE}</span>
                 </div>
-                <div onClick={() => navigate(ROUTES.USER_MANAGEMENT)} className={cx(styles.navItem, {
+                <div onClick={() => goTo(ROUTES.USER_MANAGEMENT)} className={cx(styles.navItem, {
                     [styles.selected]: pathname === ROUTES.USER_MANAGEMENT
                 })}>
                     <img src={FileIcon} className={cx(styles.navItemIcon)}/>
@@ -94,6 +101,7 @@ export const HomeLayout = () => {
                 className={cx(styles.main, {
                     [styles.mobile]: isMobile
                 })}
+                style={isMobile ? { width: `${width - 68 - 17}px` } : {}}
             >
                 <div className={cx(styles.container, {
                     [styles.mobile]: isMobile
@@ -103,7 +111,7 @@ export const HomeLayout = () => {
                         className={cx(styles.caption)}
                     />
                     <Block className={cx(styles.block)} id='mainBlock'>
-                        <Outlet/>
+                        {<Outlet/>}
                     </Block>
                 </div>
             </div>

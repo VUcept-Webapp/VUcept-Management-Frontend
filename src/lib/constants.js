@@ -83,7 +83,7 @@ export const BUTTONS = {
 
 export const TABLE = {
     ROW_PER_PAGE: 50,
-    MIN_COLUMN_WIDTH: 150
+    MIN_COLUMN_WIDTH: 170
 }
 
 export const LOG_ATTENDANCE_COLUMNS = [

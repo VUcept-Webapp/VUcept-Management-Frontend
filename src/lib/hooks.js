@@ -111,3 +111,20 @@ export const useAuth = () => {
 
     return { auth, setAuth }
 }
+
+export const useOnClickOutside = (refs, handler) => {
+    useEffect(() => {
+        const listener = (event) => {
+            let outside = true;
+            for(const ref of refs) {
+                if (ref?.current?.contains(event.target)) {
+                    outside = false;
+                    return;
+                }
+            }
+            if(outside) handler(event);
+        };
+        document.addEventListener("click", listener);
+        return () => document.removeEventListener("click", listener);
+    }, [refs, handler]);
+  }

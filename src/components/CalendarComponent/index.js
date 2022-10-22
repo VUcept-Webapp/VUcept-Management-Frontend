@@ -6,31 +6,29 @@ import './calendar.css';
 import { useState, useRef, useEffect } from 'react';
 import { useWindowSize } from '../../lib/hooks';
 import { createPortal } from 'react-dom';
+import { ScreenBlocker } from '../ScreenBlocker';
 const cx = classNames.bind(styles);
 
 
 export const CalendarComponent = (props) => {
     const {
-
+        onDateChange
     } = props;
 
     const { width } = useWindowSize();
     const [display, setDisplay] = useState(false);
+    const [showBlocker, setShowBlocker] = useState(false);
     const [left, setLeft] = useState(0);
     const [top, setTop] = useState(0)
+    const [date, setDate] = useState(new Date().getTime());
     const imageEle = useRef();
 
     useEffect(() => {
-        const close = () => setDisplay(false);
-        if(display) window.addEventListener('click', close);
-        else window.removeEventListener('click', close);
+        if(display) setShowBlocker(true);
     }, [display]);
 
-    const onClickIcon = (e) => {
-        e.stopPropagation();
-        e.nativeEvent.stopImmediatePropagation();
+    const onClickIcon = () => {
         setDisplay(!display);
-        console.log(imageEle.current.getBoundingClientRect().left, imageEle.current.getBoundingClientRect().right, width );
         setTop(imageEle.current.getBoundingClientRect().top + 23);
         if(imageEle.current.getBoundingClientRect().right + 20 > 300) setLeft(imageEle.current.getBoundingClientRect().right - 300);
         else if(imageEle.current.getBoundingClientRect().left + 300 < width) setLeft(imageEle.current.getBoundingClientRect().left);
@@ -38,7 +36,17 @@ export const CalendarComponent = (props) => {
     }
 
     return <>
-        <div className={cx(styles.calendarWrapper)}>
+        <ScreenBlocker 
+            show={showBlocker}
+            onClick={() => {
+                setDisplay(false);
+                setShowBlocker(false);
+            }}
+        />
+        <div className={cx(styles.calendarWrapper)} onClick={(event) => {
+            event.stopPropagation();
+            event.nativeEvent.stopImmediatePropagation();
+        }}>
             <img
                 src={CalendarIcon}
                 className={cx(styles.calendarIcon)}
@@ -50,7 +58,16 @@ export const CalendarComponent = (props) => {
                 style={{ left: `${left}px`, top: `${top}px` }}
             >
                 <Calendar
-                    className={cx(styles.calendar)}
+                    lassName={cx(styles.calendar)}
+                    onClickDay={(val, event) => {
+                        event.stopPropagation();
+                        event.nativeEvent.stopImmediatePropagation();
+                        if(typeof onDateChange === 'function') onDateChange(val);
+                        setDate(val);
+                        setDisplay(false);
+                        setShowBlocker(false);
+                    }}
+                    value={new Date(date)}
                 />
             </div>, document.getElementById('root'))}
         </div>

@@ -1,8 +1,10 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import SearchIcon from '../../assets/icons/search.svg';
 import { createPortal } from 'react-dom';
+import { useOnClickOutside } from '../../lib/hooks';
+import { debounce } from '../../lib/util';
 const cx = classNames.bind(styles);
 
 export const ColumnSearch = (props) => {
@@ -18,6 +20,10 @@ export const ColumnSearch = (props) => {
     const inputRef = useRef();
     const containerRef = useRef();
 
+    useOnClickOutside([containerRef, inputRef], useCallback(() => {
+        setShowSelect(false);
+    }, []));
+
     useEffect(() => {
        if(typeof onChange === 'function') onChange(value);
     }, [value]);
@@ -30,28 +36,34 @@ export const ColumnSearch = (props) => {
     }, [showSelect]);
 
     const onInputSearch = () => {
-        setShowSelect(false);
         onSearch(inputRef.current.value);
         setValue(inputRef.current.value);
     }
 
-    return <div className={cx(styles.headerOperatorWrapper)} ref={containerRef}>
-       <img src={SearchIcon} className={cx(styles.headerOperationIcon)} onClick={() => setShowSelect(!showSelect)}/>
-       {showSelect && createPortal(<div 
-            className={cx(styles.container)}
-            style={{
-                left: pos.left + 'px',
-                top: pos.top + 'px',
-            }}
+    const debouncedPostAbsence = useCallback(debounce(onInputSearch, 1000), []);
+
+    return <>
+        <div 
+            className={cx(styles.headerOperatorWrapper)}
+            ref={containerRef}
         >
-            <div className={cx(styles.searchBox)}>
-                <input
-                    className={cx(styles.input)}
-                    defaultValue={value}
-                    ref={inputRef}
-                />
-                <img src={SearchIcon} className={cx(styles.searchIcon)} onClick={onInputSearch}/>
-            </div>
-        </div>, document.getElementById('root'))}
-    </div>
+            <img src={SearchIcon} className={cx(styles.headerOperationIcon)} onClick={() => setShowSelect(!showSelect)}/>
+            {showSelect && createPortal(<div 
+                className={cx(styles.container)}
+                style={{
+                    left: pos.left + 'px',
+                    top: pos.top + 'px',
+                }}
+            >
+                <div className={cx(styles.searchBox)}>
+                    <input
+                        className={cx(styles.input)}
+                        defaultValue={value}
+                        ref={inputRef}
+                        onChange={debouncedPostAbsence}
+                    />
+                </div>
+            </div>, document.getElementById('root'))}
+        </div>
+    </>
 }

@@ -3,7 +3,7 @@ import classNames from 'classnames/bind';
 import { BUTTONS, USER_TYPE_OPTIONS, WINDOW_TYPE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpEditRecord } from '../../components/PopUpEditRecord';
 import { TableSelect } from '../../components/TableSelect';
@@ -11,9 +11,10 @@ import { useWindowSize } from '../../lib/hooks';
 import { debounce, getOptionValue, getSortParam, updateOrder } from '../../lib/util';
 import { TableItem } from '../../components/TableItem';
 import { CalendarComponent } from '../../components/CalendarComponent';
+import { toast } from 'react-toastify';
 const cx = classNames.bind(styles);
 
-export const VUceptorAttendance = () => {
+export const VUceptorAttendance = ({ taost }) => {
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
     const isSmall = width < 840 || isMobile;
@@ -35,9 +36,13 @@ export const VUceptorAttendance = () => {
     const [eventFilter, setEventFilter] = useState([]);
     const [eventSort, setEventSort] = useState(null);
     const [statusFilter, setStatusFilter] = useState([]);
-    const [startDate, setStartDate] = useState("");
-    const [endDate, setEndDate] = useState("");
+    const [startDate, setStartDate] = useState(new Date().getTime());
+    const [endDate, setEndDate] = useState(new Date().getTime());
     const orderRef = useRef([]);
+
+    useEffect(() => {
+        if(new Date(startDate) > new Date(endDate)) toast('Start date must not be later than end date');
+    }, [startDate, endDate]);
 
     const onEditRow = (row) => {
         setShowEditPopUp(true);
@@ -135,11 +140,11 @@ export const VUceptorAttendance = () => {
         <div className={cx(styles.boardControl)}>
             <div className={cx(styles.selectContainer, {[styles.small]: isSmall})}>
                 <span className={cx(styles.calendarLabel, {[styles.small]: isSmall})}>Start Date:</span>
-                <CalendarComponent />
+                <CalendarComponent onDateChange={(val) => setStartDate(val)}/>
             </div>
             <div className={cx(styles.selectContainer, {[styles.small]: isSmall})}>
                 <span className={cx(styles.calendarLabel, {[styles.small]: isSmall})}>End Date:</span>
-                <CalendarComponent />
+                <CalendarComponent onDateChange={(val) => setEndDate(val)}/>
             </div>
             <div className={cx(styles.selectContainer, {[styles.small]: isSmall})}>
                 <span className={cx(styles.selectLabel, {[styles.small]: isSmall})}>Absences:</span>
@@ -153,6 +158,7 @@ export const VUceptorAttendance = () => {
         </div>
         <div className={styles.table}>
             <Table
+                tablePage={tablePage + 1}
                 totalPage={totalPage}
                 rowNumber={200}
                 columns={columns}

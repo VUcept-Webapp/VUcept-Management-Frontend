@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -17,10 +16,6 @@ import { VisionsAssignment } from "./pages/VisionsAssignment";
 import { VUceptorAttendance } from "./pages/VUceptorAttendance";
 
 export const App = () => {
-  useEffect(() => {
-    document.body.style.overflowY = "hidden";
-  }, []);
-
   return <AuthProvider>
     <ToastContainer position="top-center" autoClose={3000} hideProgressBar={true}/>
     <BrowserRouter>

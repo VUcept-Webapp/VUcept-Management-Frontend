@@ -7,15 +7,17 @@ import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
-import { resetFy, visionsNums, createFy, readFy, updateFy, deleteFy, fyLoadfromcsv } from '../../lib/services';
+import { resetFy, visionsNums, createFy, readFy, updateFy, deleteFy, fyLoadfromcsv, fyVisionsNums, vuceptorList } from '../../lib/services';
 import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
 import { PopUpAddFy } from '../../components/PopUpAddFy';
 import { PopUpEditFy } from '../../components/PopUpEditFy';
+import { useWindowSize } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
 export const VisionsAssignment = ({ toast }) => {
+    const isMobile = useWindowSize().type;
     const [rows, setRows] = useState([]);
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
     const [showDeleteAllPopUp, setShowDeleteAllPopUp] = useState(false);
@@ -35,19 +37,31 @@ export const VisionsAssignment = ({ toast }) => {
     const [visionOptions, setVisionOptions] = useState([]);
     const [vuceptorFilter, setVuceptorFilter] = useState([]);
     const [vuceptorSearch, setVuceptorSearch] = useState("");
+    const [vuceptorOptions, setVuceptorOptions] = useState([]);
     const uploadRef = useRef();
     const orderRef = useRef([]);
 
-
-    const getFy = () => {
-        visionsNums().then(res => {
+    useEffect(() => {
+        fyVisionsNums().then(res => {
             const { status, result } = res;
             if(status === RESPONSE_STATUS.SUCCESS) {
                 const { list } = result;
-                setVisionOptions(list.map(option => option.visions.toString()));
+                setVisionOptions(list.map(option => option.visions?.toString()));
             }
             else toast('Error fetching visions options');
         }).catch(err => toast('Error fetching visions options'));
+        vuceptorList().then(res => {
+            const { status, result } = res;
+            console.log(res);
+            if(status === RESPONSE_STATUS.SUCCESS) {
+                const { list } = result;
+                setVuceptorOptions(list.map(option => option.name?.toString()));
+            }
+            else toast('Error fetching visions options');
+        }).catch(err => toast('Error fetching visions options'));
+    }, []);
+
+    const getFy = () => {
         readFy({
             row_start: tablePage * TABLE.ROW_PER_PAGE, 
             row_num: TABLE.ROW_PER_PAGE,
@@ -195,7 +209,10 @@ export const VisionsAssignment = ({ toast }) => {
         {
             key: 'fy_name',
             label: 'First-year Name',
-            search: (value) => setNameSearch(value),
+            search: (value) => {
+                setTablePage(0);
+                setNameSearch(value);
+            },
             sort: (value) => {
                 updateOrder({ order: orderRef.current, value, key: 'name_sort' });
                 setNameSort(getSortParam(value));
@@ -209,14 +226,20 @@ export const VisionsAssignment = ({ toast }) => {
                 updateOrder({ order: orderRef.current, value, key: 'email_sort' });
                 setEmailSort(getSortParam(value));
             },
-            search: (value) => setEmailSearch(value),
+            search: (value) => {
+                setEmailSearch(value);
+                setTablePage(0);
+            },
             render: (val) => <TableItem item={val} />
         },
         {
             key: 'visions',
             label: 'Visions',
             filter: {
-                callback: (value) => setVisionsFilter(getOptionValue(value)),
+                callback: (value) => {
+                    setTablePage(0);
+                    setVisionsFilter(getOptionValue(value));
+                },
                 options: visionOptions,
             },
             render: (val) => <TableItem item={val} />
@@ -225,10 +248,16 @@ export const VisionsAssignment = ({ toast }) => {
             key: 'vuceptor_name',
             label: 'VUceptor',
             filter: {
-                callback: (value) => setVuceptorFilter(getOptionValue(value)),
-                options: ['Registered', 'Unregistered']
+                callback: (value) => {
+                    setTablePage(0);
+                    setVuceptorFilter(getOptionValue(value));
+                },
+                options: vuceptorOptions
             },
-            search: (value) => setVuceptorSearch(value),
+            search: (value) => {
+                setTablePage(0);
+                setVuceptorSearch(value);
+            },
             render: (val) => <TableItem item={val} />
         },
     ];
@@ -236,12 +265,13 @@ export const VisionsAssignment = ({ toast }) => {
     return <>
         <BlockBlocker show={disableTable}/>
         <div className={cx(styles.boardControl)}>
-            <TableButton className={cx(styles.tableButton)} label={BUTTONS.NEW_FIRST_YEAR} onClick={() => setShowAddPopUp(true)}/>
+            <TableButton className={cx(styles.tableButton)} label={isMobile ? 'New' : BUTTONS.NEW_FIRST_YEAR} onClick={() => setShowAddPopUp(true)}/>
             <TableButton className={cx(styles.tableButton)} label={BUTTONS.IMPORT} onClick={onImport}/>
             <TableButton className={cx(styles.tableButton)} label={BUTTONS.RESET} onClick={() => setShowDeleteAllPopUp(true)}/>
         </div>
         <div className={styles.table}>
             <Table
+                tablePage={tablePage + 1}
                 totalPage={totalPage}
                 rowNumber={200}
                 columns={columns}

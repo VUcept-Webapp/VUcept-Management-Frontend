@@ -1,14 +1,21 @@
 @value font from "../../index.module.css";
 
 .page {
-    height: 97%;
+    height: 97vh;
     width: 100%;
     display: flex;
-    overflow: hidden;
+}
+
+.page.mobile {
+    height: 97vh;
+    min-height: 97vh;
+    margin: 0;
+    width: 100%;
+    display: flex;
 }
 
 .control {
-    min-height: 100%;
+    min-height: 97%;
     width: 68px;
     background-color: #FFE6A6;
     position: absolute;
@@ -55,6 +62,7 @@
     background-color: #FFFFFF;
     padding: 130px 10px 0px 10px;
     display: none;
+    
 }
 
 .leftBar.small {
@@ -92,6 +100,7 @@
 
 .navItemLabel {
     composes: font;
+    min-width: 200px;
 }
 
 
@@ -130,4 +139,5 @@
     flex-direction: column;
     padding: 27px 19px;
     position: relative;
+    max-width: 100%;
 }
