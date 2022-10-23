@@ -45,19 +45,25 @@ export const CalendarComponent = (props) => {
                 setShowBlocker(false);
             }}
         />
-        <div className={cx(styles.calendarWrapper)} onClick={(event) => {
-            event.stopPropagation();
-            event.nativeEvent.stopImmediatePropagation();
-        }}>
+        <div 
+            className={cx(styles.calendarWrapper)} 
+            onClick={(event) => {
+                event.stopPropagation();
+                event.nativeEvent.stopImmediatePropagation();
+            }}
+            data-testid='calendar-component-container'
+        >
             <img
                 src={CalendarIcon}
                 className={cx(styles.calendarIcon)}
                 onClick={onClickIcon}
                 ref={imageEle}
+                data-testid='calendar-component-img'
             />
             {display && createPortal(<div
                 className={cx(styles.calendarHolder)}
                 style={{ left: `${left}px`, top: `${top}px` }}
+                data-testid='calendar-component-wrapper'
             >
                 <Calendar
                     lassName={cx(styles.calendar)}
