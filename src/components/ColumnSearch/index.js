@@ -48,8 +48,14 @@ export const ColumnSearch = (props) => {
         <div 
             className={cx(styles.headerOperatorWrapper)}
             ref={containerRef}
+            data-testid='column-search-container'
         >
-            <img src={SearchIcon} className={cx(styles.headerOperationIcon)} onClick={() => setShowSelect(!showSelect)}/>
+            <img 
+                src={SearchIcon}
+                className={cx(styles.headerOperationIcon)}
+                onClick={() => setShowSelect(!showSelect)}
+                data-testid='column-search-icon'
+            />
             {showSelect && createPortal(<div 
                 className={cx(styles.container)}
                 style={{
@@ -63,6 +69,7 @@ export const ColumnSearch = (props) => {
                         defaultValue={value}
                         ref={inputRef}
                         onChange={debouncedPostAbsence}
+                        data-testid='column-search-input'
                     />
                 </div>
             </div>, document.getElementById('root'))}
