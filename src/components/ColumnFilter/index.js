@@ -58,8 +58,13 @@ export const ColumnFilter = (props) => {
         }
     }, [showSelect]);
     
-    return <div className={cx(styles.headerOperatorWrapper)} ref={containerRef}>
-        <img src={FilterIcon} className={cx(styles.headerOperationIcon)} onClick={() => setShowSelect(!showSelect)}/>
+    return <div className={cx(styles.headerOperatorWrapper)} ref={containerRef} data-testid='column-filter-container'>
+        <img 
+            src={FilterIcon} 
+            className={cx(styles.headerOperationIcon)} 
+            onClick={() => setShowSelect(!showSelect)} 
+            data-testid='column-filter-img'
+        />
         {showSelect && createPortal(<div 
             className={cx(styles.filterSelect)}
             style={{
@@ -67,6 +72,7 @@ export const ColumnFilter = (props) => {
                 top: pos.top + 'px',
             }}
             ref={selectRef}
+            data-testid='column-filter-select-wrapper'
         >
             <Select 
                 options={options.map(option => ({label: option, value: option}))} 
@@ -85,6 +91,6 @@ export const ColumnFilter = (props) => {
 };
 
 ColumnFilter.propTypes = {
-    options: PropTypes.objectOf(PropTypes.string).isRequired,
-    onFilter: PropTypes.func.isRequired // ({ label: String, value: String }) => void
+    options: PropTypes.array.isRequired,
+    onFilter: PropTypes.func.isRequired // ([{ label: String, value: String }]) => void
 }

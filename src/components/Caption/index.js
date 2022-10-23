@@ -22,6 +22,7 @@ export const Caption = (props) => {
             [styles.mobile]: isMobile
         })}
         style={style}
+        data-testid='caption-div'
     >
         {text}
     </div>
