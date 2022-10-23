@@ -17,8 +17,9 @@ export const BlockBlocker = (props) => {
             <div
                 className={cx(styles.blocker, className)}
                 style={style}
+                data-testid='block-blocker-div'
             >
-                <img src={Loading} className={cx(styles.loading)}/>
+                <img src={Loading} className={cx(styles.loading)} data-testid='block-blocker-img'/>
             </div>
         }
     </>
