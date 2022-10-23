@@ -24,6 +24,4 @@ jobs:
         node-version: 18.10.0
         cache: 'npm'
     - run: npm ci
-    - run: npm install
-    - run: npm run build --if-present
     - run: npm test
