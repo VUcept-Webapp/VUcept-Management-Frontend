@@ -44,10 +44,11 @@ export const PopUpAddFy = (props) => {
         show={show}
         setShow={setShow}
     >
-        <div className={cx(styles.editCaption)}>{title}</div>
+        <div className={cx(styles.editCaption)} data-testid='popup-add-fy-title'>{title}</div>
         <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Name: </span>
+            <span className={cx(styles.editLabel)} data-testid='popup-add-fy-name-label'>Name: </span>
             <input 
+                data-testid='popup-add-fy-name-input'
                 className={cx(styles.editInput, {[styles.warn]: warnName})} 
                 ref={nameRef}
                 onChange={(e) => {
@@ -56,8 +57,9 @@ export const PopUpAddFy = (props) => {
             />
         </div>
         <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Email: </span>
-            <input 
+            <span className={cx(styles.editLabel)} data-testid='popup-add-fy-email-label'>Email: </span>
+            <input
+                data-testid='popup-add-fy-email-input' 
                 className={cx(styles.editInput, {[styles.warn]: warnEmail})} 
                 ref={emailRef}
                 onChange={(e) => {
@@ -66,8 +68,9 @@ export const PopUpAddFy = (props) => {
             />
         </div>
         <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Visions: </span>
-            <input 
+            <span className={cx(styles.editLabel)} data-testid='popup-add-fy-visions-label'>Visions: </span>
+            <input
+                data-testid='popup-add-fy-visions-input'
                 className={cx(styles.editInput, {[styles.warn]: warnVisions})} 
                 value={selectedVisions}
                 onChange={(e) => {

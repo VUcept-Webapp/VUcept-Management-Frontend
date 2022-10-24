@@ -16,6 +16,7 @@ export const PopUp = (props) => {
 
     return <>
         <div
+            data-testid='pop-up-blocker'
             className={cx(styles.blocker, {
                 [styles.show]: show
             })}

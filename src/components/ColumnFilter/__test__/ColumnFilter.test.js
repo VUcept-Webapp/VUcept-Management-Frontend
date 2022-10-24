@@ -26,7 +26,7 @@ const setUp = ({
     };
 }
 
-test('Caption initial render', async () => {
+test('Column filter initial render', async () => {
     const { 
         containerElement,
         iconElement,
@@ -37,7 +37,7 @@ test('Caption initial render', async () => {
     await expect(selectWrapperElement).not.toBeInTheDocument();
 });
 
-test('Caption click icon', async () => {
+test('Column filter click icon', async () => {
     const { 
         iconElement,
         selectWrapperElement,
@@ -48,7 +48,7 @@ test('Caption click icon', async () => {
     await expect(wrapperElement).toBeInTheDocument();
 });
 
-test('Caption select options', async () => {
+test('Column filter select options', async () => {
     let filterValues = [];
     const onFilter = (options) => filterValues = options.map(option => option.value);
     const { 
@@ -58,7 +58,6 @@ test('Caption select options', async () => {
     await fireEvent.click(iconElement);
     let wrapperElement = await screen.queryByTestId('column-filter-select-wrapper');
     await fireEvent.keyDown(wrapperElement.firstChild, { key: 'ArrowDown' });
-    // await waitForElement(() => screen.getByText('option1'));
     await fireEvent.click(screen.getByText('option1'));
     await expect(filterValues).toEqual(['option1']);
 
@@ -72,5 +71,4 @@ test('Caption select options', async () => {
     wrapperElement = await screen.queryByTestId('column-filter-select-wrapper');
     await fireEvent.keyDown(wrapperElement.firstChild, { key: 'ArrowDown' });
     await fireEvent.click(screen.getByText('option1'));
-    // await expect(filterValues).toEqual(['option2']);
 });

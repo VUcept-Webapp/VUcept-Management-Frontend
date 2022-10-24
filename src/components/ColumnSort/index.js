@@ -28,8 +28,13 @@ export const ColumnSort = (props) => {
         }
     }, [sort])
     
-    return <div className={cx(styles.headerOperatorWrapper)}>
-        <img src={getIcon()} className={cx(styles.headerOperationIcon)} onClick={() => setSort((sort + 1) % 3)}/>
+    return <div className={cx(styles.headerOperatorWrapper)} data-testid='column-sort-container'>
+        <img
+            src={getIcon()}
+            className={cx(styles.headerOperationIcon)}
+            onClick={() => setSort((sort + 1) % 3)}
+            data-testid='column-sort-icon'
+        />
     </div>
 };
 
