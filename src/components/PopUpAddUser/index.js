@@ -55,27 +55,29 @@ export const PopUpAddUser = (props) => {
     >
         <div className={cx(styles.editCaption)}>{title}</div>
         <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Name: </span>
+            <span className={cx(styles.editLabel)} data-testid='popup-add-user-name-label'>Name: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnName})} 
                 ref={nameRef}
                 onChange={(e) => {
                     if(warnName && e.target.value) setWarnName(false);
                 }}
+                data-testid='popup-add-user-name-input'
             />
         </div>
         <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Email: </span>
+            <span className={cx(styles.editLabel)} data-testid='popup-add-user-email-label'>Email: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnEmail})} 
                 ref={emailRef}
                 onChange={(e) => {
                     if(warnEmail && e.target.value) setWarnEmail(false);
                 }}
+                data-testid='popup-add-user-email-input'
             />
         </div>
-        <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Type: </span>
+        <div className={cx(styles.editField)} data-testid='popup-add-user-type-wrapper'>
+            <span className={cx(styles.editLabel)} data-testid='popup-add-user-type-label'>Type: </span>
             <TableSelect
                 options={USER_TYPE_OPTIONS}
                 className={cx(styles.select)}
@@ -86,13 +88,14 @@ export const PopUpAddUser = (props) => {
             />
         </div>
         {selectedType?.value === 'VUceptor' && <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Visions: </span>
+            <span className={cx(styles.editLabel)} data-testid='popup-add-user-visions-label'>Visions: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnVisions})} 
                 value={selectedVisions}
                 onChange={(e) => {
                     setSelectedVisions(e.target.value);
                 }}
+                data-testid='popup-add-user-visions-input'
             />
         </div>}
         <div className={cx(styles.editButtons)}>

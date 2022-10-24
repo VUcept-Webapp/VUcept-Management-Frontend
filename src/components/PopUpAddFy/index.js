@@ -80,8 +80,8 @@ export const PopUpAddFy = (props) => {
             />
         </div>
         <div className={cx(styles.editButtons)}>
-            <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)} data-testid='popup-add-fy-cancel'/>
-            <TableButton className={cx(styles.editButton)} label={'Add'} onClick={onSaveAdd} data-testid='popup-add-fy-add'/>
+            <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)}/>
+            <TableButton className={cx(styles.editButton)} label={'Add'} onClick={onSaveAdd}/>
         </div>
     </PopUp>
 }

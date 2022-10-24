@@ -58,7 +58,6 @@ test('Column filter select options', async () => {
     await fireEvent.click(iconElement);
     let wrapperElement = await screen.queryByTestId('column-filter-select-wrapper');
     await fireEvent.keyDown(wrapperElement.firstChild, { key: 'ArrowDown' });
-    // await waitForElement(() => screen.getByText('option1'));
     await fireEvent.click(screen.getByText('option1'));
     await expect(filterValues).toEqual(['option1']);
 
@@ -72,5 +71,4 @@ test('Column filter select options', async () => {
     wrapperElement = await screen.queryByTestId('column-filter-select-wrapper');
     await fireEvent.keyDown(wrapperElement.firstChild, { key: 'ArrowDown' });
     await fireEvent.click(screen.getByText('option1'));
-    // await expect(filterValues).toEqual(['option2']);
 });
