@@ -215,3 +215,55 @@ export const vuceptorList = () => {
         .catch(err => reject(err));
     })
 }
+
+export const readVUAttendance = (inputs = {}) => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/readVUAttendance', inputs), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const deleteVUAttendance = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/deleteVUAttendance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const getVUAttendanceVisionsList = () => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/getVUAttendanceVisionsList', {}), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const getVUAttendanceEventsList = () => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/getVUAttendanceEventsList', {}), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const exportVUAttendance = () => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/exportVUAttendance', {}), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}

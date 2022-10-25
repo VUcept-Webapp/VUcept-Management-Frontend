@@ -69,7 +69,7 @@ export const TableSelect = (props) => {
 TableSelect.propTypes = {
     className: PropTypes.string,
     height: PropTypes.number.isRequired,
-    options: PropTypes.object.isRequired,
+    options: PropTypes.array.isRequired,
     selected: PropTypes.object,
     onChange: PropTypes.func.isRequired, // (option: Object) => void
     warn: PropTypes.bool.isRequired

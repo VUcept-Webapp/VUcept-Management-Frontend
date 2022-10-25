@@ -25,8 +25,8 @@ export const PopUpDeleteAll = (props) => {
         show={show}
         setShow={setShow}
     >
-        <div className={cx(styles.deleteCaption)}>{title}</div>
-        <div className={cx(styles.deleteText)}>{description}</div>
+        <div className={cx(styles.deleteCaption)} data-testid='popup-delete-all-title'>{title}</div>
+        <div className={cx(styles.deleteText)} data-testid='popup-delete-all-description'>{description}</div>
         <div className={cx(styles.deleteButtons)}>
             <TableButton className={cx(styles.deleteButton)} label={'Cancel'} onClick={() => setShow(false)}/>
             <TableButton className={cx(styles.deleteButton)} label={'Clear'} onClick={onRemove}/>

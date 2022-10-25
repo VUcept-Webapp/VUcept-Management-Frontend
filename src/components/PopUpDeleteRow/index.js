@@ -27,9 +27,9 @@ export const PopUpDeleteRow = (props) => {
         show={show}
         setShow={setShow}
     >
-        <div className={cx(styles.deleteCaption)}>{title}</div>
-        <div className={cx(styles.deleteText)}>{description}</div>
-        <div className={cx(styles.deleteName)}>{name || fy_name}</div>
+        <div className={cx(styles.deleteCaption)} data-testid='popup-delete-row-title'>{title}</div>
+        <div className={cx(styles.deleteText)} data-testid='popup-delete-row-description'>{description}</div>
+        <div className={cx(styles.deleteName)} data-testid='popup-delete-row-name'>{name || fy_name}</div>
         <div className={cx(styles.deleteButtons)}>
             <TableButton className={cx(styles.deleteButton)} label={'Cancel'} onClick={() => setShow(false)}/>
             <TableButton className={cx(styles.deleteButton)} label={'Remove'} onClick={onRemove}/>
