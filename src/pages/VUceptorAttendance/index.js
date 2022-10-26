@@ -11,7 +11,7 @@ import { debounce, formatGetTime, getOptionValue, getSortParam, toUpperRows, upd
 import { TableItem } from '../../components/TableItem';
 import { CalendarComponent } from '../../components/CalendarComponent';
 import { toast } from 'react-toastify';
-import { deleteVUAttendance, exportVUAttendance, getVUAttendanceEventsList, getVUAttendanceVisionsList, readVUAttendance } from '../../lib/services';
+import { deleteVUAttendance, editVUAttendance, exportVUAttendance, getVUAttendanceEventsList, getVUAttendanceVisionsList, readVUAttendance } from '../../lib/services';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { PopUpEditAttendance } from '../../components/PopUpEditAttendance';
 const cx = classNames.bind(styles);
@@ -43,6 +43,7 @@ export const VUceptorAttendance = ({ taost }) => {
     const [startDate, setStartDate] = useState(new Date().getTime());
     const [endDate, setEndDate] = useState(new Date().getTime());
     const [disableTable, setDisableTable] = useState(false);
+    const [absenceNum, setAbsenceNum] = useState('');
     const orderRef = useRef([]);
 
     const getAttendance = () => {
@@ -53,7 +54,7 @@ export const VUceptorAttendance = ({ taost }) => {
                 time_range: JSON.stringify([formatGetTime(startDate), formatGetTime(endDate)]),
                 row_start: tablePage * TABLE.ROW_PER_PAGE, 
                 row_num: TABLE.ROW_PER_PAGE,
-                ...(absence && { num_absence: absence }),
+                ...(absenceNum && { num_absence: absenceNum }),
                 ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
                 ...(nameSort && { name_sort: nameSort }),
                 ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
@@ -65,6 +66,7 @@ export const VUceptorAttendance = ({ taost }) => {
                 ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
                 ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
             }).then(res => {
+                console.log(res);
                 const { status, result: { rows = [], pageNum = 1 } } = res;
                 setDisableTable(false);
                 if(status === RESPONSE_STATUS.SUCCESS) {
@@ -74,7 +76,6 @@ export const VUceptorAttendance = ({ taost }) => {
                 else toast('Internal error');
             })
             .catch(err => {
-                console.log(err);
                 setDisableTable(false);
                 toast('Internal error');
             });
@@ -92,9 +93,9 @@ export const VUceptorAttendance = ({ taost }) => {
     }
 
     const postAbsence = (absenceCount) => {
-        console.log(absenceCount);
+        setAbsenceNum(absenceCount);
     }
-    let debouncedPostAbsence = useCallback(debounce(postAbsence, 1000), []);
+    let debouncedPostAbsence = useCallback(debounce(postAbsence, 500), []);
 
     const onAbsenceChange = (event) => {
         let val = parseInt(event.target.value) || '';
@@ -117,8 +118,19 @@ export const VUceptorAttendance = ({ taost }) => {
             .catch(err => toast('Internal error'));
     }
 
-    const onSaveEdit = () => {
-
+    const onSaveEdit = (inputs) => {
+        const { inputEmail, inputEvent, inputStatus } = inputs;
+        editVUAttendance({ email: inputEmail, event: inputEvent, attendance: inputStatus })
+            .then(res => {
+                console.log(res);
+                const { status } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    setShowEditPopUp(false);
+                    getAttendance();
+                }
+                else toast('Internal error');
+            })
+            .catch(err => toast('Internal error'));
     }
 
     const onPageChange = (curPage) => {
@@ -191,7 +203,7 @@ export const VUceptorAttendance = ({ taost }) => {
             label: 'Status',
             filter: {
                 callback: (value) => setStatusFilter(getOptionValue(value)),
-                options: ['Attended', 'Absent']
+                options: ['Present', 'Absent', 'Excused']
             },
             render: (val) => <TableItem item={val} />
         },
@@ -216,8 +228,8 @@ export const VUceptorAttendance = ({ taost }) => {
 
     useEffect(() => {
         getAttendance();
-    }, [tablePage, absence, nameSearch, nameSort, emailSearch, emailSort, 
-        visionsFilter, visionsSort, eventFilter, eventSort, statusFilter, startDate, endDate, absence]);
+    }, [tablePage, absenceNum, nameSearch, nameSort, emailSearch, emailSort, 
+        visionsFilter, visionsSort, eventFilter, eventSort, statusFilter, startDate, endDate]);
     
     return <>
         <BlockBlocker show={disableTable}/>
@@ -260,12 +272,12 @@ export const VUceptorAttendance = ({ taost }) => {
             row={deleteRow}
             onDelete={onConfirmDelete}
         />
-        <PopUpEditAttendance
+        {showEditPopUp && <PopUpEditAttendance
             row={editRow}
             title={'Edit Attendace'}
             show={showEditPopUp} 
             setShow={setShowEditPopUp}
             onSave={onSaveEdit}
-        />
+        />}
     </>
 }

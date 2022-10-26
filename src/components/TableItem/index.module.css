@@ -77,7 +77,19 @@
     height: 10px;
     width: 40px;
     padding: 5px 25px;
-    background-color: #ECB748;
+    background-color: #EC6647;
     color: #FFFFFF;
     border-radius: 15px;
+}
+
+.excused {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    color: #FFFFFF;
+    border-radius: 15px;
+    background-color: #ECB747;
 }

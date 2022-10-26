@@ -2,43 +2,71 @@ import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import { PopUp } from '../PopUp';
 import { TableButton } from '../TableButton';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import Creatable from 'react-select/creatable';
+import { EDIT_ATTENDANCE_STATUS_OPTIONS } from '../../lib/constants';
 const cx = classNames.bind(styles);
 
-// Pop up for editing a first-year student
+const filterSelectStyles = {
+    container: (provided) => ({
+        ...provided,
+        width: "100%",
+        minHeight: `25px`,
+        height: `25px`,
+        fontSize: '13.3px',
+        fontFamily: 'Open Sans, sans-serif',
+        letterSpacing: '0.6px',
+    }),
+    control: (provided) => ({
+        ...provided,
+        borderRadius: '5px',
+        border: '1px solid rgba(111, 111, 111, 1)',
+        minHeight: `25px`,
+        height: `25px`,
+    }),
+    valueContainer: (provided, state) => ({
+        ...provided,
+        height: `25px`,
+        padding: '0 6px'
+    }),
+    input: (provided) => ({
+        ...provided,
+        margin: '0px',
+    }),
+    placeholder: () => ({
+        display: 'none'
+    }),
+    indicatorsContainer: (provided, state) => ({
+        ...provided,
+        height: `25px`,
+    }),
+    menuPortal: (provided, state) => ({ 
+        ...provided,
+        zIndex: 1000
+    })
+}
+
+// Pop up for editing attendance record
 export const PopUpEditAttendance = (props) => {
     const {
         row = {},
-        oldEmail = "",
         title,
         show,
         setShow,
         onSave,
     } = props;
-
-    const { fy_name: name = "", fy_email: email = "", visions = "" } = row || {};
-    const [selectedVisions, setSelectedVisions] = useState(visions);
-    const [warnName, setWarnName] = useState(false);
-    const [warnEmail, setWarnEmail] = useState(false);
-    const [warnVisions, setWarnVisions] = useState(false);
-    const nameRef = useRef();
-    const emailRef = useRef();
-
+    const { email = "", status = "", event = "" } = row || {};
+    const [selectedStatus, setSelectedStatus] = useState(status);
 
     useEffect(() => {
-        if(selectedVisions && warnVisions) setWarnVisions(false);
-    }, [selectedVisions]);
+        setSelectedStatus(status);
+    }, [status]);
 
     const onSaveEdit = () => {
-        const inputName = nameRef.current.value;
-        const inputEmail = emailRef.current.value;
-        const inputVisions = selectedVisions;
-        if(!inputName) setWarnName(true);
-        if(!inputEmail) setWarnEmail(true);
-        if(!inputVisions) setWarnVisions(true);
-        if(inputName && inputEmail && inputVisions) {
-            onSave({ inputName, inputEmail, inputVisions, oldEmail });
+        const inputStatus = selectedStatus;
+        if(inputStatus ) {
+            onSave({ inputEmail: email, inputStatus, inputEvent: event });
         }
     }
 
@@ -47,39 +75,17 @@ export const PopUpEditAttendance = (props) => {
         show={show}
         setShow={setShow}
     >
-        <div className={cx(styles.editCaption)}>{title}</div>
+        <div className={cx(styles.editCaption)} data-testid='popup-edit-attendance-title'>{title}</div>
         <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Email: </span>
-            <input 
-                className={cx(styles.editInput, {[styles.warn]: warnEmail})} 
-                ref={emailRef}
-                defaultValue={email} 
-                onChange={(e) => {
-                    if(warnEmail && e.target.value) setWarnEmail(false);
-                }}
-            />
-        </div>
-        <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Event: </span>
-            <input 
-                className={cx(styles.editInput, {[styles.warn]: warnVisions})} 
-                value={selectedVisions}
-                onChange={(e) => {
-                    let val = parseInt(e.target.value) === 0 ? 0 : (parseInt(e.target.value) || '');
-                    setSelectedVisions(val);
-                }}
-            />
-        </div>
-        <div className={cx(styles.editField)}>
-            <span className={cx(styles.editLabel)}>Attendance: </span>
-            <input 
-                className={cx(styles.editInput, {[styles.warn]: warnVisions})} 
-                value={selectedVisions}
-                onChange={(e) => {
-                    let val = parseInt(e.target.value) === 0 ? 0 : (parseInt(e.target.value) || '');
-                    setSelectedVisions(val);
-                }}
-            />
+            <span className={cx(styles.editLabel)} data-testid='popup-edit-attendance-status-label'>Status: </span>
+            <div className={cx(styles.creatableContainer)} data-testid='popup-edit-attendance-status-creatable'>
+                <Creatable 
+                    value={{ label: selectedStatus, value: selectedStatus }}
+                    onChange={(option) => setSelectedStatus(option?.value || "")}
+                    options={EDIT_ATTENDANCE_STATUS_OPTIONS}
+                    styles={filterSelectStyles}
+                />
+            </div>
         </div>
         <div className={cx(styles.editButtons)}>
             <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)}/>
@@ -90,9 +96,8 @@ export const PopUpEditAttendance = (props) => {
 
 PopUpEditAttendance.propTypes = {
     row: PropTypes.object.isRequired, // row of table
-    oldEmail: PropTypes.string.isRequired,
     title: PropTypes.string,
     show: PropTypes.bool.isRequired,
     setShow: PropTypes.func.isRequired, // (show: Bool) => void
-    onSave: PropTypes.func.isRequired // ({ inputName: String, inputEmail: String, inputVisions: String, oldEmail: String }) => void
+    onSave: PropTypes.func.isRequired, // ({ inputName: String, inputEmail: String, inputVisions: String, oldEmail: String }) => void
 }

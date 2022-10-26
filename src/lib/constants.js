@@ -115,6 +115,12 @@ export const ATTENDANCE_STATUS_OPTIONS = [
     { label: 'Select', value: 'Select' },
 ];
 
+export const EDIT_ATTENDANCE_STATUS_OPTIONS = [
+    { label: 'Present', value: 'Present' },
+    { label: 'Excused', value: 'Excused' },
+    { label: 'Absent', value: 'Absent' },
+];
+
 export const RESPONSE_MESSAGE = {
     VIEW_USER_SUCCESS: 'view user success',
     USER_EDIT_SUCCESS: 'user edited successfully',
