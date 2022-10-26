@@ -35,7 +35,7 @@ export const LogButton = React.forwardRef((props, ref) => {
             styles={getAttendanceStatusStyle(selected?.value)}
             menuPortalTarget={document.body}
             menuPlacement='auto'
-            isCre
+            isClearable
         />
     </div>;
 });

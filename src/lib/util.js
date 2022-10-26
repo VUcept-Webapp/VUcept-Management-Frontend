@@ -35,6 +35,8 @@ export const toUpperRows = (rows) => {
             const original = r.status;
             if(original === 'registered') r.status = 'Registered';
             else if(original === 'unregistered') r.status = 'Unregistered';
+            else if(original === 'absent') r.status = 'Absent';
+            else if(original === 'attended') r.status = 'Attended';
         }
         return r;
     })
@@ -321,4 +323,19 @@ export const debounce = (handler, delay = 500) => {
             timer = null;
         }, delay);
     }
+}
+
+/**
+ * Format a getTime() string into yyyy-mm-dd
+ * @param {String} dateStr the result of Date.prototype.getTime()
+ * @returns {String} yyyy-mm-dd
+ */
+export const formatGetTime = (dateStr) => {
+    let d = new Date(dateStr);
+    let month = '' + (d.getMonth() + 1);
+    let day = '' + d.getDate();
+    let year = d.getFullYear();
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
 }

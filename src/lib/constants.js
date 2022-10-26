@@ -42,6 +42,9 @@ export const RESPONSE_STATUS = {
     INCORRECT_FY_VISIONS: 'INCORRECT_FY_VISIONS',
     UNKNOWN_SORT: 'UNKNOWN_SORT',
     ROW_OUT_OF_BOUNDS: 'ROW_OUT_OF_BOUNDS',
+    INVALID_VU_EVENT: 'INVALID_VU_EVENT',
+    NO_EXISTING_RECORDS: 'NO_EXISTING_RECORDS',
+    INVALID_USER: 'INVALID_USER',
 }
 
 export const AUTH_INPUT_ERRORS = {
@@ -110,6 +113,12 @@ export const ATTENDANCE_STATUS_OPTIONS = [
     { label: 'Excused', value: 'Excused' },
     { label: 'Absent', value: 'Absent' },
     { label: 'Select', value: 'Select' },
+];
+
+export const EDIT_ATTENDANCE_STATUS_OPTIONS = [
+    { label: 'Present', value: 'Present' },
+    { label: 'Excused', value: 'Excused' },
+    { label: 'Absent', value: 'Absent' },
 ];
 
 export const RESPONSE_MESSAGE = {

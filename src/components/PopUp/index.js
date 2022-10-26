@@ -39,5 +39,5 @@ PopUp.propTypes = {
     style: PropTypes.objectOf(PropTypes.string),
     show: PropTypes.bool.isRequired,
     setShow: PropTypes.func.isRequired, // (show: Bool) => void
-    children: PropTypes.object // child components
+    children: PropTypes.array // child components
 }
