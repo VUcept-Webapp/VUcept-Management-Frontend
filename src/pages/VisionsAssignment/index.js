@@ -42,7 +42,7 @@ export const VisionsAssignment = ({ toast }) => {
     const uploadRef = useRef();
     const orderRef = useRef([]);
 
-    useEffect(() => {
+    const getFy = () => {
         fyVisionsNums().then(res => {
             const { status, result } = res;
             if(status === RESPONSE_STATUS.SUCCESS) {
@@ -60,9 +60,7 @@ export const VisionsAssignment = ({ toast }) => {
             }
             else toast('Error fetching VUceptor options');
         }).catch(err => toast('Error fetching VUceptor options'));
-    }, []);
-
-    const getFy = () => {
+        setDisableTable(true);
         readFy({
             row_start: tablePage * TABLE.ROW_PER_PAGE, 
             row_num: TABLE.ROW_PER_PAGE,
@@ -94,7 +92,6 @@ export const VisionsAssignment = ({ toast }) => {
     }
 
     useEffect(() => {
-        setDisableTable(true);
         getFy();
     }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, visionsFilter, vuceptorFilter, vuceptorSearch]);
 
@@ -112,7 +109,6 @@ export const VisionsAssignment = ({ toast }) => {
                     setDisableTable(true);
                     fyLoadfromcsv({ file: inputObj })
                         .then(res => {
-                            console.log(res);
                             const { status } = res;
                             if(status === RESPONSE_STATUS.SUCCESS) getFy();
                             else if(status === RESPONSE_STATUS.EMAIL_USED) {
