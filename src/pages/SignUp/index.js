@@ -53,12 +53,14 @@ export const SignUp = ({ toast }) => {
             containerClassName={cx(styles.inputBlock)}
             value={password}
             onChange={setPassword}
+            hide={true}
         />
         <AuthInputBlock
             label={AUTH_INPUT_LABELS.CONFIRM_PASSWORD}
             containerClassName={cx(styles.inputBlock)}
             value={repeatPassword}
             onChange={setRepeatPassword}
+            hide={true}
         />
         <AuthCode 
             label={AUTH_INPUT_LABELS.VERIFICATION_CODE}

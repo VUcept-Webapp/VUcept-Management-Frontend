@@ -49,6 +49,20 @@ export const VUceptorAttendance = ({ taost }) => {
     const getAttendance = () => {
         if(new Date(startDate) > new Date(endDate)) toast('Start date must not be later than end date');
         else {
+            getVUAttendanceVisionsList().then(res => {
+                const { status, data } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    setVisionOptions(data.map(option => option.toString()));
+                }
+                else toast('Error fetching visions options');
+            }).catch(err => toast('Error fetching visions options'));
+            getVUAttendanceEventsList().then(res => {
+                const { status, data } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    setEventOptions(data.map(option => option.toString()));
+                }
+                else toast('Error fetching events options');
+            }).catch(err => toast('Error fetching events options'));
             setDisableTable(true);
             readVUAttendance({ 
                 time_range: JSON.stringify([formatGetTime(startDate), formatGetTime(endDate)]),
@@ -208,23 +222,6 @@ export const VUceptorAttendance = ({ taost }) => {
             render: (val) => <TableItem item={val} />
         },
     ];
-
-    useEffect(() => {
-        getVUAttendanceVisionsList().then(res => {
-            const { status, data } = res;
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                setVisionOptions(data.map(option => option.toString()));
-            }
-            else toast('Error fetching visions options');
-        }).catch(err => toast('Error fetching visions options'));
-        getVUAttendanceEventsList().then(res => {
-            const { status, data } = res;
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                setEventOptions(data.map(option => option.toString()));
-            }
-            else toast('Error fetching events options');
-        }).catch(err => toast('Error fetching events options'));
-    }, []);
 
     useEffect(() => {
         getAttendance();

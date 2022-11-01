@@ -41,10 +41,9 @@ export const UserManagement = ({ toast }) => {
     const uploadRef = useRef();
     const orderRef = useRef([]);
 
-
+    // obtain user records and all vision numbers
     const getUser = () => {
         visionsNums().then(res => {
-            console.log(res);
             const { status, result } = res;
             if(status === RESPONSE_STATUS.SUCCESS) {
                 const { list } = result;
@@ -73,17 +72,18 @@ export const UserManagement = ({ toast }) => {
             else toast('Internal error');
         })
         .catch(err => {
-            console.log(err);
             setDisableTable(false);
             toast('Internal error');
         });
     }
 
+    // update user records and vision numbers every time query conditions change
     useEffect(() => {
         setDisableTable(true);
         getUser();
     }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, typeFilter, statusFilter, visionsFilter]);
 
+    // for importing file
     useEffect(() => {
         if(importFile) {
             Papa.parse(importFile, {
@@ -190,6 +190,7 @@ export const UserManagement = ({ toast }) => {
         setTablePage(curPage - 1);
     }
 
+    // columns for the Table component
     const columns = [
         {
             key: 'name',

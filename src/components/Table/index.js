@@ -125,6 +125,7 @@ export const Table = (props) => {
 
     return <div
         className={cx(styles.container)}
+        data-testid='table-wrapper'
     >
         <div className={cx(styles.tableContainer)}>
             <table className={cx(styles.table)} ref={tableRef} cellSpacing="0" cellPadding="0">
