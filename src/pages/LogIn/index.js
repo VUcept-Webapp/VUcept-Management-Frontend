@@ -56,6 +56,7 @@ export const LogIn = ({ toast }) => {
             containerClassName={cx(styles.inputBlock)}
             value={password}
             onChange={setPassword}
+            hide={true}
         />
         <AuthCode 
             label={AUTH_INPUT_LABELS.VERIFICATION_CODE}

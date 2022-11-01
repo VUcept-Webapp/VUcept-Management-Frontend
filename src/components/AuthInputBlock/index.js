@@ -12,6 +12,7 @@ export const AuthInputBlock = React.forwardRef((props, ref) => {
         containerStyle,
         value,
         onChange,
+        hide = false,
     } = props;
     
     return <div
@@ -30,6 +31,7 @@ export const AuthInputBlock = React.forwardRef((props, ref) => {
             value={value}
             onChange={(event) => onChange(event.target.value)}
             data-testid='auth-input-input'
+            type={hide && 'password'}
         />
     </div>
 });
@@ -39,5 +41,6 @@ AuthInputBlock.propTypes = {
     containerClassName: PropTypes.string,
     containerStyle: PropTypes.objectOf(PropTypes.string),
     value: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired // (value: String) => void
+    onChange: PropTypes.func.isRequired, // (value: String) => void
+    hide: PropTypes.bool
 }

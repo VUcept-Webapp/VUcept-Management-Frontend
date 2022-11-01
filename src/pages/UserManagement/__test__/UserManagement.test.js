@@ -5,7 +5,6 @@ import { UserManagement } from '..';
 import { setUpApi } from '../../../lib/testUtil';
 import { RESPONSE_STATUS } from '../../../lib/constants';
 
-// render the page
 const setUp = () => {
     const utils = render(<UserManagement
         toast={toast}
