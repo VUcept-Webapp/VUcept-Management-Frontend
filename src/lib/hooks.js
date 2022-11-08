@@ -8,16 +8,16 @@ import { getMonday, getSunday } from "./util";
  * Get metadata about window
  * @returns {Object} window metadata
  */
-export const useWindowSize = () => {
+ export const useWindowSize = () => {
     const [windowSize, setWindowSize] = useState({
-        width: window?.innerWidth ?? 1200,
-        height: window?.innerHeight ?? 800,
+        width: Math.min(window?.innerWidth || 0, window?.screen?.width || 0),
+        height: Math.min(window?.innerHeight || 0, window?.screen?.height || 0)
     });
 
     const onWindowResize = () => {
         setWindowSize({
-            width: window.innerWidth,
-            height: window.innerHeight,
+            width:Math.min(window?.innerWidth || 0, window?.screen?.width || 0),
+            height: Math.min(window?.innerHeight || 0, window?.screen?.height || 0)
         });
     }
 
@@ -28,19 +28,10 @@ export const useWindowSize = () => {
             window.removeEventListener('resize', onWindowResize);
         }
     }, []);
-
-    const isMobile = Math.min(window.screen.width, window.screen.height) < 768;
-    if(isMobile) {
-        return {
-            width: window.screen.width,
-            height: window.screen.height,
-            type: WINDOW_TYPE.MOBILE
-        }
-    }
     
     return { 
         ...windowSize,
-        type: WINDOW_TYPE.WEB
+        type: windowSize.width < 450 ? WINDOW_TYPE.MOBILE : WINDOW_TYPE.WEB
     };
 }
 
@@ -121,10 +112,8 @@ export const useWeek = () => {
  * @returns {Object} states and updates of the context
  */
 export const useAuth = () => {
-    const { auth, setAuth } = useContext(AuthContext);
-
-
-    return { auth, setAuth }
+    const { auth, updateAuth } = useContext(AuthContext);
+    return { auth, updateAuth }
 }
 
 /**

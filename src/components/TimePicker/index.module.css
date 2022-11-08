@@ -1,0 +1,17 @@
+@value font from '../../index.module.css';
+
+.timePicker {
+    display: flex;
+    height: 100%;
+    width: fit-content;
+    align-items: center;
+}
+
+.timeInput {
+    composes: font;
+    font-size: 15px;
+    font-weight: 600;
+    width: 20px;
+    outline: none;
+    border: none;
+}

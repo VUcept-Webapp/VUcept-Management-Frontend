@@ -1,4 +1,4 @@
-import { SORT } from "./constants";
+import { EVENT, SORT } from "./constants";
 
 /**
  * Construct the url for GET request
@@ -76,7 +76,7 @@ export const importUsersToJSON = (data) => {
 export const getAttendanceStatusStyle = (val) => {
     let backgroundColor = "";
     let color = "";
-    if(val === 'Present') {
+    if(val === 'Attended') {
         backgroundColor = '#8BA18E';
         color = '#FFFFFF';
     }
@@ -84,7 +84,7 @@ export const getAttendanceStatusStyle = (val) => {
         backgroundColor = '#EC6648';
         color = '#FFFFFF';
     }
-    else if(val === 'Excused') {
+    else if(val === 'Unlogged') {
         backgroundColor = '#ECB748';
         color = '#FFFFFF';
     }
@@ -338,4 +338,121 @@ export const formatGetTime = (dateStr) => {
     if (month.length < 2) month = '0' + month;
     if (day.length < 2) day = '0' + day;
     return [year, month, day].join('-');
+}
+
+/**
+ * Turn yyyy-mm-dd into a Date object
+ * @param {String} dateStr yyyy-mm-dd
+ * @returns {Object} a Date object
+ */
+ export const yyyymmddToDateObj = (dateStr) => {
+    const [y, m, d] = dateStr.split('-').map(x => parseInt(x));
+    return new Date(y, m - 1, d);
+}
+
+/**
+ * Get difference between two times in minutes
+ * @param {String} start hh:mm
+ * @param {String} end hh:mm
+ * @returns {Object} time difference in minutes
+ */
+ export const getMinDiff = (start, end) => {
+    const [hStart, mStart] = start.split(':').map(x => parseInt(x));
+    const [hEnd, mEnd] = end.split(':').map(x => parseInt(x));
+    if(mStart <= mEnd) return 60 * (hEnd - hStart) + mEnd - mStart;
+    else return 60 * (hEnd - hStart - 1) + mEnd - mStart + 60;
+}
+
+/**
+ * Get event Height
+ * @param {Number} timeLength time length of event in minutes
+ * @returns {Number} height in pixel
+ */
+ export const getEventHeight = (timeLength) => {
+    return Math.round((timeLength / 1440) * (60 * 24));
+}
+
+/**
+ * Get day of the week
+ * @param {Object} date a JS date object
+ * @returns {Number} day of the week
+ */
+ export const getDay = (date) => {
+    return date.getDay();
+}
+
+
+/**
+ * Get top of an Event component
+ * @param {String} startTime hh:mm
+ * @returns {Number} top in pixels
+ */
+ export const getEventTop = (startTime) => {
+    const [h, m] = startTime.split(':').map(x => parseInt(x));
+    return (h + 1) * 60 + m;
+}
+
+/**
+ * Get the left position of EventDetails
+ * @param {{Number}} eventX left position of the Event component
+ * @param {{Number}} eventWidth width of the Event component
+ * @param {{Number}} screenWidth width of the screen
+ * @returns 
+ */
+export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
+    if(eventX - EVENT.POPUP_WIDTH >= 5) return eventX - EVENT.POPUP_WIDTH;
+    if(eventX + eventWidth + EVENT.POPUP_WIDTH + 5 <= screenWidth) return eventX + eventWidth;
+    else return null;
+}
+
+/**
+ * Get the left position of EventDetails
+ * @param {{Number}} eventY top position of the Event component
+ * @param {{Number}} eventHeight height of the Event component
+ * @param {{Number}} screenHeight height of the screen
+ * @returns 
+ */
+ export const getEventPopUpTop = ({ eventY, eventHeight, screenHeight }) => {
+    let mid = eventY + 0.5 * eventHeight;
+    console.log(mid, screenHeight);
+    if(mid < 170) return 200;
+    else if(mid + 170 > screenHeight) return screenHeight - 200;
+    return mid;
+}
+
+/**
+ * Compare two { startTime, endTime } 
+ * @param {Object} time1 the first { startTime, endTime }
+ * @param {Object} time2 the second { startTime, endTime }
+ * @returns true if time1 comes before time2
+ */
+ export const earlierThan = (time1, time2) => {
+    const [h1, m1] = time1.split(':').map(x => parseInt(x));
+    const [h2, m2] = time2.split(':').map(x => parseInt(x));
+    if(h1 > h2) return false;
+    else if(h1 < h2) return true;
+    return m1 < m2;
+}
+
+/**
+ * Get the width of an Event component in pixel
+ * @param {Array} eventTimes an Array of { startTime, endTime }
+ * @param {Object} event event time info in { startTime, endTime }
+ * @param {Number} columnWidth width of a column in pixel
+ * @param {String} eventId id of an event
+ * @returns width of an Event component
+ */
+ export const getEventWidth = (eventTimes, event, columnWidth, eventId) => {
+    let overlaps = [];
+    const { startTime: curStart, endTime: curEnd } = event;
+    for(const { startTime, endTime, eventId } of eventTimes) {
+        if(earlierThan(curEnd, startTime)) continue;
+        if(earlierThan(endTime, curStart)) continue;
+        overlaps.push(eventId);
+    }
+    let idx = overlaps.indexOf(eventId);
+    let width = columnWidth / (overlaps.length || 0);
+    let left = (idx === -1 ? 0 : idx) * width;
+    console.log(eventId, left);
+    return { width, left };
 }

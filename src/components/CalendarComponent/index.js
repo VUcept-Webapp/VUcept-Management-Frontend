@@ -8,12 +8,14 @@ import { useWindowSize } from '../../lib/hooks';
 import { createPortal } from 'react-dom';
 import { ScreenBlocker } from '../ScreenBlocker';
 import PropTypes from 'prop-types';
+import React from 'react';
 const cx = classNames.bind(styles);
 
 // Date selected with a calendar view
-export const CalendarComponent = (props) => {
+export const CalendarComponent = React.forwardRef((props, ref) => {
     const {
-        onDateChange
+        start = new Date().getTime(),
+        onDateChange,
     } = props;
 
     const { width } = useWindowSize();
@@ -21,7 +23,7 @@ export const CalendarComponent = (props) => {
     const [showBlocker, setShowBlocker] = useState(false);
     const [left, setLeft] = useState(0);
     const [top, setTop] = useState(0)
-    const [date, setDate] = useState(new Date().getTime());
+    const [date, setDate] = useState(start);
     const imageEle = useRef();
 
     useEffect(() => {
@@ -64,9 +66,10 @@ export const CalendarComponent = (props) => {
                 className={cx(styles.calendarHolder)}
                 style={{ left: `${left}px`, top: `${top}px` }}
                 data-testid='calendar-component-wrapper'
+                ref={ref}
             >
                 <Calendar
-                    lassName={cx(styles.calendar)}
+                    className={cx(styles.calendar)}
                     onClickDay={(val, event) => {
                         event.stopPropagation();
                         event.nativeEvent.stopImmediatePropagation();
@@ -80,8 +83,9 @@ export const CalendarComponent = (props) => {
             </div>, document.getElementById('root'))}
         </div>
     </>
-};
+});
 
 CalendarComponent.propTypes = {
-    onDateChange: PropTypes.func.isRequired // (date: string) => void
+    onDateChange: PropTypes.func.isRequired, // (date: string) => void
+    start: PropTypes.object // start date
 }

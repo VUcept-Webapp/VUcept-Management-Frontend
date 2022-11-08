@@ -1,6 +1,6 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Creatable from 'react-select/creatable';
 import { ATTENDANCE_STATUS_OPTIONS } from '../../lib/constants';
 import { getAttendanceStatusStyle } from '../../lib/util';
@@ -14,25 +14,27 @@ export const LogButton = React.forwardRef((props, ref) => {
         style,
         val,
         rowI,
-        onClick,
     } = props;
 
-    const [selected, setSelected] = useState({ label: val, value: val });
+    const [selected, setSelected] = useState(val);
     const onChange = (option) => {
+        setSelected(option.value);
         ref.current[rowI].attendance = option.value;
-        setSelected(option);
     }
+
+    useEffect(() => {
+        setSelected(val);
+    }, [val]);
 
     return <div
         className={cx(styles.but, className)}
         style={style}
-        onClick={onClick}
     >
         <Creatable
-            value={selected}
+            value={{ label: selected, value: selected }}
             onChange={onChange}
             options={ATTENDANCE_STATUS_OPTIONS}
-            styles={getAttendanceStatusStyle(selected?.value)}
+            styles={getAttendanceStatusStyle(selected)}
             menuPortalTarget={document.body}
             menuPlacement='auto'
             isClearable
@@ -45,5 +47,4 @@ LogButton.propTypes = {
     style: PropTypes.objectOf(PropTypes.string),
     val: PropTypes.string.isRequired,
     rowI: PropTypes.number.isRequired,
-    onClick: PropTypes.func.isRequired // (event) => void
 };
