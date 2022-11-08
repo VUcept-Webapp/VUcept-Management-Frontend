@@ -10,7 +10,7 @@ import UsersIcon from '../../assets/icons/users.svg';
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import { Outlet, useHref, useLocation, useMatch, useNavigate, useParams } from 'react-router-dom';
-import { useCaption, useWindowSize } from '../../lib/hooks';
+import { useAuth, useCaption, useWindowSize } from '../../lib/hooks';
 import { CAPTIONS, HOME_NAV_LABELS, ROUTES, WINDOW_TYPE } from '../../lib/constants';
 import { useEffect, useRef, useState } from 'react';
 import { Caption } from '../../components/Caption';
@@ -19,6 +19,7 @@ const cx = classNames.bind(styles);
 
 // Layout of home pages
 export const HomeLayout = () => {
+    const { updateAuth } = useAuth();
     const { width, type } = useWindowSize();
     const [showMenu, setShowMenu] = useState(false);
     const navigate = useNavigate();
@@ -48,7 +49,10 @@ export const HomeLayout = () => {
             <img src={UserIcon} className={cx(styles.controlIcon, {
                 [styles.small]: isSmall
             })}/>
-            <img src={ExitIcon} className={cx(styles.controlIcon, {
+            <img src={ExitIcon} onClick={() => {
+                updateAuth({});
+                navigate('/');
+            }} className={cx(styles.controlIcon, {
                 [styles.small]: isSmall
             })}/>
         </div>

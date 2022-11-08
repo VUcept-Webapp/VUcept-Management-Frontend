@@ -18,6 +18,8 @@ export const Calendar = ({ toast }) => {
     const [hoverCol, setHoverCol] = useState(-1);
     const [dragging, setDragging] = useState(false);
     const [scrollTop, setScrollTop] = useState(0);
+    const [dragging1, setDragging1] = useState(false);
+    const [dragging2, setDragging2] = useState(false);
 
     const constructHeader = () => {
         let headers = [];
@@ -64,18 +66,43 @@ export const Calendar = ({ toast }) => {
             {constructHeader()}
             {constructRows()}
             <Event 
-                day={1}
                 scrollTop={scrollTop}
                 calendarWidth={calendarRef?.current?.offsetWidth}
                 calendarHeight={calendarRef?.current?.offsetHeight}
                 columnWidth={columnRef?.current?.offsetWidth}
                 ref={calendarRef}
                 hoverCol={hoverCol}
-                dragging={dragging}
-                setDragging={setDragging}
-                // startTime={'10:30'}
-                // endTime={}
+                dragging={dragging1}
+                setDragging={setDragging1}
+                title={'test title1'}
+                date={'2022-11-10'}
+                startTime={'12:18'}
+                endTime={'14:27'}
+                location={'FGH'}
+                description={'event1'}
+                attendance={true}
+                eventId='event1'
+                events={[{startTime: '12:18', endTime: '14:27', eventId: 'event1'}, {startTime: '11:23', endTime: '13:47', eventId: 'event2'}]}
             />
+            {<Event
+                scrollTop={scrollTop}
+                calendarWidth={calendarRef?.current?.offsetWidth}
+                calendarHeight={calendarRef?.current?.offsetHeight}
+                columnWidth={columnRef?.current?.offsetWidth}
+                ref={calendarRef}
+                hoverCol={hoverCol}
+                dragging={dragging2}
+                setDragging={setDragging2}
+                title={'test title2'}
+                date={'2022-11-10'}
+                startTime={'11:23'}
+                endTime={'13:47'}
+                location={'FGH'}
+                description={'event2'}
+                attendance={true}
+                eventId='event2'
+                events={[{startTime: '12:18', endTime: '14:27', eventId: 'event1'}, {startTime: '11:23', endTime: '13:47', eventId: 'event2'}]}
+            />}
         </div>
     </>
 }

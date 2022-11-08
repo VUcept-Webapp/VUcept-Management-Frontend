@@ -18,9 +18,9 @@ export const TableItem = (props) => {
         else if(item === 'VUceptor') return <span className={cx(styles.vuceptor, className)} style={style}>VUceptor</span>
         else if(item === 'Registered') return <span className={cx(styles.registered, className)} style={style}>Registered</span>
         else if(item === 'Unregistered') return <span className={cx(styles.unregistered, className)} style={style}>Unregistered</span>
-        else if(item === 'Present') return <span className={cx(styles.attended, className)} style={style}>Present</span>
+        else if(item === 'Attended') return <span className={cx(styles.attended, className)} style={style}>Attended</span>
         else if(item === 'Absent') return <span className={cx(styles.absent, className)} style={style}>Absent</span>
-        else if(item === 'Excused') return <span className={cx(styles.excused, className)} style={style}>Excused</span>
+        else if(item === 'Unlogged') return <span className={cx(styles.excused, className)} style={style}>Unlogged</span>
         else return <span className={cx(className)} style={style}>{item}</span>
     }
     

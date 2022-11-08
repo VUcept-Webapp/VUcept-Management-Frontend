@@ -1,5 +1,3 @@
-import { TableItem } from "../components/TableItem";
-
 // Different types of window
 export const WINDOW_TYPE = {
     WEB: 'WEB',
@@ -109,8 +107,8 @@ export const USER_STATUS_OPTIONS = [
 ];
 
 export const ATTENDANCE_STATUS_OPTIONS = [
-    { label: 'Present', value: 'Present' },
-    { label: 'Excused', value: 'Excused' },
+    { label: 'Attended', value: 'Attended' },
+    { label: 'Unlogged', value: 'Unlogged' },
     { label: 'Absent', value: 'Absent' },
     { label: 'Select', value: 'Select' },
 ];
@@ -134,64 +132,9 @@ export const SORT = {
     ASCEND: 1,
 }
 
-export const LOG_ATTENDANCE_ROWS_TEST = [
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Excused'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Absent'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Present'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    /*{email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},
-    {email: 'awejfoiaw', name: 'hi', attendance: 'Select'},*/
-];
-
-export const USER_MANAGEMENT_ROWS_TEST = [
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-    {email: 'awejfoiaw', name: 'hi', type: 'VUceptor', status: 'Registered', visions: '9'},
-];
-
-export const FIRST_YEAR_ROWS_TEST = [
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Absent'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Excused'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-    {email: 'awejfoiaw', name: 'hi', group: 1, week: 2, status: 'Attended'},
-];
+export const EVENT = {
+    POPUP_WIDTH: 380,
+    ATTENDANCE_LABEL: 'Attendance',
+    ATTENDANCE_FEEDBACK: 'Feedback',
+    SUBMIT: 'Submit'
+}

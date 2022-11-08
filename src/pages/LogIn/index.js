@@ -1,6 +1,6 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import { useWindowSize } from '../../lib/hooks';
+import { useAuth, useWindowSize } from '../../lib/hooks';
 import { AUTH_INPUT_LABELS, RESPONSE_STATUS, WINDOW_TYPE } from '../../lib/constants';
 import { AuthInputBlock } from '../../components/AuthInputBlock';
 import { AuthButton } from '../../components/AuthButton';
@@ -13,6 +13,7 @@ const cx = classNames.bind(styles);
 // Log in page for authentication
 export const LogIn = ({ toast }) => {
     const navigate = useNavigate();
+    const { updateAuth } = useAuth();
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
     const [email, setEmail] = useState("");
@@ -33,9 +34,12 @@ export const LogIn = ({ toast }) => {
         else {
             login({ email, password, code, originalCode: inputCode })
                 .then(res => {
-                    const { status } = res;
-                    if(status === RESPONSE_STATUS.SUCCESS) navigate('/home/calendar');
-                    if(status === RESPONSE_STATUS.INVALID_EMAIl) toast('Invalid email');
+                    const { status, data: { email, name, type, visions } } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        updateAuth({ email, name, type, visions });
+                        navigate('/home/calendar');
+                    }
+                    else if(status === RESPONSE_STATUS.INVALID_EMAIl) toast('Invalid email');
                     else if(status === RESPONSE_STATUS.REQUEST_SIGN_UP) toast('Please sign up first');
                     else if(status === RESPONSE_STATUS.INVALID_PASSWORD) toast('Incorrect password');
                     else toast('Internal error');
