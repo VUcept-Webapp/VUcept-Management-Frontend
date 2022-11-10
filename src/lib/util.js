@@ -381,6 +381,17 @@ export const formatGetTime = (dateStr) => {
     return date.getDay();
 }
 
+/**
+ * Add a few days to a date
+ * @param {Object} date a JS date object
+ * @param {number} days days to be added
+ * @returns {Object} a new Date object
+ */
+ export const addDays = (date, days) => {
+    const d = new Date(date.getTime());
+    d.setDate(d.getDate() + days);
+    return d;
+}
 
 /**
  * Get top of an Event component
@@ -435,6 +446,40 @@ export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
 }
 
 /**
+ * Transform an input into hh:mm
+ * @param {Object} time { hour, minute }
+ * @returns hh:mm
+ */
+ export const formatTime = ({ hour, min }) => {
+    let hourStr = hour.toString(), minStr = min.toString();
+    if(hourStr.length === 1) hourStr = '0' + hourStr;
+    if(minStr.length === 1) minStr = '0' + minStr;
+    return hourStr + ':' + minStr;
+}
+
+
+/**
+ * Add 30 minutes to hh:mm
+ * @param {String} time hh:mm
+ * @returns hh:mm + 30 minutes
+ */
+ export const addHalfAnHour = (time) => {
+    let [h, m] = time.split(':').map(x => parseInt(x));
+    if(m === 0) {
+        h = h.toString();
+        if(h.length === 1) h = '0' + h;
+        m = '30';
+    }
+    else {
+        h++;
+        h = h.toString();
+        if(h.length === 1) h = '0' + h;
+        m = '00';
+    }
+    return h + ':' + m;
+}
+
+/**
  * Get the width of an Event component in pixel
  * @param {Array} eventTimes an Array of { startTime, endTime }
  * @param {Object} event event time info in { startTime, endTime }
@@ -453,6 +498,5 @@ export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
     let idx = overlaps.indexOf(eventId);
     let width = columnWidth / (overlaps.length || 0);
     let left = (idx === -1 ? 0 : idx) * width;
-    console.log(eventId, left);
     return { width, left };
 }

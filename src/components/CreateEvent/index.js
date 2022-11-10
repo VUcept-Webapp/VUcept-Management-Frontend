@@ -1,8 +1,8 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import PropTypes from 'prop-types';
+import PropTypes, { array } from 'prop-types';
 import { useWindowSize } from '../../lib/hooks';
-import { formatGetTime, getEventPopUpLeft, getEventPopUpTop, yyyymmddToDateObj } from '../../lib/util';
+import { addHalfAnHour, formatGetTime, yyyymmddToDateObj } from '../../lib/util';
 import { EVENT, WINDOW_TYPE } from '../../lib/constants';
 import { useEffect, useRef, useState } from 'react';
 import LocationIcon from '../../assets/icons/location.svg';
@@ -13,29 +13,18 @@ import { TimePicker } from '../TimePicker';
 const cx = classNames.bind(styles);
 
 // Pop up for adding first-year student
-export const EventDetails = (props) => {
+export const CreateEvent = (props) => {
     const {
-        eventX,
-        eventY,
-        eventWidth,
-        eventHeight,
         setShowPopUp,
-        title,
         date,
         startTime,
-        endTime,
-        location,
-        description,
-        attendance,
     } = props;
-    const { width, height, type } = useWindowSize();
+    const { type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
     const popUp = useRef();
     const calendarHolder = useRef();
     const hourPicker = useRef();
     const minutePicker = useRef();
-    const popUpLeft = getEventPopUpLeft({ eventX, screenWidth: width, eventWidth });
-    const popUpTop = getEventPopUpTop({ eventY, screenHeight: height, eventHeight });
 
     useEffect(() => {
         const listener = (event) => {
@@ -54,25 +43,19 @@ export const EventDetails = (props) => {
         <div className={cx(styles.blocker)}></div>
         <div 
             className={cx(styles.eventPopUp, {[styles.mobile]: type === WINDOW_TYPE.MOBILE})}
-            style={{
-                width: popUpLeft && `${EVENT.POPUP_WIDTH}px`,
-                top: popUpTop && `${popUpTop}px`,
-                left: popUpLeft && `${popUpLeft}px`,
-                transform: popUpLeft ? 'translateY(-50%)' : 'translate(-50%, -50%)',
-            }}
             ref={popUp}
         >
             <div className={cx(styles.row)}>
                 <input 
                     className={cx(styles.rowText)} 
-                    defaultValue={title}
+                    defaultValue={EVENT.MY_EVENT}
                 />
             </div>
             <div className={cx(styles.row)}>
                 <img src={LocationIcon} className={cx(styles.icon)}/>
                 <input 
                     className={cx(styles.rowText)} 
-                    defaultValue={location}
+                    placeholder={EVENT.ENTER_LOCATION}
                 />
             </div>
             <div className={cx(styles.twoColumnRow)}>
@@ -93,12 +76,12 @@ export const EventDetails = (props) => {
                 <div className={cx(styles.rowBlock)}>
                     <img src={ClockIcon} className={cx(styles.icon)}/>
                     <TimePicker
-                        time={'12:17'}
+                        time={startTime}
                         ref={hourPicker}
                     />
                     <span>:</span>
                     <TimePicker
-                        time={'18:22'}
+                        time={addHalfAnHour(startTime)}
                         ref={minutePicker}
                     />
                 </div>
@@ -107,21 +90,7 @@ export const EventDetails = (props) => {
                 <img src={PenIcon} className={cx(styles.icon)}/>
                 <input 
                     className={cx(styles.rowText)} 
-                    defaultValue={description}
-                />
-            </div>
-            <div className={cx(styles.row)}>
-                <span>{EVENT.ATTENDANCE_LABEL}</span>
-                <input 
-                    className={cx(styles.checkbox)} 
-                    type='checkbox'
-                    checked={attendance ? 'yes' : 'false'}
-                />
-            </div>
-            <div className={cx(styles.row)}>
-                <span>{EVENT.ATTENDANCE_FEEDBACK}</span>
-                <input 
-                    className={cx(styles.feedback)} 
+                    placeholder={EVENT.ENTER_DESCRIPTION}
                 />
             </div>
             <div className={cx(styles.buttonWrapper)}>

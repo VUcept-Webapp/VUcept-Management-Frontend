@@ -11,7 +11,6 @@ export const Event = React.memo((props) => {
         hoverCol,
         scrollTop,
         calendarHeight,
-        calendarWidth,
         dragging,
         setDragging,
         columnWidth,

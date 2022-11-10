@@ -136,5 +136,8 @@ export const EVENT = {
     POPUP_WIDTH: 380,
     ATTENDANCE_LABEL: 'Attendance',
     ATTENDANCE_FEEDBACK: 'Feedback',
-    SUBMIT: 'Submit'
+    SUBMIT: 'Submit',
+    MY_EVENT: 'My Event',
+    ENTER_DESCRIPTION: 'Enter description',
+    ENTER_LOCATION: 'Enter Location',
 }
