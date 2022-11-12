@@ -137,6 +137,7 @@ export const EVENT = {
     ATTENDANCE_LABEL: 'Attendance',
     ATTENDANCE_FEEDBACK: 'Feedback',
     SUBMIT: 'Submit',
+    DELETE: 'Delete',
     MY_EVENT: 'My Event',
     ENTER_DESCRIPTION: 'Enter description',
     ENTER_LOCATION: 'Enter Location',

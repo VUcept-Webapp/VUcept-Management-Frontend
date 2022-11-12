@@ -345,7 +345,7 @@ export const formatGetTime = (dateStr) => {
  * @param {String} dateStr yyyy-mm-dd
  * @returns {Object} a Date object
  */
- export const yyyymmddToDateObj = (dateStr) => {
+export const yyyymmddToDateObj = (dateStr) => {
     const [y, m, d] = dateStr.split('-').map(x => parseInt(x));
     return new Date(y, m - 1, d);
 }
@@ -356,7 +356,7 @@ export const formatGetTime = (dateStr) => {
  * @param {String} end hh:mm
  * @returns {Object} time difference in minutes
  */
- export const getMinDiff = (start, end) => {
+export const getMinDiff = (start, end) => {
     const [hStart, mStart] = start.split(':').map(x => parseInt(x));
     const [hEnd, mEnd] = end.split(':').map(x => parseInt(x));
     if(mStart <= mEnd) return 60 * (hEnd - hStart) + mEnd - mStart;
@@ -368,7 +368,7 @@ export const formatGetTime = (dateStr) => {
  * @param {Number} timeLength time length of event in minutes
  * @returns {Number} height in pixel
  */
- export const getEventHeight = (timeLength) => {
+export const getEventHeight = (timeLength) => {
     return Math.round((timeLength / 1440) * (60 * 24));
 }
 
@@ -377,7 +377,7 @@ export const formatGetTime = (dateStr) => {
  * @param {Object} date a JS date object
  * @returns {Number} day of the week
  */
- export const getDay = (date) => {
+export const getDay = (date) => {
     return date.getDay();
 }
 
@@ -387,7 +387,7 @@ export const formatGetTime = (dateStr) => {
  * @param {number} days days to be added
  * @returns {Object} a new Date object
  */
- export const addDays = (date, days) => {
+export const addDays = (date, days) => {
     const d = new Date(date.getTime());
     d.setDate(d.getDate() + days);
     return d;
@@ -398,9 +398,44 @@ export const formatGetTime = (dateStr) => {
  * @param {String} startTime hh:mm
  * @returns {Number} top in pixels
  */
- export const getEventTop = (startTime) => {
+export const getEventTop = (startTime) => {
     const [h, m] = startTime.split(':').map(x => parseInt(x));
     return (h + 1) * 60 + m;
+}
+
+
+/**
+ * Get time from the top value of an Event component
+ * @param {Number} top top value
+ * @returns {String} time in hh:mm
+ */
+export const topToTime = (top) => {
+    let h = (Math.floor((top - 60) / 60)).toString(), m = (top % 60).toString();
+    if(h.length === 1) h = '0' + h;
+    if(m.length === 1) m = '0' + m;
+    return h + ':' + m;
+}
+
+/**
+ * Get new endTime
+ * @param {String} oldStart hh:mm
+ * @param {String} oldEnd hh:mm
+ * @param {String} newStart hh:mm
+ * @returns {String} result
+ */
+export const getEndTime = (oldStart, oldEnd, newStart) => {
+    let arr1 = oldStart.split(':').map(x => parseInt(x));
+    let arr2 = oldEnd.split(':').map(x => parseInt(x));
+    let arr3 = newStart.split(':').map(x => parseInt(x));
+    let oldStartM = arr1[0] * 60 + arr1[1];
+    let oldEndM = arr2[0] * 60 + arr2[1];
+    let newStartM = arr3[0] * 60 + arr3[1];
+    let newEndM = newStartM + oldEndM - oldStartM;
+    let h = (Math.floor(newEndM / 60)).toString();
+    let m = (newEndM % 60).toString();
+    if(h.length === 1) h = '0' + h;
+    if(m.length === 1) m = '0' + m;
+    return h + ':' + m;
 }
 
 /**
@@ -423,9 +458,8 @@ export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
  * @param {{Number}} screenHeight height of the screen
  * @returns 
  */
- export const getEventPopUpTop = ({ eventY, eventHeight, screenHeight }) => {
+export const getEventPopUpTop = ({ eventY, eventHeight, screenHeight }) => {
     let mid = eventY + 0.5 * eventHeight;
-    console.log(mid, screenHeight);
     if(mid < 170) return 200;
     else if(mid + 170 > screenHeight) return screenHeight - 200;
     return mid;
@@ -437,7 +471,7 @@ export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
  * @param {Object} time2 the second { startTime, endTime }
  * @returns true if time1 comes before time2
  */
- export const earlierThan = (time1, time2) => {
+export const earlierThan = (time1, time2) => {
     const [h1, m1] = time1.split(':').map(x => parseInt(x));
     const [h2, m2] = time2.split(':').map(x => parseInt(x));
     if(h1 > h2) return false;
@@ -450,7 +484,7 @@ export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
  * @param {Object} time { hour, minute }
  * @returns hh:mm
  */
- export const formatTime = ({ hour, min }) => {
+export const formatTime = ({ hour, min }) => {
     let hourStr = hour.toString(), minStr = min.toString();
     if(hourStr.length === 1) hourStr = '0' + hourStr;
     if(minStr.length === 1) minStr = '0' + minStr;
@@ -463,7 +497,7 @@ export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
  * @param {String} time hh:mm
  * @returns hh:mm + 30 minutes
  */
- export const addHalfAnHour = (time) => {
+export const addHalfAnHour = (time) => {
     let [h, m] = time.split(':').map(x => parseInt(x));
     if(m === 0) {
         h = h.toString();
@@ -487,16 +521,34 @@ export const getEventPopUpLeft = ({ eventX, eventWidth, screenWidth }) => {
  * @param {String} eventId id of an event
  * @returns width of an Event component
  */
- export const getEventWidth = (eventTimes, event, columnWidth, eventId) => {
+export const getEventWidth = (events, idx, columnWidth) => {
     let overlaps = [];
-    const { startTime: curStart, endTime: curEnd } = event;
-    for(const { startTime, endTime, eventId } of eventTimes) {
-        if(earlierThan(curEnd, startTime)) continue;
-        if(earlierThan(endTime, curStart)) continue;
-        overlaps.push(eventId);
+    const { startTime: curStart, endTime: curEnd, date: curDate, eventId: curEventId } = events[idx];
+    for(const { startTime, endTime, eventId, date } of events) {
+        if(date === curDate) {
+            if(earlierThan(curEnd, startTime)) continue;
+            if(earlierThan(endTime, curStart)) continue;
+            overlaps.push(eventId);
+        }
     }
-    let idx = overlaps.indexOf(eventId);
+    let index = overlaps.indexOf(curEventId);
     let width = columnWidth / (overlaps.length || 0);
-    let left = (idx === -1 ? 0 : idx) * width;
+    let left = (index === -1 ? 0 : index) * width;
     return { width, left };
+}
+
+/**
+ * Transform the events in response into the format for Event component
+ * @param {Array} events events obtained from API
+ * @returns events in the format of Event component
+ */
+export const transformEvents = (events) => {
+    return events.map(({ date, start_time, end_time, event_id, logged_by, ...rest }) => ({
+        date: formatGetTime(new Date(date).getTime()),
+        startTime: start_time.slice(0, start_time.length - 3),
+        endTime: end_time.slice(0, end_time.length - 3),
+        eventId: event_id,
+        loggedBy: logged_by,
+        ...rest,
+    }))
 }

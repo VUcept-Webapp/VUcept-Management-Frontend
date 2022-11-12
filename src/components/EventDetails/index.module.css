@@ -93,9 +93,12 @@
     padding-top: 20px;
     padding-bottom: 20px; 
     box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
 }
 
-.submit {
+.button {
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -108,6 +111,10 @@
     height: 30px;
     width: 100px;
     background: rgba(255, 230, 166, 1);
+}
+
+.delete {
+    margin-left: auto;
 }
 
 .blocker {
