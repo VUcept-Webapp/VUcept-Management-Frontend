@@ -80,7 +80,6 @@ export const VUceptorAttendance = ({ taost }) => {
                 ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
                 ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
             }).then(res => {
-                console.log(res);
                 const { status, result: { rows = [], pageNum = 1 } } = res;
                 setDisableTable(false);
                 if(status === RESPONSE_STATUS.SUCCESS) {
@@ -136,7 +135,6 @@ export const VUceptorAttendance = ({ taost }) => {
         const { inputEmail, inputEvent, inputStatus } = inputs;
         editVUAttendance({ email: inputEmail, event: inputEvent, attendance: inputStatus })
             .then(res => {
-                console.log(res);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowEditPopUp(false);

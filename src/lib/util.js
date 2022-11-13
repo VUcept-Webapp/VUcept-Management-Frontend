@@ -186,7 +186,7 @@ export const getMonday = (d) => {
  */
 export const getSunday = (d) => {
     const date = new Date(d.getTime());
-    const first = date.getDate() - date.getDay() + 1;
+    const first = date.getDate() - (date.getDay() || 7) + 1;
     const last = first + 6;
     date.setDate(last);
     return date;
@@ -378,7 +378,9 @@ export const getEventHeight = (timeLength) => {
  * @returns {Number} day of the week
  */
 export const getDay = (date) => {
-    return date.getDay();
+    let day = date.getDay();
+    if(day === 0) day = 7;
+    return day;
 }
 
 /**
@@ -544,7 +546,7 @@ export const getEventWidth = (events, idx, columnWidth) => {
  */
 export const transformEvents = (events) => {
     return events.map(({ date, start_time, end_time, event_id, logged_by, ...rest }) => ({
-        date: formatGetTime(new Date(date).getTime()),
+        date: formatGetTime(yyyymmddToDateObj(date.split('T')[0]).getTime()),
         startTime: start_time.slice(0, start_time.length - 3),
         endTime: end_time.slice(0, end_time.length - 3),
         eventId: event_id,

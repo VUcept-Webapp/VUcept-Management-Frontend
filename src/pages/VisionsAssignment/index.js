@@ -53,7 +53,6 @@ export const VisionsAssignment = ({ toast }) => {
         }).catch(err => toast('Error fetching visions options'));
         vuceptorList().then(res => {
             const { status, result } = res;
-            console.log(res);
             if(status === RESPONSE_STATUS.SUCCESS) {
                 const { list } = result;
                 setVuceptorOptions(list.map(option => option.name?.toString()));
@@ -74,7 +73,6 @@ export const VisionsAssignment = ({ toast }) => {
             ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
         }).then(res => {
             const { status, result: { rows = [], pages = 1 } } = res;
-            console.log(res);
             setDisableTable(false);
             if(status === RESPONSE_STATUS.SUCCESS) {
                 setRows(toUpperRows(rows));

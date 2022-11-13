@@ -73,7 +73,6 @@ export const Calendar = ({ toast }) => {
         if(Object.keys(currentWeek).length) {
             readVUEvent({ time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]) })
                 .then(res => {
-                    console.log(res);
                     const { status, result } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         setEvents(transformEvents(result));

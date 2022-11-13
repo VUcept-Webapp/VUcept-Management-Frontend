@@ -108,7 +108,7 @@ export const Event = React.memo((props) => {
 
     return <>
         <div 
-            className={cx(styles.container)} 
+            className={cx(styles.container, {[styles.dragging]: dragging[eventId]})} 
             style={{ 
                 width: `${dragging[eventId] ? columnWidth : eventWidth}px`,
                 height: `${getEventHeight(timeDiff)}px`,

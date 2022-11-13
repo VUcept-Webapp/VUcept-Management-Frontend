@@ -133,7 +133,6 @@ export const FirstYear = ({ toast }) => {
         const { inputEmail, inputEvent, inputStatus } = inputs;
         editFyAttendance({ email: inputEmail, event: inputEvent, attendance: inputStatus })
             .then(res => {
-                console.log(res);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowEditPopUp(false);
