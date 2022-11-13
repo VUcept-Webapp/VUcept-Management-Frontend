@@ -5,9 +5,11 @@
     position: fixed;
     top: 50%;
     left: 50%;
+    transform: translate(-50%, -50%);
     border-radius: 15px;
     border: 2px solid rgba(248, 182, 13, 1);
     width: 50%;
+    max-width: 380px;
     height: fit-content;
     min-height: 200px;
     z-index: 1000;
@@ -93,12 +95,9 @@
     padding-top: 20px;
     padding-bottom: 20px; 
     box-sizing: border-box;
-    display: flex;
-    align-items: center;
-    column-gap: 20px;
 }
 
-.button {
+.submit {
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -111,10 +110,6 @@
     height: 30px;
     width: 100px;
     background: rgba(255, 230, 166, 1);
-}
-
-.delete {
-    margin-left: auto;
 }
 
 .blocker {

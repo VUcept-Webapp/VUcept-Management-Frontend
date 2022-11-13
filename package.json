@@ -1,4 +1,5 @@
 {
+  "homepage": "https://KurtXiaoZ.github.io/VUcept-Management-Frontend",
   "name": "test",
   "version": "0.1.0",
   "private": true,
@@ -19,7 +20,9 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test --watchAll=false",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
   },
   "eslintConfig": {
     "extends": [
@@ -43,6 +46,7 @@
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^14.4.3",
+    "gh-pages": "^4.0.0",
     "msw": "^0.47.4"
   }
 }

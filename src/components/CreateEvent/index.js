@@ -1,8 +1,8 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import PropTypes from 'prop-types';
-import { useWindowSize } from '../../lib/hooks';
-import { earlierThan, formatGetTime, getEventPopUpLeft, getEventPopUpTop, yyyymmddToDateObj } from '../../lib/util';
+import PropTypes, { array } from 'prop-types';
+import { useWindowSize, useAuth } from '../../lib/hooks';
+import { addHalfAnHour, earlierThan, formatGetTime, yyyymmddToDateObj } from '../../lib/util';
 import { EVENT, RESPONSE_STATUS, WINDOW_TYPE } from '../../lib/constants';
 import { useEffect, useRef, useState } from 'react';
 import LocationIcon from '../../assets/icons/location.svg';
@@ -11,29 +11,19 @@ import PenIcon from '../../assets/icons/pen.svg';
 import { CalendarComponent } from '../CalendarComponent';
 import { TimePicker } from '../TimePicker';
 import { toast } from 'react-toastify';
-import { deleteVUEvent, updateVUEvent } from '../../lib/services';
+import { createVUEvent } from '../../lib/services';
 const cx = classNames.bind(styles);
 
 // Pop up for adding first-year student
-export const EventDetails = (props) => {
+export const CreateEvent = (props) => {
     const {
-        eventX,
-        eventY,
-        eventWidth,
-        eventHeight,
         setShowPopUp,
-        title,
         date,
         startTime,
-        endTime,
-        location,
-        description,
-        eventId,
-        loggedBy,
-        attendance,
         getVUEvents,
     } = props;
-    const { width, height, type } = useWindowSize();
+    const { auth } = useAuth();
+    const { type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
     const popUp = useRef();
     const calendarHolder = useRef();
@@ -42,8 +32,37 @@ export const EventDetails = (props) => {
     const titleRef = useRef();
     const locationRef = useRef();
     const descriptionRef = useRef();
-    const popUpLeft = getEventPopUpLeft({ eventX, screenWidth: width, eventWidth });
-    const popUpTop = getEventPopUpTop({ eventY, screenHeight: height, eventHeight });
+
+    const onSubmit = () => {
+        const inputTitle = titleRef.current.value;
+        const descriptionInput = descriptionRef.current.value;
+        const locationInput = locationRef.current.value;
+        const startTimeInput = startTimeRef.current;
+        const endTimeInput = endTimeRef.current;
+        const dateInput = formatGetTime(new Date(eventDate).getTime());
+        if(!inputTitle) toast('Please provide a title');
+        else if(earlierThan(endTimeInput, startTimeInput)) toast('Please provide a valid time range');
+        else {
+            createVUEvent({
+                title: inputTitle,
+                logged_by: auth?.email,
+                date: dateInput,
+                start_time: startTimeInput,
+                description: descriptionInput,
+                location: locationInput,
+                end_time: endTimeInput,
+            })
+                .then(res => {
+                    const { status } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        setShowPopUp(false);
+                        getVUEvents();
+                    }
+                    else toast('Error updating event');
+                })
+                .catch(err => toast('Error updating event'));
+        }
+    }
 
     useEffect(() => {
         const listener = (event) => {
@@ -58,67 +77,16 @@ export const EventDetails = (props) => {
         return () => document.removeEventListener("mousedown", listener);
     }, []);
 
-    const onSubmit = () => {
-        const inputTitle = titleRef.current.value;
-        const descriptionInput = descriptionRef.current.value;
-        const locationInput = locationRef.current.value;
-        const startTimeInput = startTimeRef.current;
-        const endTimeInput = endTimeRef.current;
-        const dateInput = formatGetTime(new Date(eventDate).getTime());
-        if(!inputTitle) toast('Please provide a title');
-        else if(earlierThan(endTimeInput, startTimeInput)) toast('Please provide a valid time range');
-        else {
-            updateVUEvent({
-                title: inputTitle,
-                logged_by: loggedBy,
-                date: dateInput,
-                start_time: startTimeInput,
-                description: descriptionInput,
-                location: locationInput,
-                end_time: endTimeInput,
-                event_id: eventId
-            })
-                .then(res => {
-                    const { status } = res;
-                    if(status === RESPONSE_STATUS.SUCCESS) {
-                        setShowPopUp(false);
-                        getVUEvents();
-                    }
-                    else toast('Error updating event');
-                })
-                .catch(err => toast('Error updating event'));
-        }
-    }
-
-    const onDelete = () => {
-        deleteVUEvent({ event_id: eventId })
-            .then(res => {
-                const { status } = res;
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setShowPopUp(false);
-                    getVUEvents();
-                }
-                else toast('Error deleting event');
-            })
-            .catch(err => toast('Error deleting event'));
-    }
-
     return <>
         <div className={cx(styles.blocker)}></div>
         <div 
             className={cx(styles.eventPopUp, {[styles.mobile]: type === WINDOW_TYPE.MOBILE})}
-            style={{
-                width: popUpLeft && `${EVENT.POPUP_WIDTH}px`,
-                top: popUpTop && `${popUpTop}px`,
-                left: popUpLeft && `${popUpLeft}px`,
-                transform: popUpLeft ? 'translateY(-50%)' : 'translate(-50%, -50%)',
-            }}
             ref={popUp}
         >
             <div className={cx(styles.row)}>
                 <input 
                     className={cx(styles.rowText)} 
-                    defaultValue={title}
+                    defaultValue={EVENT.MY_EVENT}
                     ref={titleRef}
                 />
             </div>
@@ -126,7 +94,7 @@ export const EventDetails = (props) => {
                 <img src={LocationIcon} className={cx(styles.icon)}/>
                 <input 
                     className={cx(styles.rowText)} 
-                    defaultValue={location}
+                    placeholder={EVENT.ENTER_LOCATION}
                     ref={locationRef}
                 />
             </div>
@@ -153,7 +121,7 @@ export const EventDetails = (props) => {
                     />
                     <span>:</span>
                     <TimePicker
-                        time={endTime}
+                        time={addHalfAnHour(startTime)}
                         ref={endTimeRef}
                     />
                 </div>
@@ -162,29 +130,12 @@ export const EventDetails = (props) => {
                 <img src={PenIcon} className={cx(styles.icon)}/>
                 <input 
                     className={cx(styles.rowText)} 
-                    defaultValue={description}
+                    placeholder={EVENT.ENTER_DESCRIPTION}
                     ref={descriptionRef}
                 />
             </div>
-            <div className={cx(styles.row)}>
-                <span>{EVENT.ATTENDANCE_LABEL}</span>
-                <input 
-                    className={cx(styles.checkbox)} 
-                    type='checkbox'
-                    checked={attendance ? 'yes' : 'false'}
-                />
-            </div>
-            <div className={cx(styles.row)}>
-                <span>{EVENT.ATTENDANCE_FEEDBACK}</span>
-                <input 
-                    className={cx(styles.feedback)} 
-                />
-            </div>
             <div className={cx(styles.buttonWrapper)}>
-                <div className={cx(styles.delete, styles.button)} onClick={onDelete}>
-                    {EVENT.DELETE}
-                </div>
-                <div className={cx(styles.submit, styles.button)} onClick={onSubmit}>
+                <div className={cx(styles.submit)} onClick={onSubmit}>
                     {EVENT.SUBMIT}
                 </div>
             </div>
