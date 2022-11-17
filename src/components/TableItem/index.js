@@ -11,7 +11,7 @@ export const TableItem = (props) => {
         style,
         item
     } = props;
-
+    
     const renderItem = () => {
         if(item === 'Advisor') return <span className={cx(styles.advisor, className)} style={style}>Advisor</span>
         else if(item === 'Board') return <span className={cx(styles.board, className)} style={style}>Board</span>
