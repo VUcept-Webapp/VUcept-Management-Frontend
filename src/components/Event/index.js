@@ -6,6 +6,7 @@ import { EventDetails } from '../EventDetails';
 import { updateVUEvent } from '../../lib/services';
 import { toast } from 'react-toastify';
 import { RESPONSE_STATUS } from '../../lib/constants';
+import { useAuth } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
 // Each event on the calendar page
@@ -21,7 +22,8 @@ export const Event = React.memo((props) => {
         events,
         getVUEvents,
     } = props;
-    const { startTime, endTime, title, date, description, location, eventId, loggedBy } = events[idx];
+    const { auth } = useAuth();
+    const { startTime, endTime, title, date, description, location, eventId } = events[idx];
     const [left, setLeft] = useState(40);
     const [top, setTop] = useState(getEventTop(startTime));
     const [showEdit, setShowEdit] = useState(false);
@@ -49,7 +51,7 @@ export const Event = React.memo((props) => {
         if(posChange !== 0) {
             updateVUEvent({
                 title: title,
-                logged_by: loggedBy,
+                logged_by: auth.email,
                 date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
                 start_time: topToTime(top),
                 description: description,
@@ -136,7 +138,7 @@ export const Event = React.memo((props) => {
             endTime={endTime}
             location={location}
             description={description}
-            loggedBy={loggedBy}
+            loggedBy={auth.email}
             eventId={eventId}
             getVUEvents={getVUEvents}
         />}
