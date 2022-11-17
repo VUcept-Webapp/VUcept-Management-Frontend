@@ -11,7 +11,7 @@ import PenIcon from '../../assets/icons/pen.svg';
 import { CalendarComponent } from '../CalendarComponent';
 import { TimePicker } from '../TimePicker';
 import { toast } from 'react-toastify';
-import { deleteVUEvent, updateVUEvent } from '../../lib/services';
+import { deleteVUEvent, getOneVUAttendance, updateVUEvent } from '../../lib/services';
 const cx = classNames.bind(styles);
 
 // Pop up for adding first-year student
@@ -30,11 +30,11 @@ export const EventDetails = (props) => {
         description,
         eventId,
         loggedBy,
-        attendance,
         getVUEvents,
     } = props;
     const { width, height, type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
+    const [attendance, setAttendance] = useState(false);
     const popUp = useRef();
     const calendarHolder = useRef();
     const startTimeRef = useRef();

@@ -37,6 +37,7 @@ export const LogAttendance = ({ toast }) => {
             .then(res => {
                 const { status, data } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
+                    console.log(data);
                     setEvents(data);
                     if(data.length) setEvent(data[0]);
                 }
@@ -45,10 +46,12 @@ export const LogAttendance = ({ toast }) => {
             .catch(err => toast("Internal error"));
     }
 
+    console.log(event);
+
     // obtain attendance records
     const getAttendance = () => {
         readLogAttendance({
-            event: JSON.stringify(event),
+            event: JSON.stringify(event.title),
             visions: auth?.visions,
             row_start: tablePage * TABLE.ROW_PER_PAGE, 
             row_num: TABLE.ROW_PER_PAGE,
@@ -120,7 +123,8 @@ export const LogAttendance = ({ toast }) => {
             toast('Please log all students');
             return;
         }
-        submitAttendance({ edits: inputRows.map(row => ({ email: row.email, event, attendance: row.attendance })) })
+        console.log(inputRows);
+        submitAttendance({ edits: inputRows.map(row => ({ email: row.email, eventId: event.event_id, attendance: row.attendance })) })
             .then(res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.ERROR) toast('Error submitting attendance');
@@ -133,10 +137,10 @@ export const LogAttendance = ({ toast }) => {
         <div className={cx(styles.boardControl)}>
             <span className={cx(styles.selectLabel)}>Event:</span>
             <TableSelect
-                options={events?.map(event => ({ label: event, value: event }))}
+                options={events?.map(event => ({ label: event?.title, value: event }))}
                 className={cx(styles.select)}
                 height={25}
-                selected={{ label: event, value: event }}
+                selected={{ label: event?.title, value: event }}
                 warn={false}
                 onChange={({ value }) => setEvent(value)}
             />

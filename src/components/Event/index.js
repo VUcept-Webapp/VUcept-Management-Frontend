@@ -138,7 +138,6 @@ export const Event = React.memo((props) => {
             description={description}
             loggedBy={loggedBy}
             eventId={eventId}
-            attendance={true}
             getVUEvents={getVUEvents}
         />}
     </>
