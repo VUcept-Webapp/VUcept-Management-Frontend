@@ -78,7 +78,7 @@ export const ColumnSearch = (props) => {
 };
 
 ColumnSearch.propTypes = {
-    searchValue: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired, // (val: String) => void
-    onSearch: PropTypes.func.isRequired // (val: String) => void
+    searchValue: PropTypes.string,
+    onChange: PropTypes.func, // (val: String) => void
+    onSearch: PropTypes.func // (val: String) => void
 }

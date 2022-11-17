@@ -198,9 +198,9 @@ export const Table = (props) => {
 Table.propTypes = {
     tablePage: PropTypes.number.isRequired,
     totalPage: PropTypes.number.isRequired,
-    columns: PropTypes.object.isRequired,
+    columns: PropTypes.array,
     rows: PropTypes.array.isRequired,
-    onEditRow: PropTypes.func.isRequired, // (row: Row) => void
-    onDeleteRow: PropTypes.func.isRequired, // (row: Row) => void
-    onPageChange: PropTypes.func.isRequired // (page: Number) => void
+    onEditRow: PropTypes.func, // (row: Row) => void
+    onDeleteRow: PropTypes.func, // (row: Row) => void
+    onPageChange: PropTypes.func // (page: Number) => void
 }
