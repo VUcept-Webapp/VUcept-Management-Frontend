@@ -37,7 +37,6 @@ export const LogAttendance = ({ toast }) => {
             .then(res => {
                 const { status, data } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
-                    console.log(data);
                     setEvents(data);
                     if(data.length) setEvent(data[0]);
                 }
@@ -45,8 +44,6 @@ export const LogAttendance = ({ toast }) => {
             })
             .catch(err => toast("Internal error"));
     }
-
-    console.log(event);
 
     // obtain attendance records
     const getAttendance = () => {
