@@ -8,7 +8,8 @@ const cx = classNames.bind(styles);
 export const TimePicker = React.forwardRef((props, ref) => {
     const {
         className,
-        time
+        time,
+        readOnly = false
     } = props;
     const [h, setH] = useState(time.split(':')[0]);
     const [m, setM] = useState(time.split(':')[1]);
@@ -44,12 +45,14 @@ export const TimePicker = React.forwardRef((props, ref) => {
             className={cx(styles.timeInput)}
             value={h}
             onChange={onChangeH}
+            readOnly={readOnly}
         />
         <span>:</span>
         <input
             className={cx(styles.timeInput)}
             value={m}
             onChange={onChangeM}
+            readOnly={readOnly}
         />
     </div>
 });

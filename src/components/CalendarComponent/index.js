@@ -15,6 +15,7 @@ const cx = classNames.bind(styles);
 export const CalendarComponent = React.forwardRef((props, ref) => {
     const {
         start = new Date().getTime(),
+        readOnly = false,
         onDateChange,
     } = props;
 
@@ -31,6 +32,7 @@ export const CalendarComponent = React.forwardRef((props, ref) => {
     }, [display]);
 
     const onClickIcon = () => {
+        if(readOnly) return;
         setDisplay(!display);
         setTop(imageEle.current.getBoundingClientRect().top + 23);
         // dynamically set calendar location
@@ -87,5 +89,6 @@ export const CalendarComponent = React.forwardRef((props, ref) => {
 
 CalendarComponent.propTypes = {
     onDateChange: PropTypes.func.isRequired, // (date: string) => void
-    start: PropTypes.object // start date
+    start: PropTypes.object, // start date
+    readOnly: PropTypes.bool
 }

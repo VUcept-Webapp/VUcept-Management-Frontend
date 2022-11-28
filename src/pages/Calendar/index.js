@@ -4,20 +4,20 @@ import Papa from "papaparse";
 import LeftArrowButton from '../../assets/icons/leftArrowButton.svg';
 import RightArrowButton from '../../assets/icons/rightArrowButton.svg';
 import TimeIcon from '../../assets/icons/time.svg';
-import { useWeek, useWindowSize } from '../../lib/hooks';
+import { useAuth, useWeek, useWindowSize } from '../../lib/hooks';
 import { Event } from '../../components/Event';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CreateEvent } from '../../components/CreateEvent';
 import { addDays, formatGetTime, formatTime, importUsersToJSON, transformEvents } from '../../lib/util';
 import { fyVisionsEventLoadfromcsv, fyVisionsInfoLoadfromcsv, readfyEvent, readVUEvent, resetfyEvent, resetVUEvent, visionsNums, VUEventLoadfromcsv } from '../../lib/services';
-import { EVENT, EVENT_TYPE, IMPORT_EVENT, RESET_EVENT_OPTIONS, RESPONSE_STATUS } from '../../lib/constants';
+import { EVENT, EVENT_TYPE, IMPORT_EVENT, RESET_EVENT_OPTIONS, RESPONSE_STATUS, USER_TYPE } from '../../lib/constants';
 import { TableSelect } from '../../components/TableSelect';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
 const cx = classNames.bind(styles);
 
 // Calendar page
 export const Calendar = ({ toast }) => {
-    const { width, type } = useWindowSize();
+    const { auth } = useAuth();
     const { currentWeek, setCurrentWeek, setPrevWeek, setNextWeek } = useWeek();
     const { startYear, startMonth, startDate, endYear, endMonth, endDate } = currentWeek;
     const calendarRef = useRef();
@@ -39,6 +39,7 @@ export const Calendar = ({ toast }) => {
     const [resetType, setResetType] = useState(null);
 
     const onCreate = ({ hour, min, day }) => {
+        if(auth?.type === USER_TYPE.VUCEPTOR) return;
         const { startYear, startMonth, startDate } = currentWeek;
         setNewEventStartTime(formatTime({ hour, min }));
         setNewEventDate(formatGetTime(addDays(new Date(startYear, startMonth - 1, startDate), day).getTime()));
@@ -197,19 +198,18 @@ export const Calendar = ({ toast }) => {
             <img src={LeftArrowButton} className={cx(styles.arrowIcon)} onClick={() => setPrevWeek()}/>
             <span>{`${startMonth}/${startDate}, ${startYear} - ${endMonth}/${endDate}, ${endYear}`}</span>
             <img src={RightArrowButton} className={cx(styles.arrowIcon)} onClick={() => setNextWeek()}/>
-            <TableSelect 
+            {auth?.type !== USER_TYPE.VUCEPTOR && <TableSelect 
                 className={cx(styles.import)}
                 options={IMPORT_EVENT}
                 selected={importType}
                 onChange={(selected) => {
-                    console.log('onchange', selected);
                     uploadRef?.current?.click();
                     setImportType(selected);
                 }}
                 placeholder={'Import'}
-            />
+            />}
             <TableSelect 
-                className={cx(styles.visionSelector)}
+                className={cx(styles.vision, {[styles.vuceptor]: auth?.type === USER_TYPE.VUCEPTOR})}
                 options={visions.map(v => ({label: `group ${v}`, value: v}))}
                 selected={selectedVision !== null ? { label: `group ${selectedVision}`, value: selectedVision } : null}
                 onChange={(selected) => {
@@ -217,9 +217,9 @@ export const Calendar = ({ toast }) => {
                     else setSelectedVision(selected.value);
                 }}
                 isClearable
-                placeholder={'vision'}
+                placeholder={'Vision'}
             />
-            <TableSelect 
+            {auth?.type !== USER_TYPE.VUCEPTOR && <TableSelect 
                 className={cx(styles.reset)}
                 options={RESET_EVENT_OPTIONS}
                 selected={null}
@@ -228,7 +228,7 @@ export const Calendar = ({ toast }) => {
                     setShowDeleteAllPopUp(true);
                 }}
                 placeholder={'Reset'}
-            />
+            />}
         </div>
         <div className={cx(styles.calendar)} ref={calendarRef} id='calendar' onScroll={(e) => setScrollTop(e.target.scrollTop)}>
             {constructHeader()}

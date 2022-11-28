@@ -47,6 +47,7 @@ export const EventDetails = (props) => {
     const titleRef = useRef();
     const locationRef = useRef();
     const descriptionRef = useRef();
+    const feedbackRef = useRef();
     const popUpLeft = getEventPopUpLeft({ eventX, screenWidth: width, eventWidth });
     const popUpTop = getEventPopUpTop({ eventY, screenHeight: height, eventHeight });
 
@@ -64,57 +65,62 @@ export const EventDetails = (props) => {
     }, []);
 
     const onSubmit = () => {
-        const inputTitle = titleRef.current.value;
-        const descriptionInput = descriptionRef.current.value;
-        const locationInput = locationRef.current.value;
-        const startTimeInput = startTimeRef.current;
-        const endTimeInput = endTimeRef.current;
-        const dateInput = formatGetTime(new Date(eventDate).getTime());
-        if(!inputTitle) toast('Please provide a title');
-        else if(earlierThan(endTimeInput, startTimeInput)) toast('Please provide a valid time range');
+        if(auth?.type === USER_TYPE.VUCEPTOR) {
+
+        }
         else {
-            if(eventType === EVENT_TYPE.VUCEPTOR) {
-                updateVUEvent({
-                    title: inputTitle,
-                    date: dateInput,
-                    start_time: startTimeInput,
-                    description: descriptionInput,
-                    location: locationInput,
-                    end_time: endTimeInput,
-                    event_id: eventId.split('|')[1],
-                    mandatory: isMandatory,
-                })
-                    .then(res => {
-                        const { status } = res;
-                        if(status === RESPONSE_STATUS.SUCCESS) {
-                            setShowPopUp(false);
-                            getEvents();
-                        }
-                        else toast('Error updating event');
-                    })
-                    .catch(err => toast('Error updating event'));
-            }
+            const inputTitle = titleRef.current.value;
+            const descriptionInput = descriptionRef.current.value;
+            const locationInput = locationRef.current.value;
+            const startTimeInput = startTimeRef.current;
+            const endTimeInput = endTimeRef.current;
+            const dateInput = formatGetTime(new Date(eventDate).getTime());
+            if(!inputTitle) toast('Please provide a title');
+            else if(earlierThan(endTimeInput, startTimeInput)) toast('Please provide a valid time range');
             else {
-                updatefyEvent({
-                    title: inputTitle,
-                    date: dateInput,
-                    start_time: startTimeInput,
-                    description: descriptionInput,
-                    location: locationInput,
-                    end_time: endTimeInput,
-                    event_id: eventId.split('|')[1],
-                    is_common: is_common,
-                    visions: vision
-                })
-                    .then(res => {
-                        const { status } = res;
-                        if(status === RESPONSE_STATUS.SUCCESS) {
-                            setShowPopUp(false);
-                            getEvents();
-                        }
-                        else toast('Error updating event');
+                if(eventType === EVENT_TYPE.VUCEPTOR) {
+                    updateVUEvent({
+                        title: inputTitle,
+                        date: dateInput,
+                        start_time: startTimeInput,
+                        description: descriptionInput,
+                        location: locationInput,
+                        end_time: endTimeInput,
+                        event_id: eventId.split('|')[1],
+                        mandatory: isMandatory,
                     })
-                    .catch(err => toast('Error updating event'));
+                        .then(res => {
+                            const { status } = res;
+                            if(status === RESPONSE_STATUS.SUCCESS) {
+                                setShowPopUp(false);
+                                getEvents();
+                            }
+                            else toast('Error updating event');
+                        })
+                        .catch(err => toast('Error updating event'));
+                }
+                else {
+                    updatefyEvent({
+                        title: inputTitle,
+                        date: dateInput,
+                        start_time: startTimeInput,
+                        description: descriptionInput,
+                        location: locationInput,
+                        end_time: endTimeInput,
+                        event_id: eventId.split('|')[1],
+                        is_common: is_common,
+                        visions: vision
+                    })
+                        .then(res => {
+                            const { status } = res;
+                            if(status === RESPONSE_STATUS.SUCCESS) {
+                                setShowPopUp(false);
+                                getEvents();
+                            }
+                            else toast('Error updating event');
+                        })
+                        .catch(err => toast('Error updating event'));
+                }
             }
         }
     }
@@ -164,6 +170,7 @@ export const EventDetails = (props) => {
                     defaultValue={title}
                     ref={titleRef}
                     placeholder={EVENT.ENTER_TITLE}
+                    readOnly={auth?.type === USER_TYPE.VUCEPTOR}
                 />
             </div>
             <div className={cx(styles.row)}>
@@ -173,6 +180,7 @@ export const EventDetails = (props) => {
                     defaultValue={location}
                     ref={locationRef}
                     placeholder={EVENT.ENTER_LOCATION}
+                    readOnly={auth?.type === USER_TYPE.VUCEPTOR}
                 />
             </div>
             <div className={cx(styles.twoColumnRow)}>
@@ -182,6 +190,7 @@ export const EventDetails = (props) => {
                             start={eventDate}
                             onDateChange={(val) => setEventDate(val)}
                             ref={calendarHolder}
+                            readOnly={auth?.type === USER_TYPE.VUCEPTOR}
                         />
                     </div>
                     <span 
@@ -195,11 +204,13 @@ export const EventDetails = (props) => {
                     <TimePicker
                         time={startTime}
                         ref={startTimeRef}
+                        readOnly={auth?.type === USER_TYPE.VUCEPTOR}
                     />
                     <span>:</span>
                     <TimePicker
                         time={endTime}
                         ref={endTimeRef}
+                        readOnly={auth?.type === USER_TYPE.VUCEPTOR}
                     />
                 </div>
             </div>
@@ -210,6 +221,7 @@ export const EventDetails = (props) => {
                     defaultValue={description}
                     ref={descriptionRef}
                     placeholder={EVENT.ENTER_DESCRIPTION}
+                    readOnly={auth?.type === USER_TYPE.VUCEPTOR}
                 />
             </div>
             {eventType === EVENT_TYPE.VUCEPTOR && <div className={cx(styles.row)}>
@@ -219,6 +231,7 @@ export const EventDetails = (props) => {
                     type='checkbox'
                     onChange={e => setIsMandatory(e.target.checked)}
                     checked={isMandatory}
+                    disabled={auth?.type === USER_TYPE.VUCEPTOR}
                 />
             </div>}
             {auth?.type === USER_TYPE.VUCEPTOR && <div className={cx(styles.row)}>
@@ -227,18 +240,20 @@ export const EventDetails = (props) => {
                     className={cx(styles.checkbox)} 
                     type='checkbox'
                     checked={attendance}
+                    onChange={e => setAttendance(e.target.checked)}
                 />
             </div>}
             {auth?.type === USER_TYPE.VUCEPTOR && <div className={cx(styles.row)}>
                 <span>{EVENT.ATTENDANCE_FEEDBACK}</span>
                 <input 
-                    className={cx(styles.feedback)} 
+                    className={cx(styles.feedback)}
+                    ref={feedbackRef}
                 />
             </div>}
             <div className={cx(styles.buttonWrapper)}>
-                <div className={cx(styles.delete, styles.button)} onClick={onDelete}>
+                {auth?.type !== USER_TYPE.VUCEPTOR && <div className={cx(styles.delete, styles.button)} onClick={onDelete}>
                     {EVENT.DELETE}
-                </div>
+                </div>}
                 <div className={cx(styles.submit, styles.button)} onClick={onSubmit}>
                     {EVENT.SUBMIT}
                 </div>

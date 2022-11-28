@@ -30,7 +30,7 @@ test('UserManagement render', async () => {
             result: {
                 pages: 1,
                 rows: [
-                    { email: 'email1@gmail.com', name: 'name1', status: 'unregistered', type: 'advisor', visions: 0 },
+                    { email: 'email1@gmail.com', name: 'name1', status: 'unregistered', type: 'adviser', visions: 0 },
                     { email: 'email2@gmail.com', name: 'name2', status: 'registered', type: 'board', visions: 0 },
                 ]
             }
@@ -52,7 +52,7 @@ test('UserManagement render', async () => {
     await expect(screen.queryByText('email1@gmail.com')).toBeInTheDocument();
     await expect(screen.queryByText('name1')).toBeInTheDocument();
     await expect(screen.queryByText('Unregistered')).toBeInTheDocument();
-    await expect(screen.queryByText('Advisor')).toBeInTheDocument();
+    await expect(screen.queryByText('Adviser')).toBeInTheDocument();
     await expect(screen.queryByText('email2@gmail.com')).toBeInTheDocument();
     await expect(screen.queryByText('name2')).toBeInTheDocument();
     await expect(screen.queryByText('Registered')).toBeInTheDocument();

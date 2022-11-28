@@ -26,11 +26,16 @@
     cursor: pointer;
 }
 
-.import {
+.import{
     margin-left: auto;
 }
 
 .reset {
+    margin-right: 10px;
+}
+
+.vision.vuceptor {
+    margin-left: auto;
     margin-right: 10px;
 }
 
