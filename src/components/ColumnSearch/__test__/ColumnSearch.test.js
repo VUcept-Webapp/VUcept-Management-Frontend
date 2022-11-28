@@ -1,7 +1,6 @@
-import { fireEvent, render, screen, waitForElement } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ColumnSearch } from '..';
-import { testStyle } from '../../../lib/testUtil';
 import { act } from 'react-dom/test-utils';
 
 const defaultSearchValue = '';
@@ -13,7 +12,7 @@ const setUp = ({
     onChange = defaultOnChange,
     onSearch = defaultOnSearch
  }) => {
-    render(<div id='root'></div>)
+    render(<div id='root'></div>);
     const utils = render(<ColumnSearch
         searchValue={searchValue}
         onChange={onChange}

@@ -1,5 +1,6 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
+import Papa from "papaparse";
 import LeftArrowButton from '../../assets/icons/leftArrowButton.svg';
 import RightArrowButton from '../../assets/icons/rightArrowButton.svg';
 import TimeIcon from '../../assets/icons/time.svg';
@@ -7,9 +8,11 @@ import { useWeek, useWindowSize } from '../../lib/hooks';
 import { Event } from '../../components/Event';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CreateEvent } from '../../components/CreateEvent';
-import { addDays, formatGetTime, formatTime, transformEvents } from '../../lib/util';
-import { readVUEvent } from '../../lib/services';
-import { RESPONSE_STATUS } from '../../lib/constants';
+import { addDays, formatGetTime, formatTime, importUsersToJSON, transformEvents } from '../../lib/util';
+import { fyVisionsEventLoadfromcsv, fyVisionsInfoLoadfromcsv, readfyEvent, readVUEvent, resetfyEvent, resetVUEvent, visionsNums, VUEventLoadfromcsv } from '../../lib/services';
+import { EVENT, EVENT_TYPE, IMPORT_EVENT, RESET_EVENT_OPTIONS, RESPONSE_STATUS } from '../../lib/constants';
+import { TableSelect } from '../../components/TableSelect';
+import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
 const cx = classNames.bind(styles);
 
 // Calendar page
@@ -19,6 +22,7 @@ export const Calendar = ({ toast }) => {
     const { startYear, startMonth, startDate, endYear, endMonth, endDate } = currentWeek;
     const calendarRef = useRef();
     const columnRef = useRef();
+    const uploadRef = useRef();
     const [hoverCol, setHoverCol] = useState(-1);
     const [dragging, setDragging] = useState([]);
     const [scrollTop, setScrollTop] = useState(0);
@@ -26,6 +30,13 @@ export const Calendar = ({ toast }) => {
     const [newEventStartTime, setNewEventStartTime] = useState('');
     const [newEventDate, setNewEventDate] = useState('');
     const [events, setEvents] = useState([]);
+    const [visions, setVisions] = useState([]);
+    const [selectedVision, setSelectedVision] = useState(null);
+    const [showDeleteAllPopUp, setShowDeleteAllPopUp] = useState(false);
+    const [onConfirmClear, setOnConfirmClear] = useState(null);
+    const [importFile, setImportFile] = useState(null);
+    const [importType, setImportType] = useState(null);
+    const [resetType, setResetType] = useState(null);
 
     const onCreate = ({ hour, min, day }) => {
         const { startYear, startMonth, startDate } = currentWeek;
@@ -69,23 +80,102 @@ export const Calendar = ({ toast }) => {
         return rows;
     }
 
-    const getVUEvents = useCallback(() => {
+    useEffect(() => {
+        visionsNums()
+            .then(res => {
+                const { result: { list }, status } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) setVisions(list.filter(x => x?.visions !== 0).map(x => x?.visions));
+                else toast('Error fetching visions');
+            })
+            .catch(() => toast('Error fetching visions'));
+    }, []);
+
+    useEffect(() => {
+        if(importFile && importType) {
+            console.log('upload');
+            Papa.parse(importFile, {
+                complete: res => {
+                    const { data } = res;
+                    const inputObj = importUsersToJSON(data);
+                    if(inputObj === 'error') {
+                        toast('Please provide a valid csv file');
+                        setImportFile(null);
+                        setImportType(null);
+                        return;
+                    }
+                    let upload = null;
+                    if(importType?.value === 'VUceptor Events') upload = VUEventLoadfromcsv;
+                    else if(importType?.value === 'First-year Events') upload = fyVisionsEventLoadfromcsv;
+                    else if(importType?.value === 'First-year Info') upload = fyVisionsInfoLoadfromcsv;
+                    if(upload) upload({ file: inputObj })
+                        .then(res => {
+                            setImportFile(null);
+                            setImportType(null);
+                            const { status } = res;
+                            if(status === RESPONSE_STATUS.SUCCESS) getEvents();
+                            else toast('Internal error');
+                        })
+                        .catch(() => {
+                            setImportFile(null);
+                            setImportType(null);
+                            toast('Internal error');
+                        });
+                },
+                error: err => {
+                    setImportFile(null);
+                    setImportType(null);
+                }});
+            if(uploadRef?.current?.value) uploadRef.current.value = '';
+        }
+    }, [importFile, importType]);
+
+    const getEvents = useCallback(async () => {
         if(Object.keys(currentWeek).length) {
-            readVUEvent({ time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]) })
+            const responseEvents = [];
+            await readVUEvent({ time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]) })
                 .then(res => {
                     const { status, result } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
-                        setEvents(transformEvents(result));
+                        responseEvents.push(...transformEvents(result, EVENT_TYPE.VUCEPTOR));
                     }
-                    else toast('Error fetching events');
+                    else toast('Error fetching VUceptor events');
                 })
-                .catch(err => toast('Error fetching events'));
+                .catch(err => toast('Error fetching VUceptor events'));
+            if(selectedVision) {
+                await readfyEvent({ 
+                    time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]),
+                    visions: selectedVision
+                })
+                    .then(res => {
+                        const { status, result } = res;
+                        if(status === RESPONSE_STATUS.SUCCESS) {
+                            responseEvents.push(...transformEvents(result, EVENT_TYPE.FIRST_YEAR));
+                        }
+                        else toast('Error fetching first-year events');
+                    })
+                    .catch(() => toast('Error fetching first-year events'));
+            }
+            setEvents(responseEvents);
         }
-    }, [currentWeek]);
+    }, [currentWeek, selectedVision]);
+
+    const resetEvents = useCallback(() => {
+        if(resetType) {
+            let reset = resetType === 'VUceptor Events' ? resetVUEvent : resetfyEvent;
+            reset()
+                .then(res => {
+                    const { status } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) getEvents();
+                    else toast('Error resetting events');
+                })
+                .catch(() => toast('Error resetting events'))
+                .then(() => setShowDeleteAllPopUp(false));
+        }
+    }, [resetType]);
 
     useEffect(() => {
-        getVUEvents();
-    }, [currentWeek]);
+        getEvents();
+    }, [currentWeek, selectedVision]);
 
     useEffect(() => {
         const draggingMap = {};
@@ -100,12 +190,45 @@ export const Calendar = ({ toast }) => {
             startTime={newEventStartTime}
             setShowPopUp={setShowCreate}
             date={newEventDate}
-            getVUEvents={getVUEvents}
+            getEvents={getEvents}
+            vision={selectedVision}
         />}
         <div className={cx(styles.controlContainer)}>
             <img src={LeftArrowButton} className={cx(styles.arrowIcon)} onClick={() => setPrevWeek()}/>
             <span>{`${startMonth}/${startDate}, ${startYear} - ${endMonth}/${endDate}, ${endYear}`}</span>
             <img src={RightArrowButton} className={cx(styles.arrowIcon)} onClick={() => setNextWeek()}/>
+            <TableSelect 
+                className={cx(styles.import)}
+                options={IMPORT_EVENT}
+                selected={importType}
+                onChange={(selected) => {
+                    console.log('onchange', selected);
+                    uploadRef?.current?.click();
+                    setImportType(selected);
+                }}
+                placeholder={'Import'}
+            />
+            <TableSelect 
+                className={cx(styles.visionSelector)}
+                options={visions.map(v => ({label: `group ${v}`, value: v}))}
+                selected={selectedVision !== null ? { label: `group ${selectedVision}`, value: selectedVision } : null}
+                onChange={(selected) => {
+                    if(!selected) setSelectedVision(null);
+                    else setSelectedVision(selected.value);
+                }}
+                isClearable
+                placeholder={'vision'}
+            />
+            <TableSelect 
+                className={cx(styles.reset)}
+                options={RESET_EVENT_OPTIONS}
+                selected={null}
+                onChange={(selected) => {
+                    setResetType(selected?.value);
+                    setShowDeleteAllPopUp(true);
+                }}
+                placeholder={'Reset'}
+            />
         </div>
         <div className={cx(styles.calendar)} ref={calendarRef} id='calendar' onScroll={(e) => setScrollTop(e.target.scrollTop)}>
             {constructHeader()}
@@ -121,8 +244,23 @@ export const Calendar = ({ toast }) => {
                 attendance={true}
                 idx={i}
                 events={events}
-                getVUEvents={getVUEvents}
+                getEvents={getEvents}
+                vision={selectedVision}
             />)}
         </div>
+        {showDeleteAllPopUp && <PopUpDeleteAll
+            show={showDeleteAllPopUp}
+            setShow={setShowDeleteAllPopUp}
+            title={'Clear'}
+            description={'Are you sure you want to reset the events'}
+            onDelete={resetEvents}
+        />}
+        <input
+           type="file"
+           accept='.csv'
+           ref={uploadRef}
+           style={{ display: 'none' }}
+           onChange={(e) => setImportFile(e.target.files[0])}
+        />
     </>
 }

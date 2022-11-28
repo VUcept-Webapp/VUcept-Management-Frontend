@@ -1,9 +1,9 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import PropTypes, { array } from 'prop-types';
-import { useWindowSize, useAuth } from '../../lib/hooks';
+import { useWindowSize } from '../../lib/hooks';
 import { addHalfAnHour, earlierThan, formatGetTime, yyyymmddToDateObj } from '../../lib/util';
-import { EVENT, RESPONSE_STATUS, WINDOW_TYPE } from '../../lib/constants';
+import { CREATE_EVENT_OPTIONS, EVENT, RESPONSE_STATUS, WINDOW_TYPE } from '../../lib/constants';
 import { useEffect, useRef, useState } from 'react';
 import LocationIcon from '../../assets/icons/location.svg';
 import ClockIcon from '../../assets/icons/clock.svg';
@@ -11,7 +11,8 @@ import PenIcon from '../../assets/icons/pen.svg';
 import { CalendarComponent } from '../CalendarComponent';
 import { TimePicker } from '../TimePicker';
 import { toast } from 'react-toastify';
-import { createVUEvent } from '../../lib/services';
+import { createfyEvent, createVUEvent } from '../../lib/services';
+import { TableSelect } from '../TableSelect';
 const cx = classNames.bind(styles);
 
 // Pop up for adding first-year student
@@ -20,11 +21,14 @@ export const CreateEvent = (props) => {
         setShowPopUp,
         date,
         startTime,
-        getVUEvents,
+        getEvents,
+        vision
     } = props;
-    const { auth } = useAuth();
     const { type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
+    const [eventType, setEventType] = useState('VUceptor');
+    const [isCommon, setIsCommon] = useState(false);
+    const [isMandatory, setIsMandatory] = useState(false);
     const popUp = useRef();
     const calendarHolder = useRef();
     const startTimeRef = useRef();
@@ -43,24 +47,38 @@ export const CreateEvent = (props) => {
         if(!inputTitle) toast('Please provide a title');
         else if(earlierThan(endTimeInput, startTimeInput)) toast('Please provide a valid time range');
         else {
-            createVUEvent({
+            const inputs = {
                 title: inputTitle,
-                logged_by: auth?.email,
                 date: dateInput,
                 start_time: startTimeInput,
                 description: descriptionInput,
                 location: locationInput,
                 end_time: endTimeInput,
-            })
-                .then(res => {
-                    const { status } = res;
-                    if(status === RESPONSE_STATUS.SUCCESS) {
-                        setShowPopUp(false);
-                        getVUEvents();
-                    }
-                    else toast('Error updating event');
-                })
-                .catch(err => toast('Error updating event'));
+            }
+            if(eventType === 'VUceptor') {
+                createVUEvent({ ...inputs, mandatory: isMandatory ? 1 : 0 })
+                    .then(res => {
+                        const { status } = res;
+                        if(status === RESPONSE_STATUS.SUCCESS) {
+                            setShowPopUp(false);
+                            getEvents();
+                        }
+                        else toast('Error updating event');
+                    })
+                    .catch(() => toast('Error updating event'));
+            }
+            else {
+                createfyEvent({ ...inputs, is_common: isCommon, visions: vision || 0 })
+                    .then(res => {
+                        const { status } = res;
+                        if(status === RESPONSE_STATUS.SUCCESS) {
+                            setShowPopUp(false);
+                            getEvents();
+                        }
+                        else toast('Error updating event');
+                    })
+                    .catch(() => toast('Error updating event'));
+            }
         }
     }
 
@@ -83,6 +101,15 @@ export const CreateEvent = (props) => {
             className={cx(styles.eventPopUp, {[styles.mobile]: type === WINDOW_TYPE.MOBILE})}
             ref={popUp}
         >
+            <div className={cx(styles.row)}>
+                <span className={cx(styles.label)} >{EVENT.EVENT_TYPE}</span>
+                <TableSelect
+                    className={cx(styles.eventTypeSelector)}
+                    options={vision ? CREATE_EVENT_OPTIONS : { label: 'VUceptor', value: 'VUceptor' }}
+                    selected={{ label: eventType, value: eventType }}
+                    onChange={({ value }) => setEventType(value)}
+                />
+            </div>
             <div className={cx(styles.row)}>
                 <input 
                     className={cx(styles.rowText)} 
@@ -134,6 +161,24 @@ export const CreateEvent = (props) => {
                     ref={descriptionRef}
                 />
             </div>
+            {eventType === 'First-year Student' && <div className={cx(styles.row)}>
+                <span className={cx(styles.label)} >{EVENT.FOR_ALL_GROUPS}</span>
+                <input 
+                    className={cx(styles.checkbox)} 
+                    type='checkbox'
+                    checked={isCommon}
+                    onChange={(e) => setIsCommon(e.target.checked)}
+                />
+            </div>}
+            {eventType === 'VUceptor' && <div className={cx(styles.row)}>
+                <span className={cx(styles.label)} >{EVENT.IS_MANDATORY}</span>
+                <input 
+                    className={cx(styles.checkbox)} 
+                    type='checkbox'
+                    checked={isMandatory}
+                    onChange={(e) => setIsMandatory(e.target.checked)}
+                />
+            </div>}
             <div className={cx(styles.buttonWrapper)}>
                 <div className={cx(styles.submit)} onClick={onSubmit}>
                     {EVENT.SUBMIT}

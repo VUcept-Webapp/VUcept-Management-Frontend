@@ -94,14 +94,3 @@ test('PopUpAddFy onAdd', async () => {
     await expect(email).toEqual(emailVal);
     await expect(visions.toString()).toEqual(visionsVal);
 });
-/*
-test('PopUp click blocker', async () => {
-    let show = true;
-    const setShow = (val) => show = val;
-    const { 
-        blockerElement,
-    } = setUp({ show, setShow });
-    await fireEvent.click(blockerElement);
-    await expect(show).toEqual(false);
-});
-*/

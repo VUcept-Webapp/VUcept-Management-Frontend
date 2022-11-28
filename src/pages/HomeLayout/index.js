@@ -1,6 +1,5 @@
 import ExitIcon from '../../assets/icons/exit.svg';
 import MenuIcon from '../../assets/icons/menu.svg';
-import UserIcon from '../../assets/icons/user.svg';
 import CalendarIcon from '../../assets/icons/calendar.svg';
 import ClockIcon from '../../assets/icons/clock.svg';
 import FileIcon from '../../assets/icons/file.svg';
@@ -43,12 +42,7 @@ export const HomeLayout = () => {
                 [styles.small]: isSmall
             })}
         >
-            <img src={MenuIcon} onClick={() => setShowMenu(!showMenu)} className={cx(styles.controlIcon, {
-                [styles.small]: isSmall
-            })}/>
-            <img src={UserIcon} className={cx(styles.controlIcon, {
-                [styles.small]: isSmall
-            })}/>
+            <img src={MenuIcon} onClick={() => setShowMenu(!showMenu)} className={cx(styles.controlIcon, { [styles.small]: isSmall })}/>
             <img src={ExitIcon} onClick={() => {
                 updateAuth({});
                 navigate('/');
@@ -61,7 +55,7 @@ export const HomeLayout = () => {
         })}>
             <div
                 className={cx(styles.leftBar, {
-                    [styles.small]: isSmall,
+                    [styles.small]: isSmall || pathname === ROUTES.CALENDAR,
                     [styles.show]: showMenu
                 })}
             >

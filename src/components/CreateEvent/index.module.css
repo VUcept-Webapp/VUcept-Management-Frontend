@@ -118,3 +118,12 @@
     width: 100%;
     z-index: 800;
 }
+
+.label {
+    width: fit-content;
+}
+
+.eventTypeSelector {
+    margin-left: auto;
+    margin-right: 20px;
+}

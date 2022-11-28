@@ -39,5 +39,5 @@ PopUpDeleteAll.propTypes = {
     setShow: PropTypes.func.isRequired, // (show: Bool) => void
     title: PropTypes.string,
     description: PropTypes.string,
-    onDelete: PropTypes.func.isRequired, // () => void
+    onDelete: PropTypes.func, // () => void
 }

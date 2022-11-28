@@ -95,8 +95,14 @@ export const TABLE = {
     MIN_COLUMN_WIDTH: 170
 }
 
+export const USER_TYPE = {
+    ADVISER: 'adviser',
+    BOARD: 'board',
+    VUCEPTOR: 'vuceptor'
+};
+
 export const USER_TYPE_OPTIONS = [
-    { label: 'Advisor', value: 'Advisor' },
+    { label: 'Adviser', value: 'Adviser' },
     { label: 'Board', value: 'Board' },
     { label: 'VUceptor', value: 'VUceptor' },
 ];
@@ -141,4 +147,30 @@ export const EVENT = {
     MY_EVENT: 'My Event',
     ENTER_DESCRIPTION: 'Enter description',
     ENTER_LOCATION: 'Enter Location',
+    ENTER_TITLE: 'Enter title',
+    EVENT_TYPE: 'Type:',
+    FOR_ALL_GROUPS: 'For all groups',
+    IS_MANDATORY: 'Is Mandatory',
+    LOAD_VU_EVENT: 'Import VUceptor Event'
+}
+
+export const CREATE_EVENT_OPTIONS = [
+    { label: 'First-year Student', value: 'First-year Student' },
+    { label: 'VUceptor', value: 'VUceptor' },
+];
+
+export const IMPORT_EVENT = [
+    { label: 'VUceptor Events', value: 'VUceptor Events' },
+    { label: 'First-year Events', value: 'First-year Events' },
+    { label: 'First-year Info', value: 'First-year Info' },
+]
+
+export const RESET_EVENT_OPTIONS = [
+    { label: 'VUceptor Events', value: 'VUceptor Events' },
+    { label: 'First-year Events', value: 'First-year Events' },
+]
+
+export const EVENT_TYPE = {
+    FIRST_YEAR: 'First-year Student',
+    VUCEPTOR: 'VUceptor',
 }

@@ -13,7 +13,7 @@ export const TableItem = (props) => {
     } = props;
     
     const renderItem = () => {
-        if(item === 'Advisor') return <span className={cx(styles.advisor, className)} style={style}>Advisor</span>
+        if(item === 'Adviser') return <span className={cx(styles.advisor, className)} style={style}>Advisor</span>
         else if(item === 'Board') return <span className={cx(styles.board, className)} style={style}>Board</span>
         else if(item === 'VUceptor') return <span className={cx(styles.vuceptor, className)} style={style}>VUceptor</span>
         else if(item === 'Registered') return <span className={cx(styles.registered, className)} style={style}>Registered</span>

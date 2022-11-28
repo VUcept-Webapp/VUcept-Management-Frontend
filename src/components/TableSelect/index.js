@@ -14,6 +14,8 @@ export const TableSelect = (props) => {
         selected,
         onChange,
         warn,
+        placeholder,
+        isClearable,
     } = props;
 
     const filterSelectStyles = {
@@ -42,9 +44,6 @@ export const TableSelect = (props) => {
             ...provided,
             margin: '0px',
         }),
-        placeholder: () => ({
-            display: 'none'
-        }),
         indicatorsContainer: (provided, state) => ({
             ...provided,
             height: `${height}px`,
@@ -52,7 +51,10 @@ export const TableSelect = (props) => {
         menuPortal: (provided, state) => ({ 
             ...provided,
             zIndex: 1000
-        })
+        }),
+        ...(!placeholder && { placeholder: () => ({
+            display: 'none'
+        })})
     }
     
     return <div className={cx(styles.container, className)}>
@@ -62,6 +64,8 @@ export const TableSelect = (props) => {
             options={options}
             styles={filterSelectStyles}
             menuPortalTarget={document.body}
+            isClearable={isClearable}
+            placeholder={placeholder}
         />
     </div>
 }
@@ -72,5 +76,7 @@ TableSelect.propTypes = {
     options: PropTypes.array.isRequired,
     selected: PropTypes.object.isRequired,
     onChange: PropTypes.func.isRequired, // (option: Object) => void
-    warn: PropTypes.bool.isRequired
+    warn: PropTypes.bool.isRequired,
+    placeholder: PropTypes.string,
+    isClearable: PropTypes.bool
 }

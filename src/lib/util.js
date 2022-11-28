@@ -1,4 +1,4 @@
-import { EVENT, SORT } from "./constants";
+import { EVENT, EVENT_TYPE, SORT } from "./constants";
 
 /**
  * Construct the url for GET request
@@ -29,7 +29,7 @@ export const toUpperRows = (rows) => {
             const original = r.type;
             if(original === 'vuceptor') r.type = 'VUceptor';
             else if(original === 'board') r.type = 'Board';
-            else if(original === 'advisor') r.type = 'Advisor';
+            else if(original === 'adviser') r.type = 'Adviser';
         }
         if(r.status) {
             const original = r.status;
@@ -542,15 +542,18 @@ export const getEventWidth = (events, idx, columnWidth) => {
 /**
  * Transform the events in response into the format for Event component
  * @param {Array} events events obtained from API
+ * @param {String} eventType type of the event -- first-year / vuceptor
  * @returns events in the format of Event component
  */
-export const transformEvents = (events) => {
-    return events.map(({ date, start_time, end_time, event_id, logged_by, ...rest }) => ({
-        date: formatGetTime(yyyymmddToDateObj(date.split('T')[0]).getTime()),
+export const transformEvents = (events, eventType = EVENT_TYPE.VUCEPTOR) => {
+    return events.map(({ date, start_time, end_time, event_id, offset, ...rest }) => ({
+        date: eventType === EVENT_TYPE.VUCEPTOR ? 
+            formatGetTime(yyyymmddToDateObj(date.split('T')[0]).getTime()) : 
+            formatGetTime(addDays(yyyymmddToDateObj(date.split('T')[0]), offset).getTime()),
         startTime: start_time.slice(0, start_time.length - 3),
         endTime: end_time.slice(0, end_time.length - 3),
-        eventId: event_id,
-        loggedBy: logged_by,
+        eventId: eventType + '|' + event_id,
+        eventType,
         ...rest,
     }))
 }

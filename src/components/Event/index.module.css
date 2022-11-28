@@ -6,11 +6,18 @@
     position: absolute;
     height: 50px;
     border-radius: 5px;
-    border: 1px solid rgba(248, 182, 13, 1);
     background-color: #FFFFFF;
     cursor: pointer;
     display: flex;
     flex-direction: column;
+}
+
+.container.vuceptor {
+    border: 1px solid rgba(248, 182, 13, 1);
+}
+
+.container.firstYear {
+    border: 1px solid #0d4ff8;
 }
 
 .container.dragging {
@@ -37,6 +44,14 @@
     border-radius: 5px;
     background: rgba(255, 230, 166, 1);
     font-weight: 700;
+}
+
+.time.vuceptor {
+    background: rgba(255, 230, 166, 1);
+}
+
+.time.firstYear {
+    background: #a6bfff;
 }
 
 .description {

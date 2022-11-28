@@ -3,9 +3,9 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useRef, useState } from 'react';
 import { addDays, formatGetTime, getDay, getEndTime, getEventHeight, getEventTop, getEventWidth, getLeftFromDay, getMinDiff, getMonday, nonDraggingPropsChange, topToTime, yyyymmddToDateObj } from '../../lib/util';
 import { EventDetails } from '../EventDetails';
-import { updateVUEvent } from '../../lib/services';
+import { updatefyEvent, updateVUEvent } from '../../lib/services';
 import { toast } from 'react-toastify';
-import { RESPONSE_STATUS } from '../../lib/constants';
+import { EVENT_TYPE, RESPONSE_STATUS, USER_TYPE } from '../../lib/constants';
 import { useAuth } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
@@ -20,10 +20,11 @@ export const Event = React.memo((props) => {
         columnWidth,
         idx,
         events,
-        getVUEvents,
+        getEvents,
+        vision,
     } = props;
+    const { startTime, endTime, title, date, description, location, eventId, mandatory, eventType, is_common } = events[idx];
     const { auth } = useAuth();
-    const { startTime, endTime, title, date, description, location, eventId } = events[idx];
     const [left, setLeft] = useState(40);
     const [top, setTop] = useState(getEventTop(startTime));
     const [showEdit, setShowEdit] = useState(false);
@@ -49,22 +50,43 @@ export const Event = React.memo((props) => {
 
     useEffect(() => {
         if(posChange !== 0) {
-            updateVUEvent({
-                title: title,
-                logged_by: auth.email,
-                date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
-                start_time: topToTime(top),
-                description: description,
-                location: location,
-                end_time: getEndTime(startTime, endTime, topToTime(top)),
-                event_id: eventId
-            })
-                .then(res => {
-                    const { status } = res;
-                    if(status === RESPONSE_STATUS.SUCCESS) getVUEvents();
-                    else toast('Error updating event');
+            if(eventType === EVENT_TYPE.VUCEPTOR) {
+                updateVUEvent({
+                    title: title,
+                    mandatory: mandatory,
+                    date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
+                    start_time: topToTime(top),
+                    description: description,
+                    location: location,
+                    end_time: getEndTime(startTime, endTime, topToTime(top)),
+                    event_id: eventId.split('|')[1]
                 })
-                .catch(err => toast('Error updating event'));
+                    .then(res => {
+                        const { status } = res;
+                        if(status === RESPONSE_STATUS.SUCCESS) getEvents();
+                        else toast('Error updating event');
+                    })
+                    .catch(err => toast('Error updating event'));
+            }
+            else {
+                updatefyEvent({
+                    title: title,
+                    is_common: is_common,
+                    date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
+                    start_time: topToTime(top),
+                    description: description,
+                    location: location,
+                    end_time: getEndTime(startTime, endTime, topToTime(top)),
+                    event_id: eventId.split('|')[1],
+                    visions: vision
+                })
+                    .then(res => {
+                        const { status } = res;
+                        if(status === RESPONSE_STATUS.SUCCESS) getEvents();
+                        else toast('Error updating event');
+                    })
+                    .catch(err => toast('Error updating event'));
+            }
         }
     }, [posChange]);
 
@@ -89,7 +111,9 @@ export const Event = React.memo((props) => {
 
     const onDragEnd = (e) => {
         if(!dragRef.current) setShowEdit(true);
-        else setPosChange(posChange + 1);
+        else {
+            if(auth?.type && auth?.type !== USER_TYPE.VUCEPTOR) setPosChange(posChange + 1);
+        }
         setDragging({
             ...dragging,
             [eventId]: false
@@ -104,13 +128,17 @@ export const Event = React.memo((props) => {
     const onDragStart = (e) => {
         document.getElementById('calendar').style.overflow = 'hidden';
         initDrag.current = { x: e.clientX, y: e.clientY, left, top };
-        window.addEventListener('mousemove', onDrag);
+        if(auth?.type && auth?.type !== USER_TYPE.VUCEPTOR) window.addEventListener('mousemove', onDrag);
         window.addEventListener('mouseup', onDragEnd);
     }
 
     return <>
         <div 
-            className={cx(styles.container, {[styles.dragging]: dragging[eventId]})} 
+            className={cx(styles.container, {
+                [styles.dragging]: dragging[eventId],
+                [styles.vuceptor]: eventType === EVENT_TYPE.VUCEPTOR,
+                [styles.firstYear]: eventType === EVENT_TYPE.FIRST_YEAR,
+            })} 
             style={{ 
                 width: `${dragging[eventId] ? columnWidth : eventWidth}px`,
                 height: `${getEventHeight(timeDiff)}px`,
@@ -121,8 +149,22 @@ export const Event = React.memo((props) => {
             ref={eventElement}
         >
             {(eventWidth >= 130 && getEventHeight(timeDiff) >= 100) && <div className={cx(styles.times)}>
-                <div className={cx(styles.time)}>{startTime}</div>
-                <div className={cx(styles.time)}>{endTime}</div>
+                <div 
+                    className={cx(styles.time, {
+                        [styles.vuceptor]: eventType === EVENT_TYPE.VUCEPTOR,
+                        [styles.firstYear]: eventType === EVENT_TYPE.FIRST_YEAR,
+                    })}
+                >
+                    {startTime}
+                </div>
+                <div 
+                    className={cx(styles.time, {
+                        [styles.vuceptor]: eventType === EVENT_TYPE.VUCEPTOR,
+                        [styles.firstYear]: eventType === EVENT_TYPE.FIRST_YEAR,
+                    })}
+                >
+                    {endTime}
+                </div>
             </div>}
             <textarea className={cx(styles.description)} value={title} readOnly/>
         </div>
@@ -138,9 +180,12 @@ export const Event = React.memo((props) => {
             endTime={endTime}
             location={location}
             description={description}
-            loggedBy={auth.email}
             eventId={eventId}
-            getVUEvents={getVUEvents}
+            getEvents={getEvents}
+            mandatory={mandatory}
+            is_common={is_common}
+            eventType={eventType}
+            vision={vision}
         />}
     </>
 }, (prevProps, nextProps) => {

@@ -120,8 +120,7 @@ export const LogAttendance = ({ toast }) => {
             toast('Please log all students');
             return;
         }
-        console.log(inputRows);
-        submitAttendance({ edits: inputRows.map(row => ({ email: row.email, eventId: event.event_id, attendance: row.attendance })) })
+        submitAttendance({ edits: inputRows.map(row => ({ email: row.email, eventId: event.event_id.split('|')[1], attendance: row.attendance })) })
             .then(res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.ERROR) toast('Error submitting attendance');

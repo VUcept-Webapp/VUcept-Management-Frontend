@@ -226,7 +226,7 @@ export const UserManagement = ({ toast }) => {
                     setTablePage(0);
                     setTypeFilter(getOptionValue(value));
                 },
-                options: ['VUCeptor', 'Advisor', 'Board']
+                options: ['VUCeptor', 'Adviser', 'Board']
             },
             render: (val) => <TableItem item={val} />
         },
