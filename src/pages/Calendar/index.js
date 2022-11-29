@@ -9,7 +9,7 @@ import { Event } from '../../components/Event';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CreateEvent } from '../../components/CreateEvent';
 import { addDays, formatGetTime, formatTime, importUsersToJSON, transformEvents } from '../../lib/util';
-import { fyVisionsEventLoadfromcsv, fyVisionsInfoLoadfromcsv, readfyEvent, readVUEvent, resetfyEvent, resetVUEvent, visionsNums, VUEventLoadfromcsv } from '../../lib/services';
+import { fyVisionsEventLoadfromcsv, fyVisionsInfoLoadfromcsv, readfyEvent, readVUEvent, resetfyEvent, resetVUEvent, visionsEntered, VUEventLoadfromcsv } from '../../lib/services';
 import { EVENT, EVENT_TYPE, IMPORT_EVENT, RESET_EVENT_OPTIONS, RESPONSE_STATUS, USER_TYPE } from '../../lib/constants';
 import { TableSelect } from '../../components/TableSelect';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
@@ -82,7 +82,7 @@ export const Calendar = ({ toast }) => {
     }
 
     useEffect(() => {
-        visionsNums()
+        visionsEntered()
             .then(res => {
                 const { result: { list }, status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) setVisions(list.filter(x => x?.visions !== 0).map(x => x?.visions));

@@ -537,3 +537,13 @@ export const resetfyEvent = (inputs) => {
         .catch(err => reject(err));
     })
 }
+
+export const visionsEntered = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/visionsEntered'), {
+            method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
