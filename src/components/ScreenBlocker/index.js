@@ -16,6 +16,7 @@ export const ScreenBlocker = (props) => {
                 [styles.show]: show
             })}
             onClick={() => onClick()}
+            data-testid='screen-blocker'
         >
         </div>
     </>

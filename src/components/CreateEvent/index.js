@@ -1,6 +1,6 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
-import PropTypes, { array } from 'prop-types';
+import PropTypes from 'prop-types';
 import { useWindowSize } from '../../lib/hooks';
 import { addHalfAnHour, earlierThan, formatGetTime, yyyymmddToDateObj } from '../../lib/util';
 import { CREATE_EVENT_OPTIONS, EVENT, RESPONSE_STATUS, WINDOW_TYPE } from '../../lib/constants';
@@ -101,7 +101,7 @@ export const CreateEvent = (props) => {
             className={cx(styles.eventPopUp, {[styles.mobile]: type === WINDOW_TYPE.MOBILE})}
             ref={popUp}
         >
-            <div className={cx(styles.row)}>
+            <div className={cx(styles.row)} data-testid='create-event-type'>
                 <span className={cx(styles.label)} >{EVENT.EVENT_TYPE}</span>
                 <TableSelect
                     className={cx(styles.eventTypeSelector)}
@@ -110,14 +110,14 @@ export const CreateEvent = (props) => {
                     onChange={({ value }) => setEventType(value)}
                 />
             </div>
-            <div className={cx(styles.row)}>
+            <div className={cx(styles.row)} data-testid='create-event-title'>
                 <input 
                     className={cx(styles.rowText)} 
                     defaultValue={EVENT.MY_EVENT}
                     ref={titleRef}
                 />
             </div>
-            <div className={cx(styles.row)}>
+            <div className={cx(styles.row)} data-testid='create-event-location'>
                 <img src={LocationIcon} className={cx(styles.icon)}/>
                 <input 
                     className={cx(styles.rowText)} 
@@ -126,7 +126,7 @@ export const CreateEvent = (props) => {
                 />
             </div>
             <div className={cx(styles.twoColumnRow)}>
-                <div className={cx(styles.rowBlock, styles.separate)}>
+                <div className={cx(styles.rowBlock, styles.separate)} data-testid='create-event-date'>
                     <div className={cx(styles.icon)}>
                         <CalendarComponent
                             start={eventDate}
@@ -140,7 +140,7 @@ export const CreateEvent = (props) => {
                         {formatGetTime(eventDate)}
                     </span>
                 </div>
-                <div className={cx(styles.rowBlock)}>
+                <div className={cx(styles.rowBlock)} data-testid='create-event-time'>
                     <img src={ClockIcon} className={cx(styles.icon)}/>
                     <TimePicker
                         time={startTime}
@@ -153,7 +153,7 @@ export const CreateEvent = (props) => {
                     />
                 </div>
             </div>
-            <div className={cx(styles.row)}>
+            <div className={cx(styles.row)} data-testid='create-event-description'>
                 <img src={PenIcon} className={cx(styles.icon)}/>
                 <input 
                     className={cx(styles.rowText)} 
@@ -186,4 +186,12 @@ export const CreateEvent = (props) => {
             </div>
         </div>
     </>
+}
+
+CreateEvent.propTypes = {
+    setShowPopUp: PropTypes.func,
+    date: PropTypes.string, // yyyy-mm-dd
+    startTime: PropTypes.string, // hh:mm
+    getEvents: PropTypes.func,
+    vision: PropTypes.string
 }

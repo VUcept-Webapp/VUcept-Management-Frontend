@@ -7,10 +7,11 @@ import { updatefyEvent, updateVUEvent } from '../../lib/services';
 import { toast } from 'react-toastify';
 import { EVENT_TYPE, RESPONSE_STATUS, USER_TYPE } from '../../lib/constants';
 import { useAuth } from '../../lib/hooks';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
 // Each event on the calendar page
-export const Event = React.memo((props) => {
+export const Event = (props) => {
     const {
         hoverCol,
         scrollTop,
@@ -188,8 +189,17 @@ export const Event = React.memo((props) => {
             vision={vision}
         />}
     </>
-}, (prevProps, nextProps) => {
-    // if(nonDraggingPropsChange(prevProps, nextProps)) return false;
-    // if(!prevProps.dragging && !nextProps.dragging) return true;
-    return false;
-});
+};
+
+Event.propTypes = {
+    hoverCol: PropTypes.number, // the current row being hovered
+    scrollTop: PropTypes.number, // scrollTop of current window
+    calendarHeight: PropTypes.number, // height of the calendar component
+    dragging: PropTypes.object, // a map containing status of whether each event is being dragged
+    setDragging: PropTypes.func,
+    columnWidth: PropTypes.number, // width of each column of the calendar
+    idx: PropTypes.number, // index of this event in events array
+    events: PropTypes.array, // all events on the calendar
+    getEvents: PropTypes.func, // function that get events
+    vision: PropTypes.string, // vision number selected on the calendar
+}

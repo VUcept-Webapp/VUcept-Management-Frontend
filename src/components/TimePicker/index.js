@@ -2,6 +2,7 @@ import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import { useEffect, useState } from 'react';
 import React from 'react';
+import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
 // A time picker
@@ -40,8 +41,9 @@ export const TimePicker = React.forwardRef((props, ref) => {
         }
     }
 
-    return <div className={cx(styles.timePicker, className)}>
+    return <div className={cx(styles.timePicker, className)} data-testid='time-picker'>
         <input 
+            data-testid='time-picker-h'
             className={cx(styles.timeInput)}
             value={h}
             onChange={onChangeH}
@@ -49,6 +51,7 @@ export const TimePicker = React.forwardRef((props, ref) => {
         />
         <span>:</span>
         <input
+            data-testid='time-picker-m'
             className={cx(styles.timeInput)}
             value={m}
             onChange={onChangeM}
@@ -56,3 +59,9 @@ export const TimePicker = React.forwardRef((props, ref) => {
         />
     </div>
 });
+
+TimePicker.propTypes = {
+    className: PropTypes.string,
+    time: PropTypes.string,
+    readOnly: PropTypes.bool
+}

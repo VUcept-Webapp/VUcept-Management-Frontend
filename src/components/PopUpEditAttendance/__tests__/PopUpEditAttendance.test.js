@@ -10,7 +10,7 @@ row: PropTypes.object.isRequired, // row of table
     onSave: PropTypes.func.isRequired, // ({ in
 */
 
-const defaultRow = { email: 'email', event: 'event', status: 'Absent' };
+const defaultRow = { email: 'email', event_id: 'event', status: 'Absent' };
 const defaultTitle = 'title';
 const defaultShow = true;
 const defaultSetShow = () => undefined;

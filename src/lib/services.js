@@ -98,8 +98,10 @@ export const signUp = (inputs) => {
 
 export const login = (inputs = {}) => {
     return new Promise((resolve, reject) => {
-        fetch(appendParams(process.env.REACT_APP_HOST_URL + '/login', inputs), {
-            method: 'GET',
+        fetch(process.env.REACT_APP_HOST_URL + '/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
         }).then(response => response.json())
         .then(response => resolve(response))
         .catch(err => reject(err));
@@ -542,6 +544,18 @@ export const visionsEntered = (inputs) => {
     return new Promise((resolve, reject) => {
         fetch(appendParams(process.env.REACT_APP_HOST_URL + '/visionsEntered'), {
             method: 'GET',
+        }).then(response => response.json())
+        .then(response => resolve(response))
+        .catch(err => reject(err));
+    })
+}
+
+export const insertVUAttendance = (inputs) => {
+    return new Promise((resolve, reject) => {
+        fetch(process.env.REACT_APP_HOST_URL + '/insertVUAttendance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(inputs),
         }).then(response => response.json())
         .then(response => resolve(response))
         .catch(err => reject(err));

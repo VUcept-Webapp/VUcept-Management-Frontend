@@ -35,10 +35,10 @@ export const LogAttendance = ({ toast }) => {
     const getEvents = () => {
         getLogVisionsEvents({ visions: auth?.visions })
             .then(res => {
-                const { status, data } = res;
+                const { status, events } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
-                    setEvents(data);
-                    if(data.length) setEvent(data[0]);
+                    setEvents(events);
+                    if(events.length) setEvent(events[0]);
                 }
                 else toast("Failed to obtain events")
             })
@@ -48,7 +48,7 @@ export const LogAttendance = ({ toast }) => {
     // obtain attendance records
     const getAttendance = () => {
         readLogAttendance({
-            event: JSON.stringify(event.title),
+            event_id: JSON.stringify(event.event_id),
             visions: auth?.visions,
             row_start: tablePage * TABLE.ROW_PER_PAGE, 
             row_num: TABLE.ROW_PER_PAGE,
@@ -120,10 +120,10 @@ export const LogAttendance = ({ toast }) => {
             toast('Please log all students');
             return;
         }
-        submitAttendance({ edits: inputRows.map(row => ({ email: row.email, eventId: event.event_id.split('|')[1], attendance: row.attendance })) })
+        submitAttendance({ edits: inputRows.map(row => ({ email: row.email, eventId: event.event_id, attendance: row.attendance })) })
             .then(res => {
                 const { status } = res;
-                if(status === RESPONSE_STATUS.ERROR) toast('Error submitting attendance');
+                if(status !== RESPONSE_STATUS.SUCCESS) toast('Error submitting attendance');
             })
             .catch(err => toast('Error submitting attendance'));
     }

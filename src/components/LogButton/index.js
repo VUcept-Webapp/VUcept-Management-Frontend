@@ -29,6 +29,7 @@ export const LogButton = React.forwardRef((props, ref) => {
     return <div
         className={cx(styles.but, className)}
         style={style}
+        data-testid='log-button'
     >
         <Creatable
             value={{ label: selected, value: selected }}

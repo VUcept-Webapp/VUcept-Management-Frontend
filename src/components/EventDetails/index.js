@@ -11,7 +11,7 @@ import PenIcon from '../../assets/icons/pen.svg';
 import { CalendarComponent } from '../CalendarComponent';
 import { TimePicker } from '../TimePicker';
 import { toast } from 'react-toastify';
-import { deletefyEvent, deleteVUEvent, getOneVUAttendance, updatefyEvent, updateVUEvent } from '../../lib/services';
+import { deletefyEvent, deleteVUEvent, getOneVUAttendance, insertVUAttendance, updatefyEvent, updateVUEvent } from '../../lib/services';
 const cx = classNames.bind(styles);
 
 // Pop up for adding first-year student
@@ -66,7 +66,17 @@ export const EventDetails = (props) => {
 
     const onSubmit = () => {
         if(auth?.type === USER_TYPE.VUCEPTOR) {
-
+            insertVUAttendance({ email: auth?.email, eventId: eventId.split('|')[1], attendance: attendance ? 'present' : 'absent' })
+                .then(res => {
+                    const { status } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) setShowPopUp(false);
+                    else if(status === RESPONSE_STATUS.REPEATED_RECORDS) {
+                        toast('Attendance has already been recorded before.');
+                        setShowPopUp(false);
+                    }
+                    else toast('Error submitting attendance');
+                })
+                .catch(() => toast('Error submitting attendance'));
         }
         else {
             const inputTitle = titleRef.current.value;
@@ -241,13 +251,6 @@ export const EventDetails = (props) => {
                     type='checkbox'
                     checked={attendance}
                     onChange={e => setAttendance(e.target.checked)}
-                />
-            </div>}
-            {auth?.type === USER_TYPE.VUCEPTOR && <div className={cx(styles.row)}>
-                <span>{EVENT.ATTENDANCE_FEEDBACK}</span>
-                <input 
-                    className={cx(styles.feedback)}
-                    ref={feedbackRef}
                 />
             </div>}
             <div className={cx(styles.buttonWrapper)}>

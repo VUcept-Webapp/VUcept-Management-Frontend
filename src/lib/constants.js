@@ -43,6 +43,7 @@ export const RESPONSE_STATUS = {
     INVALID_VU_EVENT: 'INVALID_VU_EVENT',
     NO_EXISTING_RECORDS: 'NO_EXISTING_RECORDS',
     INVALID_USER: 'INVALID_USER',
+    REPEATED_RECORDS: 'REPEATED_RECORDS'
 }
 
 export const AUTH_INPUT_ERRORS = {
@@ -113,10 +114,9 @@ export const USER_STATUS_OPTIONS = [
 ];
 
 export const ATTENDANCE_STATUS_OPTIONS = [
-    { label: 'Attended', value: 'Attended' },
+    { label: 'Present', value: 'Present' },
     { label: 'Unlogged', value: 'Unlogged' },
     { label: 'Absent', value: 'Absent' },
-    { label: 'Select', value: 'Select' },
 ];
 
 export const EDIT_ATTENDANCE_STATUS_OPTIONS = [

@@ -5,7 +5,6 @@ import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
-import { PopUpEditRecord } from '../../components/PopUpEditRecord';
 import { useWindowSize } from '../../lib/hooks';
 import { debounce, formatGetTime, getOptionValue, getSortParam, toUpperRows, updateOrder } from '../../lib/util';
 import { TableItem } from '../../components/TableItem';
@@ -43,7 +42,7 @@ export const VUceptorAttendance = ({ taost }) => {
     const [startDate, setStartDate] = useState(new Date().getTime());
     const [endDate, setEndDate] = useState(new Date().getTime());
     const [disableTable, setDisableTable] = useState(false);
-    const [absenceNum, setAbsenceNum] = useState('');
+    const [presenceNum, setPresenceNum] = useState('');
     const orderRef = useRef([]);
 
     const getAttendance = () => {
@@ -59,7 +58,7 @@ export const VUceptorAttendance = ({ taost }) => {
             getVUAttendanceEventsList().then(res => {
                 const { status, data } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
-                    setEventOptions(data.map(option => option.toString()));
+                    setEventOptions(data.map(option => option.title.toString()));
                 }
                 else toast('Error fetching events options');
             }).catch(err => toast('Error fetching events options'));
@@ -68,7 +67,7 @@ export const VUceptorAttendance = ({ taost }) => {
                 time_range: JSON.stringify([formatGetTime(startDate), formatGetTime(endDate)]),
                 row_start: tablePage * TABLE.ROW_PER_PAGE, 
                 row_num: TABLE.ROW_PER_PAGE,
-                ...(absenceNum && { num_absence: absenceNum }),
+                ...(presenceNum && { num_presence: presenceNum }),
                 ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
                 ...(nameSort && { name_sort: nameSort }),
                 ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
@@ -105,8 +104,8 @@ export const VUceptorAttendance = ({ taost }) => {
         setDeleteRow(row);
     }
 
-    const postAbsence = (absenceCount) => {
-        setAbsenceNum(absenceCount);
+    const postAbsence = (count) => {
+        setPresenceNum(count);
     }
     let debouncedPostAbsence = useCallback(debounce(postAbsence, 500), []);
 
@@ -133,7 +132,7 @@ export const VUceptorAttendance = ({ taost }) => {
 
     const onSaveEdit = (inputs) => {
         const { inputEmail, inputEvent, inputStatus } = inputs;
-        editVUAttendance({ email: inputEmail, event: inputEvent, attendance: inputStatus })
+        editVUAttendance({ email: inputEmail, eventId: inputEvent, attendance: inputStatus })
             .then(res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
@@ -223,7 +222,7 @@ export const VUceptorAttendance = ({ taost }) => {
 
     useEffect(() => {
         getAttendance();
-    }, [tablePage, absenceNum, nameSearch, nameSort, emailSearch, emailSort, 
+    }, [tablePage, presenceNum, nameSearch, nameSort, emailSearch, emailSort, 
         visionsFilter, visionsSort, eventFilter, eventSort, statusFilter, startDate, endDate]);
     
     return <>
@@ -238,7 +237,7 @@ export const VUceptorAttendance = ({ taost }) => {
                 <CalendarComponent onDateChange={(val) => setEndDate(val)}/>
             </div>
             <div className={cx(styles.selectContainer, {[styles.small]: isSmall})}>
-                <span className={cx(styles.selectLabel, {[styles.small]: isSmall})}>Absences:</span>
+                <span className={cx(styles.selectLabel, {[styles.small]: isSmall})}>Presence:</span>
                 <input
                     className={cx(styles.controlInput)}
                     value={absence}

@@ -57,7 +57,7 @@ export const TableSelect = (props) => {
         })})
     }
     
-    return <div className={cx(styles.container, className)}>
+    return <div className={cx(styles.container, className)} data-testid='table-select'>
         <Select
             value={selected}
             onChange={onChange}

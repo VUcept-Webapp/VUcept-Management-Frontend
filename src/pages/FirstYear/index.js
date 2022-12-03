@@ -57,7 +57,7 @@ export const FirstYear = ({ toast }) => {
             getFyAttendanceEventsList().then(res => {
                 const { status, data } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
-                    setEventOptions(data.map(option => option.toString()));
+                    setEventOptions(data.map(option => option?.title?.toString()));
                 }
                 else toast('Error fetching events options');
             }).catch(err => toast('Error fetching events options'));
@@ -131,7 +131,7 @@ export const FirstYear = ({ toast }) => {
 
     const onSaveEdit = (inputs) => {
         const { inputEmail, inputEvent, inputStatus } = inputs;
-        editFyAttendance({ email: inputEmail, event: inputEvent, attendance: inputStatus })
+        editFyAttendance({ email: inputEmail, eventId: inputEvent, attendance: inputStatus })
             .then(res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
@@ -212,8 +212,10 @@ export const FirstYear = ({ toast }) => {
             key: 'status',
             label: 'Status',
             filter: {
-                callback: (value) => setStatusFilter(getOptionValue(value)),
-                options: ['Present', 'Absent', 'Excused']
+                callback: (value) => {
+                    setStatusFilter(getOptionValue(value))
+                },
+                options: ['Present', 'Absent', 'Excused', 'Unlogged']
             },
             render: (val) => <TableItem item={val} />
         },

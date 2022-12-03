@@ -58,8 +58,8 @@ export const PopUpEditUser = (props) => {
         show={show}
         setShow={setShow}
     >
-        <div className={cx(styles.editCaption)}>{title}</div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editCaption)} data-testid='pop-up-edit-user-title'>{title}</div>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-user-name'>
             <span className={cx(styles.editLabel)}>Name: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnName})} 
@@ -70,7 +70,7 @@ export const PopUpEditUser = (props) => {
                 }}
             />
         </div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-user-email'>
             <span className={cx(styles.editLabel)}>Email: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnEmail})} 
@@ -81,7 +81,7 @@ export const PopUpEditUser = (props) => {
                 }}
             />
         </div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-user-type'>
             <span className={cx(styles.editLabel)}>Type: </span>
             <TableSelect
                 options={USER_TYPE_OPTIONS}
@@ -92,7 +92,7 @@ export const PopUpEditUser = (props) => {
                 onChange={setSelectType}
             />
         </div>
-        {selectedType?.value === 'VUceptor' && <div className={cx(styles.editField)}>
+        {selectedType?.value === 'VUceptor' && <div className={cx(styles.editField)} data-testid='pop-up-edit-user-visions'>
             <span className={cx(styles.editLabel)}>Visions: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnVisions})} 
@@ -102,7 +102,7 @@ export const PopUpEditUser = (props) => {
                 }}
             />
         </div>}
-        <div className={cx(styles.editButtons)}>
+        <div className={cx(styles.editButtons)} data-testid='pop-up-edit-user-buttons'>
             <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)}/>
             <TableButton className={cx(styles.editButton)} label={'Save'} onClick={onSaveEdit}/>
         </div>

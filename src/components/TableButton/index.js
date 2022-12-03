@@ -17,6 +17,7 @@ export const TableButton = (props) => {
         className={cx(styles.button, className)}
         style={style}
         onClick={onClick}
+        data-testid='table-button'
     >
         {label}
     </div>;

@@ -66,8 +66,8 @@ export const PopUpEditRecord = (props) => {
         show={show}
         setShow={setShow}
     >
-        <div className={cx(styles.editCaption)}>{title}</div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editCaption)} data-testid='pop-up-edit-record-title'>{title}</div>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-record-name'>
             <span className={cx(styles.editLabel)}>Name: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnName})} 
@@ -78,7 +78,7 @@ export const PopUpEditRecord = (props) => {
                 }}
             />
         </div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-record-email'>
             <span className={cx(styles.editLabel)}>Email: </span>
             <input 
                 className={cx(styles.editInput, {[styles.warn]: warnEmail})} 
@@ -89,7 +89,7 @@ export const PopUpEditRecord = (props) => {
                 }}
             />
         </div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-record-group'>
             <span className={cx(styles.editLabel)}>Group: </span>
             <TableSelect
                 options={USER_TYPE_OPTIONS}
@@ -100,7 +100,7 @@ export const PopUpEditRecord = (props) => {
                 onChange={setSelectedGroup}
             />
         </div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-record-week'>
             <span className={cx(styles.editLabel)}>Week: </span>
             <TableSelect
                 options={USER_TYPE_OPTIONS}
@@ -111,7 +111,7 @@ export const PopUpEditRecord = (props) => {
                 onChange={setSelectedWeek}
             />
         </div>
-        <div className={cx(styles.editField)}>
+        <div className={cx(styles.editField)} data-testid='pop-up-edit-record-status'>
             <span className={cx(styles.editLabel)}>Status: </span>
             <TableSelect
                 options={ATTENDANCE_STATUS_OPTIONS}
@@ -122,7 +122,7 @@ export const PopUpEditRecord = (props) => {
                 onChange={setSelectedStatus}
             />
         </div>
-        <div className={cx(styles.editButtons)}>
+        <div className={cx(styles.editButtons)} data-testid='pop-up-edit-record-buttons'>
             <TableButton className={cx(styles.editButton)} label={'Cancel'} onClick={() => setShow(false)}/>
             <TableButton className={cx(styles.editButton)} label={'Save'} onClick={onSaveEdit}/>
         </div>

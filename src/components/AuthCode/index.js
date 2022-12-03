@@ -41,7 +41,6 @@ export const AuthCode = props => {
         else sendVerificationEmail({ email })
                 .then(res => {
                     const { status, code } = res;
-                    console.log('res', res);
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         onCodeChange(code.toString());
                         setTimeCount(60);

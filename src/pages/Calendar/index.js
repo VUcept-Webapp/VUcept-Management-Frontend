@@ -93,7 +93,6 @@ export const Calendar = ({ toast }) => {
 
     useEffect(() => {
         if(importFile && importType) {
-            console.log('upload');
             Papa.parse(importFile, {
                 complete: res => {
                     const { data } = res;

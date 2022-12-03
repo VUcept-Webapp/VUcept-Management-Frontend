@@ -56,7 +56,7 @@ export const PopUpEditAttendance = (props) => {
         setShow,
         onSave,
     } = props;
-    const { email = "", status = "", event = "" } = row || {};
+    const { email = "", status = "", event_id = "" } = row || {};
     const [selectedStatus, setSelectedStatus] = useState(status);
 
     useEffect(() => {
@@ -66,7 +66,7 @@ export const PopUpEditAttendance = (props) => {
     const onSaveEdit = () => {
         const inputStatus = selectedStatus;
         if(inputStatus ) {
-            onSave({ inputEmail: email, inputStatus, inputEvent: event });
+            onSave({ inputEmail: email, inputStatus, inputEvent: event_id });
         }
     }
 

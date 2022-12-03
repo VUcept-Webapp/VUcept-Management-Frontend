@@ -31,12 +31,17 @@ export const toUpperRows = (rows) => {
             else if(original === 'board') r.type = 'Board';
             else if(original === 'adviser') r.type = 'Adviser';
         }
-        if(r.status) {
+        if(r.status !== undefined) {
             const original = r.status;
             if(original === 'registered') r.status = 'Registered';
             else if(original === 'unregistered') r.status = 'Unregistered';
             else if(original === 'absent') r.status = 'Absent';
             else if(original === 'attended') r.status = 'Attended';
+            else if(original === null) r.status = 'Unlogged';
+        }
+        if(r.attendance !== undefined) {
+            const original = r.attendance;
+            if(original === null) r.attendance = 'Unlogged';
         }
         return r;
     })
@@ -76,7 +81,7 @@ export const importUsersToJSON = (data) => {
 export const getAttendanceStatusStyle = (val) => {
     let backgroundColor = "";
     let color = "";
-    if(val === 'Attended') {
+    if(val === 'Present') {
         backgroundColor = '#8BA18E';
         color = '#FFFFFF';
     }
@@ -85,10 +90,6 @@ export const getAttendanceStatusStyle = (val) => {
         color = '#FFFFFF';
     }
     else if(val === 'Unlogged') {
-        backgroundColor = '#ECB748';
-        color = '#FFFFFF';
-    }
-    else if(val === 'Select') {
         backgroundColor = '#E4E4E4';
         color = '#000000';
     }
@@ -162,7 +163,7 @@ export const getAttendanceStatusStyle = (val) => {
  */
 export const checkInputRows = (inputRows) => {
     for(const r of inputRows) {
-        if(r.attendance === 'Select') return false;
+        if(r.attendance === 'Unlogged') return false;
     }
     return true;
 }
@@ -290,7 +291,7 @@ export const getSortParam = (sort) => {
  * @returns an array of only the value of each option
  */
 export const getOptionValue = (options) => {
-    return options.map(option => option.value.toLowerCase());
+    return options.map(option => option?.value?.toLowerCase());
 }
 
 /**

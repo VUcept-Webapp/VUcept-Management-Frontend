@@ -34,7 +34,7 @@ export const LogIn = ({ toast }) => {
         else {
             login({ email, password, code, originalCode: inputCode })
                 .then(res => {
-                    const { status, data: { email, name, type, visions } } = res;
+                    const { status, user: { email, name, type, visions } } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         updateAuth({ email, name, type, visions });
                         navigate('/home/calendar');

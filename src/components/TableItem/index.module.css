@@ -93,3 +93,15 @@
     border-radius: 15px;
     background-color: #ECB747;
 }
+
+.unlogged {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10px;
+    width: 40px;
+    padding: 5px 25px;
+    color: #000000;
+    border-radius: 15px;
+    background-color: #E4E4E4;
+}
