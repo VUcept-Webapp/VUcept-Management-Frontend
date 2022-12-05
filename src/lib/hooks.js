@@ -113,7 +113,7 @@ export const useWeek = () => {
  */
 export const useAuth = () => {
     const { auth, updateAuth } = useContext(AuthContext);
-    return { auth, updateAuth }
+    return { auth, updateAuth };
 }
 
 /**

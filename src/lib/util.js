@@ -37,6 +37,7 @@ export const toUpperRows = (rows) => {
             else if(original === 'unregistered') r.status = 'Unregistered';
             else if(original === 'absent') r.status = 'Absent';
             else if(original === 'attended') r.status = 'Attended';
+            else if(original === 'present') r.status = 'Present';
             else if(original === null) r.status = 'Unlogged';
         }
         if(r.attendance !== undefined) {
