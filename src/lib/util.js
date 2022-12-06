@@ -569,7 +569,7 @@ export const getAllCookies = () => {
     const arr = document.cookie.split(';');
     arr.forEach(pair => {
         const [key, val] = pair.split('=');
-        res[key.trim()] = val.trim();
+        res[key?.trim()] = val?.trim();
     });
     return res;
 }
