@@ -1,8 +1,8 @@
-import { useContext, useEffect, useState } from "react"
+import { useCallback, useContext, useEffect, useState } from "react"
 import { useLocation } from "react-router-dom";
 import { CAPTIONS, ROUTES, WINDOW_TYPE } from "./constants";
 import { AuthContext } from "./contexts";
-import { getMonday, getSunday } from "./util";
+import { appendParams, getMonday, getSunday } from "./util";
 
 /**
  * Get metadata about window
@@ -112,8 +112,42 @@ export const useWeek = () => {
  * @returns {Object} states and updates of the context
  */
 export const useAuth = () => {
-    const { auth, updateAuth } = useContext(AuthContext);
-    return { auth, updateAuth };
+    const { auth, updateAuth, token, updateToken } = useContext(AuthContext);
+    return { auth, updateAuth, token, updateToken };
+}
+
+/**
+ * Use JWT authenticated requests
+ * @returns {Object} states and updates of the context
+ */
+export const useAuthenticatedRequest = () => {
+    const { token } = useAuth();
+    
+    const get = useCallback(({ url, params = {}, onResolve = () => undefined, onReject = () => undefined }) => {
+        if(!token?.accessToken) return;
+        return fetch(appendParams(process.env.REACT_APP_HOST_URL + url, params), {
+            method: 'GET',
+            ...(token?.accessToken && { headers: { 'Authorization': 'Bearer ' + token?.accessToken, } }),
+        }).then(response => response.json())
+        .then(res => onResolve(res))
+        .catch(err => onReject(err));
+    }, [token]);
+
+    const post = useCallback(({ url, params = {}, onResolve = () => undefined, onReject = () => undefined }) => {
+        if(!token?.accessToken) return;
+        return fetch(appendParams(process.env.REACT_APP_HOST_URL + url, params), {
+            method: 'POST',
+            headers: { 
+                'Content-Type': 'application/json',
+                ...(token?.accessToken && { 'Authorization': 'Bearer ' + token?.accessToken }),
+            },
+            body: JSON.stringify(params),
+        }).then(response => response.json())
+        .then(res => onResolve(res))
+        .catch(err => onReject(err));
+    }, [token]);
+
+    return { get, post };
 }
 
 /**

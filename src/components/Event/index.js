@@ -3,10 +3,9 @@ import classNames from 'classnames/bind';
 import React, { useEffect, useRef, useState } from 'react';
 import { addDays, formatGetTime, getDay, getEndTime, getEventHeight, getEventTop, getEventWidth, getLeftFromDay, getMinDiff, getMonday, nonDraggingPropsChange, topToTime, yyyymmddToDateObj } from '../../lib/util';
 import { EventDetails } from '../EventDetails';
-import { updatefyEvent, updateVUEvent } from '../../lib/services';
 import { toast } from 'react-toastify';
 import { EVENT_TYPE, RESPONSE_STATUS, USER_TYPE } from '../../lib/constants';
-import { useAuth } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest } from '../../lib/hooks';
 import PropTypes from 'prop-types';
 const cx = classNames.bind(styles);
 
@@ -24,6 +23,8 @@ export const Event = (props) => {
         getEvents,
         vision,
     } = props;
+    console.log('render');
+    const { post } = useAuthenticatedRequest();
     const { startTime, endTime, title, date, description, location, eventId, mandatory, eventType, is_common } = events[idx];
     const { auth } = useAuth();
     const [left, setLeft] = useState(40);
@@ -52,41 +53,47 @@ export const Event = (props) => {
     useEffect(() => {
         if(posChange !== 0) {
             if(eventType === EVENT_TYPE.VUCEPTOR) {
-                updateVUEvent({
-                    title: title,
-                    mandatory: mandatory,
-                    date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
-                    start_time: topToTime(top),
-                    description: description,
-                    location: location,
-                    end_time: getEndTime(startTime, endTime, topToTime(top)),
-                    event_id: eventId.split('|')[1]
-                })
-                    .then(res => {
+                post({
+                    url: '/updateVUEvent',
+                    params: {
+                        title: title,
+                        mandatory: mandatory,
+                        date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
+                        start_time: topToTime(top),
+                        description: description,
+                        location: location,
+                        end_time: getEndTime(startTime, endTime, topToTime(top)),
+                        event_id: eventId.split('|')[1]
+                    },
+                    onResolve: res => {
                         const { status } = res;
                         if(status === RESPONSE_STATUS.SUCCESS) getEvents();
                         else toast('Error updating event');
-                    })
-                    .catch(err => toast('Error updating event'));
+                    },
+                    onReject: () => toast('Error updating event')
+                });
             }
             else {
-                updatefyEvent({
-                    title: title,
-                    is_common: is_common,
-                    date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
-                    start_time: topToTime(top),
-                    description: description,
-                    location: location,
-                    end_time: getEndTime(startTime, endTime, topToTime(top)),
-                    event_id: eventId.split('|')[1],
-                    visions: vision
-                })
-                    .then(res => {
+                post({
+                    url: '/updatefyEvent',
+                    params: {
+                        title: title,
+                        is_common: is_common,
+                        date: formatGetTime(addDays(getMonday(yyyymmddToDateObj(date)), Math.floor(left / columnWidth)).getTime()),
+                        start_time: topToTime(top),
+                        description: description,
+                        location: location,
+                        end_time: getEndTime(startTime, endTime, topToTime(top)),
+                        event_id: eventId.split('|')[1],
+                        visions: vision
+                    },
+                    onResolve: res => {
                         const { status } = res;
                         if(status === RESPONSE_STATUS.SUCCESS) getEvents();
                         else toast('Error updating event');
-                    })
-                    .catch(err => toast('Error updating event'));
+                    },
+                    onReject: () => toast('Error updating event')
+                });
             }
         }
     }, [posChange]);

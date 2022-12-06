@@ -8,16 +8,17 @@ import { useEffect, useRef, useState } from 'react';
 import { PopUpEditUser } from '../../components/PopUpEditUser';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
-import { createUser, deleteUser, updateUser, userLoadfromcsv, readUser, resetUsers, visionsNums } from '../../lib/services';
 import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
 import { PopUpAddUser } from '../../components/PopUpAddUser';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
-import { useWindowSize } from '../../lib/hooks';
+import { useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
+import { toast } from 'react-toastify';
 const cx = classNames.bind(styles);
 
 // User management page
-export const UserManagement = ({ toast }) => {
+export const UserManagement = () => {
+    const { get, post } = useAuthenticatedRequest();
     const isMobile = useWindowSize().type === WINDOW_TYPE.MOBILE;
     const [rows, setRows] = useState([]);
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
@@ -43,37 +44,45 @@ export const UserManagement = ({ toast }) => {
 
     // obtain user records and all vision numbers
     const getUser = () => {
-        visionsNums().then(res => {
-            const { status, result } = res;
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                const { list } = result;
-                setVisionOptions(list.filter(val => val?.visions !== null).map(option => option.visions.toString()));
+        get({
+            url: '/visionsNums',
+            onResolve: res => {
+                const { status, result } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    const { list } = result;
+                    setVisionOptions(list.filter(val => val?.visions !== null).map(option => option.visions.toString()));
+                }
+                else toast('Error fetching visions options');
+            },
+            onReject: () => toast('Error fetching visions options')
+        });
+        get({
+            url: '/readUser',
+            params: { 
+                row_start: tablePage * TABLE.ROW_PER_PAGE, 
+                row_num: TABLE.ROW_PER_PAGE,
+                ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
+                ...(nameSort && { name_sort: nameSort }),
+                ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
+                ...(emailSort && { email_sort: emailSort }),
+                ...(typeFilter.length > 0 && { type_filter: JSON.stringify(typeFilter) }),
+                ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
+                ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
+                ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
+            },
+            onResolve: res => {
+                const { status, result: { rows = [], pages = 1 } } = res;
+                setDisableTable(false);
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    setRows(toUpperRows(rows));
+                    setTotalPage(parseInt(pages));
+                }
+                else toast('Internal error');
+            },
+            onReject: () => {
+                setDisableTable(false);
+                toast('Internal error');
             }
-            else toast('Error fetching visions options');
-        }).catch(err => toast('Error fetching visions options'));
-        readUser({ 
-            row_start: tablePage * TABLE.ROW_PER_PAGE, 
-            row_num: TABLE.ROW_PER_PAGE,
-            ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
-            ...(nameSort && { name_sort: nameSort }),
-            ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
-            ...(emailSort && { email_sort: emailSort }),
-            ...(typeFilter.length > 0 && { type_filter: JSON.stringify(typeFilter) }),
-            ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
-            ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
-            ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
-        }).then(res => {
-            const { status, result: { rows = [], pages = 1 } } = res;
-            setDisableTable(false);
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                setRows(toUpperRows(rows));
-                setTotalPage(parseInt(pages));
-            }
-            else toast('Internal error');
-        })
-        .catch(err => {
-            setDisableTable(false);
-            toast('Internal error');
         });
     }
 
@@ -96,8 +105,10 @@ export const UserManagement = ({ toast }) => {
                         return;
                     }
                     setDisableTable(true);
-                    userLoadfromcsv({ file: inputObj })
-                        .then(res => {
+                    post({
+                        url: '/userLoadfromcsv',
+                        params: { file: inputObj },
+                        onResolve: res => {
                             const { status } = res;
                             if(status === RESPONSE_STATUS.SUCCESS) getUser();
                             else if(status === RESPONSE_STATUS.EMAIL_USED) {
@@ -106,11 +117,12 @@ export const UserManagement = ({ toast }) => {
                             }
                             else toast('Internal error');
                             setDisableTable(false);
-                        })
-                        .catch(err => {
+                        },
+                        onReject: () => {
                             setDisableTable(false);
                             toast('Internal error');
-                        });
+                        }
+                    });
                     setImportFile(null);
                 },
                 error: err => setImportFile(null)});
@@ -133,30 +145,37 @@ export const UserManagement = ({ toast }) => {
     }
 
     const onConfirmDelete = (row) => {
-        deleteUser({ email: row?.email || "" })
-            .then(res => {
+        post({
+            url: '/deleteUser',
+            params: { email: row?.email || "" },
+            onResolve: res => {
                 setShowDeletePopUp(false);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) getUser();
                 else if(status === RESPONSE_STATUS.INCORRECT_USER_EMAIL) toast('Email is not found');
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }
 
     const onConfirmClear = () => {
-        resetUsers()
-            .then(res => {
+        post({
+            url: '/resetUsers',
+            onResolve: res => {
                 const { status } = res;
                 setShowDeleteAllPopUp(false);
                 if(status === RESPONSE_STATUS.SUCCESS) getUser();
                 else toast('Error resetting system');
-            })
+            }
+        });
     }
 
     const onSaveEdit = ({ inputName, inputEmail, inputType, inputVisions, oldEmail }) => {
-        updateUser({ old_email: oldEmail, name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
-            .then(res => {
+        post({
+            url: '/updateUser',
+            params: { old_email: oldEmail, name: inputName, email: inputEmail, type: inputType, visions: inputVisions },
+            onResolve: res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowEditPopUp(false);
@@ -164,13 +183,16 @@ export const UserManagement = ({ toast }) => {
                 }
                 else if(status === RESPONSE_STATUS.INCORRECT_USER_EMAIL) toast('Email is incorrect');
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }
 
     const onAddUser = ({ inputName, inputEmail, inputType, inputVisions }) => {
-        createUser({ name: inputName, email: inputEmail, type: inputType, visions: inputVisions })
-            .then(res => {
+        post({
+            url: '/createUser',
+            params: { name: inputName, email: inputEmail, type: inputType, visions: inputVisions },
+            onResolve: res => {
                 setShowAddPopUp(false);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
@@ -182,8 +204,9 @@ export const UserManagement = ({ toast }) => {
                     toast('Internal error');
                     setShowAddPopUp(false);
                 }
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }   
 
     const onPageChange = (curPage) => {

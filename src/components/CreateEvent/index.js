@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import { useWindowSize } from '../../lib/hooks';
+import { useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
 import { addHalfAnHour, earlierThan, formatGetTime, yyyymmddToDateObj } from '../../lib/util';
 import { CREATE_EVENT_OPTIONS, EVENT, RESPONSE_STATUS, WINDOW_TYPE } from '../../lib/constants';
 import { useEffect, useRef, useState } from 'react';
@@ -11,7 +11,6 @@ import PenIcon from '../../assets/icons/pen.svg';
 import { CalendarComponent } from '../CalendarComponent';
 import { TimePicker } from '../TimePicker';
 import { toast } from 'react-toastify';
-import { createfyEvent, createVUEvent } from '../../lib/services';
 import { TableSelect } from '../TableSelect';
 const cx = classNames.bind(styles);
 
@@ -24,6 +23,7 @@ export const CreateEvent = (props) => {
         getEvents,
         vision
     } = props;
+    const { post } = useAuthenticatedRequest();
     const { type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
     const [eventType, setEventType] = useState('VUceptor');
@@ -56,28 +56,34 @@ export const CreateEvent = (props) => {
                 end_time: endTimeInput,
             }
             if(eventType === 'VUceptor') {
-                createVUEvent({ ...inputs, mandatory: isMandatory ? 1 : 0 })
-                    .then(res => {
+                post({
+                    url: '/createVUEvent',
+                    params: { ...inputs, mandatory: isMandatory ? 1 : 0 },
+                    onResolve: res => {
                         const { status } = res;
                         if(status === RESPONSE_STATUS.SUCCESS) {
                             setShowPopUp(false);
                             getEvents();
                         }
                         else toast('Error updating event');
-                    })
-                    .catch(() => toast('Error updating event'));
+                    },
+                    onReject: () => toast('Error updating event')
+                });
             }
             else {
-                createfyEvent({ ...inputs, is_common: isCommon, visions: vision || 0 })
-                    .then(res => {
+                post({
+                    url: '/createfyEvent',
+                    params: { ...inputs, is_common: isCommon, visions: vision || 0 },
+                    onResolve: res => {
                         const { status } = res;
                         if(status === RESPONSE_STATUS.SUCCESS) {
                             setShowPopUp(false);
                             getEvents();
                         }
                         else toast('Error updating event');
-                    })
-                    .catch(() => toast('Error updating event'));
+                    },
+                    onReject: () => toast('Error updating event')
+                });
             }
         }
     }

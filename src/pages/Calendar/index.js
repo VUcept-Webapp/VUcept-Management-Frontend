@@ -4,13 +4,12 @@ import Papa from "papaparse";
 import LeftArrowButton from '../../assets/icons/leftArrowButton.svg';
 import RightArrowButton from '../../assets/icons/rightArrowButton.svg';
 import TimeIcon from '../../assets/icons/time.svg';
-import { useAuth, useWeek, useWindowSize } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest, useWeek } from '../../lib/hooks';
 import { Event } from '../../components/Event';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { CreateEvent } from '../../components/CreateEvent';
 import { addDays, formatGetTime, formatTime, importUsersToJSON, transformEvents } from '../../lib/util';
-import { fyVisionsEventLoadfromcsv, fyVisionsInfoLoadfromcsv, readfyEvent, readVUEvent, resetfyEvent, resetVUEvent, visionsEntered, VUEventLoadfromcsv } from '../../lib/services';
-import { EVENT, EVENT_TYPE, IMPORT_EVENT, RESET_EVENT_OPTIONS, RESPONSE_STATUS, USER_TYPE } from '../../lib/constants';
+import { EVENT_TYPE, IMPORT_EVENT, RESET_EVENT_OPTIONS, RESPONSE_STATUS, USER_TYPE } from '../../lib/constants';
 import { TableSelect } from '../../components/TableSelect';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
 const cx = classNames.bind(styles);
@@ -18,7 +17,8 @@ const cx = classNames.bind(styles);
 // Calendar page
 export const Calendar = ({ toast }) => {
     const { auth } = useAuth();
-    const { currentWeek, setCurrentWeek, setPrevWeek, setNextWeek } = useWeek();
+    const { get, post } = useAuthenticatedRequest();
+    const { currentWeek, setPrevWeek, setNextWeek } = useWeek();
     const { startYear, startMonth, startDate, endYear, endMonth, endDate } = currentWeek;
     const calendarRef = useRef();
     const columnRef = useRef();
@@ -33,7 +33,6 @@ export const Calendar = ({ toast }) => {
     const [visions, setVisions] = useState([]);
     const [selectedVision, setSelectedVision] = useState(null);
     const [showDeleteAllPopUp, setShowDeleteAllPopUp] = useState(false);
-    const [onConfirmClear, setOnConfirmClear] = useState(null);
     const [importFile, setImportFile] = useState(null);
     const [importType, setImportType] = useState(null);
     const [resetType, setResetType] = useState(null);
@@ -82,13 +81,15 @@ export const Calendar = ({ toast }) => {
     }
 
     useEffect(() => {
-        visionsEntered()
-            .then(res => {
+        get({
+            url: '/visionsEntered',
+            onResolve: res => {
                 const { result: { list }, status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) setVisions(list.filter(x => x?.visions !== 0).map(x => x?.visions));
                 else toast('Error fetching visions');
-            })
-            .catch(() => toast('Error fetching visions'));
+            },
+            onReject: () => toast('Error fetching visions')
+        });
     }, []);
 
     useEffect(() => {
@@ -104,22 +105,25 @@ export const Calendar = ({ toast }) => {
                         return;
                     }
                     let upload = null;
-                    if(importType?.value === 'VUceptor Events') upload = VUEventLoadfromcsv;
-                    else if(importType?.value === 'First-year Events') upload = fyVisionsEventLoadfromcsv;
-                    else if(importType?.value === 'First-year Info') upload = fyVisionsInfoLoadfromcsv;
-                    if(upload) upload({ file: inputObj })
-                        .then(res => {
+                    if(importType?.value === 'VUceptor Events') upload = '/VUEventLoadfromcsv';
+                    else if(importType?.value === 'First-year Events') upload = '/fyVisionsEventLoadfromcsv';
+                    else if(importType?.value === 'First-year Info') upload = '/fyVisionsInfoLoadfromcsv';
+                    if(upload) post({
+                        url: upload,
+                        params: { file: inputObj },
+                        onResolve: res => {
                             setImportFile(null);
                             setImportType(null);
                             const { status } = res;
                             if(status === RESPONSE_STATUS.SUCCESS) getEvents();
                             else toast('Internal error');
-                        })
-                        .catch(() => {
+                        },
+                        onReject: () => {
                             setImportFile(null);
                             setImportType(null);
                             toast('Internal error');
-                        });
+                        }
+                    })
                 },
                 error: err => {
                     setImportFile(null);
@@ -132,28 +136,34 @@ export const Calendar = ({ toast }) => {
     const getEvents = useCallback(async () => {
         if(Object.keys(currentWeek).length) {
             const responseEvents = [];
-            await readVUEvent({ time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]) })
-                .then(res => {
+            await get({
+                url: '/readVUEvent',
+                params: { time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]) },
+                onResolve: res => {
                     const { status, result } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         responseEvents.push(...transformEvents(result, EVENT_TYPE.VUCEPTOR));
                     }
                     else toast('Error fetching VUceptor events');
-                })
-                .catch(err => toast('Error fetching VUceptor events'));
+                },
+                onReject: () => toast('Error fetching VUceptor events')
+            })
             if(selectedVision) {
-                await readfyEvent({ 
-                    time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]),
-                    visions: selectedVision
-                })
-                    .then(res => {
+                await get({
+                    url: '/readfyEvent',
+                    params: { 
+                        time_range: JSON.stringify([startYear + '-' + startMonth + '-' + startDate, endYear + '-' + endMonth + '-' + endDate]),
+                        visions: selectedVision
+                    },
+                    onResolve: res => {
                         const { status, result } = res;
                         if(status === RESPONSE_STATUS.SUCCESS) {
                             responseEvents.push(...transformEvents(result, EVENT_TYPE.FIRST_YEAR));
                         }
                         else toast('Error fetching first-year events');
-                    })
-                    .catch(() => toast('Error fetching first-year events'));
+                    },
+                    onReject: () => toast('Error fetching first-year events')
+                })
             }
             setEvents(responseEvents);
         }
@@ -161,15 +171,20 @@ export const Calendar = ({ toast }) => {
 
     const resetEvents = useCallback(() => {
         if(resetType) {
-            let reset = resetType === 'VUceptor Events' ? resetVUEvent : resetfyEvent;
-            reset()
-                .then(res => {
+            let reset = resetType === 'VUceptor Events' ? '/resetVUEvent' : '/resetfyEvent';
+            post({
+                url: reset,
+                onResolve: res => {
                     const { status } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) getEvents();
                     else toast('Error resetting events');
-                })
-                .catch(() => toast('Error resetting events'))
-                .then(() => setShowDeleteAllPopUp(false));
+                    setShowDeleteAllPopUp(false)
+                },
+                onReject: () => {
+                    toast('Error resetting events');
+                    setShowDeleteAllPopUp(false);
+                }
+            });
         }
     }, [resetType]);
 

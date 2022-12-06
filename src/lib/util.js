@@ -559,3 +559,17 @@ export const transformEvents = (events, eventType = EVENT_TYPE.VUCEPTOR) => {
         ...rest,
     }))
 }
+
+/**
+ * Get all cookies in an object
+ * @returns all cookies in an object
+ */
+export const getAllCookies = () => {
+    const res = {};
+    const arr = document.cookie.split(';');
+    arr.forEach(pair => {
+        const [key, val] = pair.split('=');
+        res[key.trim()] = val.trim();
+    });
+    return res;
+}

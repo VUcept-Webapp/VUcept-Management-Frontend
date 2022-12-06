@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import PropTypes from 'prop-types';
-import { useAuth, useWindowSize } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
 import { earlierThan, formatGetTime, getEventPopUpLeft, getEventPopUpTop, yyyymmddToDateObj } from '../../lib/util';
 import { EVENT, EVENT_TYPE, RESPONSE_STATUS, USER_TYPE, USER_TYPE_OPTIONS, WINDOW_TYPE } from '../../lib/constants';
 import { useEffect, useRef, useState } from 'react';
@@ -11,7 +11,6 @@ import PenIcon from '../../assets/icons/pen.svg';
 import { CalendarComponent } from '../CalendarComponent';
 import { TimePicker } from '../TimePicker';
 import { toast } from 'react-toastify';
-import { deletefyEvent, deleteVUEvent, getOneVUAttendance, insertVUAttendance, updatefyEvent, updateVUEvent } from '../../lib/services';
 const cx = classNames.bind(styles);
 
 // Pop up for adding first-year student
@@ -36,6 +35,7 @@ export const EventDetails = (props) => {
         vision
     } = props;
     const { auth } = useAuth();
+    const { get, post } = useAuthenticatedRequest();
     const { width, height, type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
     const [isMandatory, setIsMandatory] = useState(parseInt(mandatory) === 1);
@@ -66,8 +66,10 @@ export const EventDetails = (props) => {
 
     const onSubmit = () => {
         if(auth?.type === USER_TYPE.VUCEPTOR) {
-            insertVUAttendance({ email: auth?.email, eventId: eventId.split('|')[1], attendance: attendance ? 'present' : 'absent' })
-                .then(res => {
+            post({
+                url: '/insertVUAttendance',
+                params: { email: auth?.email, eventId: eventId.split('|')[1], attendance: attendance ? 'present' : 'absent' },
+                onResolve: res => {
                     const { status } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) setShowPopUp(false);
                     else if(status === RESPONSE_STATUS.REPEATED_RECORDS) {
@@ -75,8 +77,9 @@ export const EventDetails = (props) => {
                         setShowPopUp(false);
                     }
                     else toast('Error submitting attendance');
-                })
-                .catch(() => toast('Error submitting attendance'));
+                },
+                onReject: () => toast('Error submitting attendance')
+            });
         }
         else {
             const inputTitle = titleRef.current.value;
@@ -89,47 +92,53 @@ export const EventDetails = (props) => {
             else if(earlierThan(endTimeInput, startTimeInput)) toast('Please provide a valid time range');
             else {
                 if(eventType === EVENT_TYPE.VUCEPTOR) {
-                    updateVUEvent({
-                        title: inputTitle,
-                        date: dateInput,
-                        start_time: startTimeInput,
-                        description: descriptionInput,
-                        location: locationInput,
-                        end_time: endTimeInput,
-                        event_id: eventId.split('|')[1],
-                        mandatory: isMandatory,
-                    })
-                        .then(res => {
+                    post({
+                        url: '/updateVUEvent',
+                        params: {
+                            title: inputTitle,
+                            date: dateInput,
+                            start_time: startTimeInput,
+                            description: descriptionInput,
+                            location: locationInput,
+                            end_time: endTimeInput,
+                            event_id: eventId.split('|')[1],
+                            mandatory: isMandatory,
+                        },
+                        onResolve: res => {
                             const { status } = res;
                             if(status === RESPONSE_STATUS.SUCCESS) {
                                 setShowPopUp(false);
                                 getEvents();
                             }
                             else toast('Error updating event');
-                        })
-                        .catch(err => toast('Error updating event'));
+                        },
+                        onReject: () => toast('Error updating event')
+                    });
                 }
                 else {
-                    updatefyEvent({
-                        title: inputTitle,
-                        date: dateInput,
-                        start_time: startTimeInput,
-                        description: descriptionInput,
-                        location: locationInput,
-                        end_time: endTimeInput,
-                        event_id: eventId.split('|')[1],
-                        is_common: is_common,
-                        visions: vision
-                    })
-                        .then(res => {
+                    post({
+                        url: '/updatefyEvent',
+                        params: {
+                            title: inputTitle,
+                            date: dateInput,
+                            start_time: startTimeInput,
+                            description: descriptionInput,
+                            location: locationInput,
+                            end_time: endTimeInput,
+                            event_id: eventId.split('|')[1],
+                            is_common: is_common,
+                            visions: vision
+                        },
+                        onResolve: res => {
                             const { status } = res;
                             if(status === RESPONSE_STATUS.SUCCESS) {
                                 setShowPopUp(false);
                                 getEvents();
                             }
                             else toast('Error updating event');
-                        })
-                        .catch(err => toast('Error updating event'));
+                        },
+                        onReject: () => toast('Error updating event')
+                    });
                 }
             }
         }
@@ -137,28 +146,34 @@ export const EventDetails = (props) => {
 
     const onDelete = () => {
         if(eventType === EVENT_TYPE.VUCEPTOR) {
-            deleteVUEvent({ event_id: eventId.split('|')[1] })
-                .then(res => {
+            post({
+                url: '/deleteVUEvent',
+                params: { event_id: eventId.split('|')[1] },
+                onResolve: res => {
                     const { status } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         setShowPopUp(false);
                         getEvents();
                     }
                     else toast('Error deleting event');
-                })
-                .catch(() => toast('Error deleting event'));
+                },
+                onReject: () => toast('Error deleting event')
+            });
         }
         else {
-            deletefyEvent({ event_id: eventId.split('|')[1] })
-                .then(res => {
+            post({
+                url: '/deletefyEvent',
+                params: { event_id: eventId.split('|')[1] },
+                onResolve: res => {
                     const { status } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         setShowPopUp(false);
                         getEvents();
                     }
                     else toast('Error deleting event');
-                })
-                .catch(() => toast('Error deleting event'));
+                },
+                onReject: () => toast('Error deleting event')
+            });
         }
     }
 

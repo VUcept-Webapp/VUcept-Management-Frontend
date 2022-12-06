@@ -7,18 +7,18 @@ import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
 import { PopUpDeleteAll } from '../../components/PopUpDeleteAll';
-import { resetFy, createFy, readFy, updateFy, deleteFy, fyLoadfromcsv, fyVisionsNums, vuceptorList } from '../../lib/services';
 import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrder } from '../../lib/util';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
 import { PopUpAddFy } from '../../components/PopUpAddFy';
 import { PopUpEditFy } from '../../components/PopUpEditFy';
-import { useWindowSize } from '../../lib/hooks';
+import { useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
 // Visions assignment page
 export const VisionsAssignment = ({ toast }) => {
     const isMobile = useWindowSize().type;
+    const { get, post } = useAuthenticatedRequest();
     const [rows, setRows] = useState([]);
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
     const [showDeleteAllPopUp, setShowDeleteAllPopUp] = useState(false);
@@ -43,49 +43,61 @@ export const VisionsAssignment = ({ toast }) => {
     const orderRef = useRef([]);
 
     const getFy = () => {
-        fyVisionsNums().then(res => {
-            const { status, result } = res;
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                const { list } = result;
-                setVisionOptions(list.map(option => option.visions?.toString()));
-            }
-            else toast('Error fetching visions options');
-        }).catch(err => toast('Error fetching visions options'));
-        vuceptorList().then(res => {
-            const { status, result } = res;
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                const { list } = result;
-                setVuceptorOptions(list.map(option => option.name?.toString()));
-            }
-            else toast('Error fetching VUceptor options');
-        }).catch(err => toast('Error fetching VUceptor options'));
-        setDisableTable(true);
-        readFy({
-            row_start: tablePage * TABLE.ROW_PER_PAGE, 
-            row_num: TABLE.ROW_PER_PAGE,
-            ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
-            ...(nameSort && { name_sort: nameSort }),
-            ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
-            ...(emailSort && { email_sort: emailSort }),
-            ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
-            ...(vuceptorFilter.length > 0 && { vuceptor_filter: JSON.stringify(vuceptorFilter) }),
-            ...(vuceptorSearch && { vuceptor_search: JSON.stringify([vuceptorSearch]) }),
-            ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
-        }).then(res => {
-            const { status, result: { rows = [], pages = 1 } } = res;
-            setDisableTable(false);
-            if(status === RESPONSE_STATUS.SUCCESS) {
-                setRows(toUpperRows(rows));
-                setTotalPage(parseInt(pages));
-            }
-            else if(status === RESPONSE_STATUS.INCORRECT_FY_NAME) toast('Incorrect search for First-year name');
-            else if(status === RESPONSE_STATUS.INCORRECT_FY_EMAIL) toast('Incorrect search for Email');
-            else if(status === RESPONSE_STATUS.INCORRECT_FY_VISIONS) toast('Incorrect filter for Visions');
-            else toast('Internal error');
+        get({
+            url: '/fyVisionsNums',
+            onResolve: res => {
+                const { status, result } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    const { list } = result;
+                    setVisionOptions(list.map(option => option.visions?.toString()));
+                }
+                else toast('Error fetching visions options');
+            },
+            onReject: () => toast('Error fetching visions options')
         })
-        .catch(err => {
-            setDisableTable(false);
-            toast('Internal error');
+        get({
+            url: '/vuceptorList',
+            onResolve: res => {
+                const { status, result } = res;
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    const { list } = result;
+                    setVuceptorOptions(list.map(option => option.name?.toString()));
+                }
+                else toast('Error fetching VUceptor options');
+            },
+            onReject: () => toast('Error fetching VUceptor options')
+        });
+        setDisableTable(true);
+        get({
+            url: '/readFy',
+            params: {
+                row_start: tablePage * TABLE.ROW_PER_PAGE, 
+                row_num: TABLE.ROW_PER_PAGE,
+                ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
+                ...(nameSort && { name_sort: nameSort }),
+                ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
+                ...(emailSort && { email_sort: emailSort }),
+                ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
+                ...(vuceptorFilter.length > 0 && { vuceptor_filter: JSON.stringify(vuceptorFilter) }),
+                ...(vuceptorSearch && { vuceptor_search: JSON.stringify([vuceptorSearch]) }),
+                ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
+            },
+            onResolve: res => {
+                const { status, result: { rows = [], pages = 1 } } = res;
+                setDisableTable(false);
+                if(status === RESPONSE_STATUS.SUCCESS) {
+                    setRows(toUpperRows(rows));
+                    setTotalPage(parseInt(pages));
+                }
+                else if(status === RESPONSE_STATUS.INCORRECT_FY_NAME) toast('Incorrect search for First-year name');
+                else if(status === RESPONSE_STATUS.INCORRECT_FY_EMAIL) toast('Incorrect search for Email');
+                else if(status === RESPONSE_STATUS.INCORRECT_FY_VISIONS) toast('Incorrect filter for Visions');
+                else toast('Internal error');
+            },
+            onReject: () => {
+                setDisableTable(false);
+                toast('Internal error');
+            }
         });
     }
 
@@ -105,8 +117,10 @@ export const VisionsAssignment = ({ toast }) => {
                         return;
                     }
                     setDisableTable(true);
-                    fyLoadfromcsv({ file: inputObj })
-                        .then(res => {
+                    post({
+                        url: '/fyLoadfromcsv',
+                        params: { file: inputObj },
+                        onResolve: res => {
                             const { status } = res;
                             if(status === RESPONSE_STATUS.SUCCESS) getFy();
                             else if(status === RESPONSE_STATUS.EMAIL_USED) {
@@ -115,11 +129,12 @@ export const VisionsAssignment = ({ toast }) => {
                             }
                             else toast('Internal error');
                             setDisableTable(false);
-                        })
-                        .catch(err => {
+                        },
+                        onReject: () => {
                             setDisableTable(false);
                             toast('Internal error');
-                        });
+                        }
+                    });
                     setImportFile(null);
                 },
                 error: err => setImportFile(null)});
@@ -142,30 +157,37 @@ export const VisionsAssignment = ({ toast }) => {
     }
 
     const onConfirmDelete = (row) => {
-        deleteFy({ email: row?.fy_email || "" })
-            .then(res => {
+        post({
+            url: '/deleteFy',
+            params: { email: row?.fy_email || "" },
+            onResolve: res => {
                 setShowDeletePopUp(false);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) getFy();
                 else if(status === RESPONSE_STATUS.INCORRECT_USER_EMAIL) toast('Email is not found');
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }
 
     const onConfirmClear = () => {
-        resetFy()
-            .then(res => {
+        post({
+            url: '/resetFy',
+            onResolve: res => {
                 const { status } = res;
                 setShowDeleteAllPopUp(false);
                 if(status === RESPONSE_STATUS.SUCCESS) getFy();
                 else toast('Error resetting system');
-            })
+            }
+        });
     }
 
     const onSaveEdit = ({ inputName, inputEmail, inputVisions, oldEmail }) => {
-        updateFy({ old_email: oldEmail, name: inputName, email: inputEmail, visions: inputVisions })
-            .then(res => {
+        post({
+            url: '/updateFy',
+            params: { old_email: oldEmail, name: inputName, email: inputEmail, visions: inputVisions },
+            onResolve: res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowEditPopUp(false);
@@ -174,13 +196,16 @@ export const VisionsAssignment = ({ toast }) => {
                 else if(status === RESPONSE_STATUS.EMAIL_USED) toast('Email is used');
                 else if(status === RESPONSE_STATUS.INCORRECT_FY_VISIONS) toast('Incorrect vision group');
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }
 
     const onAddFy = ({ inputName, inputEmail, inputVisions }) => {
-        createFy({ name: inputName, email: inputEmail, visions: inputVisions })
-            .then(res => {
+        post({
+            url: '/createFy',
+            params: { name: inputName, email: inputEmail, visions: inputVisions },
+            onResolve: res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowAddPopUp(false);
@@ -192,8 +217,9 @@ export const VisionsAssignment = ({ toast }) => {
                     toast('Internal error');
                     setShowAddPopUp(false);
                 }
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        })
     }   
 
     const onPageChange = (curPage) => {

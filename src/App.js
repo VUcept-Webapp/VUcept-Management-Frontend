@@ -4,7 +4,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { AuthProvider } from "./lib/contexts";
 import { AuthLayout } from "./pages/AuthLayout";
 import { Calendar } from "./pages/Calendar";
-import { DashBoard } from "./pages/DashBoard";
 import { FirstYear } from "./pages/FirstYear";
 import { HomeLayout } from "./pages/HomeLayout";
 import { LogAttendance } from "./pages/LogAttendance";
@@ -16,10 +15,10 @@ import { VisionsAssignment } from "./pages/VisionsAssignment";
 import { VUceptorAttendance } from "./pages/VUceptorAttendance";
 
 export const App = () => {
-  return <AuthProvider>
+  return <BrowserRouter>
+    <AuthProvider>
     {/* Pop up notification */}
-    <ToastContainer position="top-center" autoClose={3000} hideProgressBar={true}/>
-    <BrowserRouter>
+      <ToastContainer position="top-center" autoClose={3000} hideProgressBar={true}/>
       <Routes>
         {/* Authentication routes */}
         <Route path='/' element={<AuthLayout/>}>
@@ -29,7 +28,6 @@ export const App = () => {
         </Route>
         {/* Home page routes */}
         <Route path='home' element={<HomeLayout />}>
-          <Route index path='dashBoard' element={<DashBoard toast={toast}/>}/>
           <Route path='calendar' element={<Calendar toast={toast}/>}/>
           <Route path='visionsAssignment' element={<VisionsAssignment toast={toast}/>}/>
           <Route path='firstyearAttendance' element={<FirstYear toast={toast}/>}/>
@@ -38,6 +36,6 @@ export const App = () => {
           <Route path='userManagement' element={<UserManagement toast={toast}/>}/>
         </Route>
       </Routes>
-    </BrowserRouter>
-  </AuthProvider>
+    </AuthProvider>
+  </BrowserRouter>
 }

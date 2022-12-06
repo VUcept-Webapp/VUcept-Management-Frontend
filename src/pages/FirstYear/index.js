@@ -5,17 +5,19 @@ import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
-import { useWindowSize } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
 import { debounce, formatGetTime, getOptionValue, getSortParam, toUpperRows, updateOrder } from '../../lib/util';
 import { TableItem } from '../../components/TableItem';
 import { CalendarComponent } from '../../components/CalendarComponent';
-import { deleteFyAttendance, editFyAttendance, exportFyAttendance, readFyAttendance, getFyAttendanceEventsList, getFyAttendanceVisionsList } from '../../lib/services';
 import { BlockBlocker } from '../../components/BlockBlocker';
+import { toast } from 'react-toastify';
 import { PopUpEditAttendance } from '../../components/PopUpEditAttendance';
 const cx = classNames.bind(styles);
 
 // First-year students attendance page
-export const FirstYear = ({ toast }) => {
+export const FirstYear = () => {
+    const { auth } = useAuth();
+    const { get, post } = useAuthenticatedRequest();
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
     const isSmall = width < 840 || isMobile;
@@ -47,48 +49,60 @@ export const FirstYear = ({ toast }) => {
     const getAttendance = () => {
         if(new Date(startDate) > new Date(endDate)) toast('Start date must not be later than end date');
         else {
-            getFyAttendanceVisionsList().then(res => {
-                const { status, data } = res;
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setVisionOptions(data.map(option => option.toString()));
-                }
-                else toast('Error fetching visions options');
-            }).catch(err => toast('Error fetching visions options'));
-            getFyAttendanceEventsList().then(res => {
-                const { status, data } = res;
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setEventOptions(data.map(option => option?.title?.toString()));
-                }
-                else toast('Error fetching events options');
-            }).catch(err => toast('Error fetching events options'));
-            setDisableTable(true);
-            readFyAttendance({ 
-                time_range: JSON.stringify([formatGetTime(startDate), formatGetTime(endDate)]),
-                row_start: tablePage * TABLE.ROW_PER_PAGE, 
-                row_num: TABLE.ROW_PER_PAGE,
-                ...(absenceNum && { num_absence: absenceNum }),
-                ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
-                ...(nameSort && { name_sort: nameSort }),
-                ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
-                ...(emailSort && { email_sort: emailSort }),
-                ...(visionsSort && { visions_sort: visionsSort }),
-                ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
-                ...(eventSort && { events_sort: eventSort }),
-                ...(eventFilter.length > 0 && { events_filter: JSON.stringify(eventFilter) }),
-                ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
-                ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
-            }).then(res => {
-                const { status, result: { rows = [], pageNum = 1 } } = res;
-                setDisableTable(false);
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setRows(toUpperRows(rows));
-                    setTotalPage(parseInt(pageNum));
-                }
-                else toast('Internal error');
+            get({
+                url: '/getFyAttendanceVisionsList',
+                onResolve: res => {
+                    const { status, data } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        setVisionOptions(data.map(option => option.toString()));
+                    }
+                    else toast('Error fetching visions options');
+                },
+                onReject: () => toast('Error fetching visions options')
+            });
+            get({
+                url: '/getFyAttendanceEventsList',
+                onResolve: res => {
+                    const { status, data } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        setEventOptions(data.map(option => option?.title?.toString()));
+                    }
+                    else toast('Error fetching events options');
+                },
+                onReject: () => toast('Error fetching events options')
             })
-            .catch(err => {
-                setDisableTable(false);
-                toast('Internal error');
+            setDisableTable(true);
+            get({
+                url: '/readFyAttendance',
+                params: { 
+                    time_range: JSON.stringify([formatGetTime(startDate), formatGetTime(endDate)]),
+                    row_start: tablePage * TABLE.ROW_PER_PAGE, 
+                    row_num: TABLE.ROW_PER_PAGE,
+                    ...(absenceNum && { num_absence: absenceNum }),
+                    ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
+                    ...(nameSort && { name_sort: nameSort }),
+                    ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
+                    ...(emailSort && { email_sort: emailSort }),
+                    ...(visionsSort && { visions_sort: visionsSort }),
+                    ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
+                    ...(eventSort && { events_sort: eventSort }),
+                    ...(eventFilter.length > 0 && { events_filter: JSON.stringify(eventFilter) }),
+                    ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
+                    ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
+                },
+                onResolve: res => {
+                    const { status, result: { rows = [], pageNum = 1 } } = res;
+                    setDisableTable(false);
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        setRows(toUpperRows(rows));
+                        setTotalPage(parseInt(pageNum));
+                    }
+                    else toast('Internal error');
+                },
+                onReject: () => {
+                    setDisableTable(false);
+                    toast('Internal error');
+                }
             });
         }
     }
@@ -116,8 +130,10 @@ export const FirstYear = ({ toast }) => {
     }
 
     const onConfirmDelete = () => {
-        deleteFyAttendance({ email: deleteRow?.email || "", event: deleteRow?.event })
-            .then(res => {
+        post({
+            url: '/deleteFyAttendance',
+            params: { email: deleteRow?.email || "", eventId: deleteRow?.event_id, type: auth?.type },
+            onResolve: res => {
                 setShowDeletePopUp(false);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) getAttendance();
@@ -125,22 +141,26 @@ export const FirstYear = ({ toast }) => {
                 else if(status === RESPONSE_STATUS.INVALID_USER) toast('User is not found');
                 else if(status === RESPONSE_STATUS.NO_EXISTING_RECORDS) toast('Record is not found');
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }
 
     const onSaveEdit = (inputs) => {
         const { inputEmail, inputEvent, inputStatus } = inputs;
-        editFyAttendance({ email: inputEmail, eventId: inputEvent, attendance: inputStatus })
-            .then(res => {
+        post({
+            url: '/editFyAttendance',
+            params: { email: inputEmail, eventId: inputEvent, attendance: inputStatus },
+            onResolve: res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowEditPopUp(false);
                     getAttendance();
                 }
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }
 
     const onPageChange = (curPage) => {
@@ -148,8 +168,9 @@ export const FirstYear = ({ toast }) => {
     }
 
     const onExport = () => {
-        exportFyAttendance()
-            .then(res => {
+        get({
+            url: '/exportFyAttendance',
+            onResolve: res => {
                 const { status, data } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     const csvContent = `data:text/csv;charset=utf-8,${data}`;
@@ -157,8 +178,9 @@ export const FirstYear = ({ toast }) => {
                     window.open(encodedURI);
                 }
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        })
     }   
 
     const columns = [

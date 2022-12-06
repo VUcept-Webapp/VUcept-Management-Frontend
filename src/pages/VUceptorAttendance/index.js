@@ -5,18 +5,19 @@ import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { PopUpDeleteRow } from '../../components/PopUpDeleteRow';
-import { useWindowSize } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
 import { debounce, formatGetTime, getOptionValue, getSortParam, toUpperRows, updateOrder } from '../../lib/util';
 import { TableItem } from '../../components/TableItem';
 import { CalendarComponent } from '../../components/CalendarComponent';
 import { toast } from 'react-toastify';
-import { deleteVUAttendance, editVUAttendance, exportVUAttendance, getVUAttendanceEventsList, getVUAttendanceVisionsList, readVUAttendance } from '../../lib/services';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { PopUpEditAttendance } from '../../components/PopUpEditAttendance';
 const cx = classNames.bind(styles);
 
 // VUceptor attendance page
-export const VUceptorAttendance = ({ taost }) => {
+export const VUceptorAttendance = () => {
+    const { auth } = useAuth();
+    const { get, post } = useAuthenticatedRequest();
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
     const isSmall = width < 840 || isMobile;
@@ -48,48 +49,61 @@ export const VUceptorAttendance = ({ taost }) => {
     const getAttendance = () => {
         if(new Date(startDate) > new Date(endDate)) toast('Start date must not be later than end date');
         else {
-            getVUAttendanceVisionsList().then(res => {
-                const { status, data } = res;
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setVisionOptions(data.map(option => option.toString()));
-                }
-                else toast('Error fetching visions options');
-            }).catch(err => toast('Error fetching visions options'));
-            getVUAttendanceEventsList().then(res => {
-                const { status, data } = res;
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setEventOptions(data.map(option => option.title.toString()));
-                }
-                else toast('Error fetching events options');
-            }).catch(err => toast('Error fetching events options'));
-            setDisableTable(true);
-            readVUAttendance({ 
-                time_range: JSON.stringify([formatGetTime(startDate), formatGetTime(endDate)]),
-                row_start: tablePage * TABLE.ROW_PER_PAGE, 
-                row_num: TABLE.ROW_PER_PAGE,
-                ...(presenceNum && { num_presence: presenceNum }),
-                ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
-                ...(nameSort && { name_sort: nameSort }),
-                ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
-                ...(emailSort && { email_sort: emailSort }),
-                ...(visionsSort && { visions_sort: visionsSort }),
-                ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
-                ...(eventSort && { events_sort: eventSort }),
-                ...(eventFilter.length > 0 && { events_filter: JSON.stringify(eventFilter) }),
-                ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
-                ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
-            }).then(res => {
-                const { status, result: { rows = [], pageNum = 1 } } = res;
-                setDisableTable(false);
-                if(status === RESPONSE_STATUS.SUCCESS) {
-                    setRows(toUpperRows(rows));
-                    setTotalPage(parseInt(pageNum));
-                }
-                else toast('Internal error');
+            get({
+                url: '/getVUAttendanceVisionsList',
+                onResolve: res => {
+                    const { status, data } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        setVisionOptions(data.map(option => option.toString()));
+                    }
+                    else toast('Error fetching visions options');
+                },
+                onReject: () => toast('Error fetching visions options')
+            });
+            get({
+                url: '/getVUAttendanceEventsList',
+                onResolve: res => {
+                    const { status, data } = res;
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        setEventOptions(data.map(option => option.title.toString()));
+                    }
+                    else toast('Error fetching events options');
+                },
+                onReject: () => toast('Error fetching events options')
             })
-            .catch(err => {
-                setDisableTable(false);
-                toast('Internal error');
+            setDisableTable(true);
+            get({
+                url: '/readVUAttendance', 
+                params: { 
+                    type: auth?.type,
+                    time_range: JSON.stringify([formatGetTime(startDate), formatGetTime(endDate)]),
+                    row_start: tablePage * TABLE.ROW_PER_PAGE, 
+                    row_num: TABLE.ROW_PER_PAGE,
+                    ...(presenceNum && { num_presence: presenceNum }),
+                    ...(nameSearch && { name_search: JSON.stringify([nameSearch]) }),
+                    ...(nameSort && { name_sort: nameSort }),
+                    ...(emailSearch && { email_search: JSON.stringify([emailSearch]) }),
+                    ...(emailSort && { email_sort: emailSort }),
+                    ...(visionsSort && { visions_sort: visionsSort }),
+                    ...(visionsFilter.length > 0 && { visions_filter: JSON.stringify(visionsFilter) }),
+                    ...(eventSort && { events_sort: eventSort }),
+                    ...(eventFilter.length > 0 && { events_filter: JSON.stringify(eventFilter) }),
+                    ...(statusFilter.length > 0 && { status_filter: JSON.stringify(statusFilter) }),
+                    ...(orderRef.current.length > 0 && { condition_order: JSON.stringify(orderRef.current) }),
+                },
+                onResolve: res => {
+                    const { status, result: { rows = [], pageNum = 1 } } = res;
+                    setDisableTable(false);
+                    if(status === RESPONSE_STATUS.SUCCESS) {
+                        setRows(toUpperRows(rows));
+                        setTotalPage(parseInt(pageNum));
+                    }
+                    else toast('Internal error');
+                },
+                onReject: () => {
+                    setDisableTable(false);
+                    toast('Internal error');
+                }
             });
         }
     }
@@ -117,8 +131,10 @@ export const VUceptorAttendance = ({ taost }) => {
     }
 
     const onConfirmDelete = () => {
-        deleteVUAttendance({ email: deleteRow?.email || "", event: deleteRow?.event })
-            .then(res => {
+        post({
+            url: '/deleteVUAttendance',
+            params: { email: deleteRow?.email || "", event: deleteRow?.event },
+            onResolve: res => {
                 setShowDeletePopUp(false);
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) getAttendance();
@@ -126,22 +142,26 @@ export const VUceptorAttendance = ({ taost }) => {
                 else if(status === RESPONSE_STATUS.INVALID_USER) toast('User is not found');
                 else if(status === RESPONSE_STATUS.NO_EXISTING_RECORDS) toast('Record is not found');
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        })
     }
 
     const onSaveEdit = (inputs) => {
         const { inputEmail, inputEvent, inputStatus } = inputs;
-        editVUAttendance({ email: inputEmail, eventId: inputEvent, attendance: inputStatus })
-            .then(res => {
+        post({
+            url: '/editVUAttendance',
+            params: { email: inputEmail, eventId: inputEvent, attendance: inputStatus },
+            onResolve: res => {
                 const { status } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     setShowEditPopUp(false);
                     getAttendance();
                 }
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        });
     }
 
     const onPageChange = (curPage) => {
@@ -149,8 +169,9 @@ export const VUceptorAttendance = ({ taost }) => {
     }
 
     const onExport = () => {
-        exportVUAttendance()
-            .then(res => {
+        get({
+            url: '/exportVUAttendance',
+            onResolve: res => {
                 const { status, data } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     const csvContent = `data:text/csv;charset=utf-8,${data}`;
@@ -158,8 +179,9 @@ export const VUceptorAttendance = ({ taost }) => {
                     window.open(encodedURI);
                 }
                 else toast('Internal error');
-            })
-            .catch(err => toast('Internal error'));
+            },
+            onReject: () => toast('Internal error')
+        })
     }   
 
     const columns = [

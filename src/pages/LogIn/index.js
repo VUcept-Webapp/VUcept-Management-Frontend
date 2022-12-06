@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 // Log in page for authentication
 export const LogIn = ({ toast }) => {
     const navigate = useNavigate();
-    const { updateAuth } = useAuth();
+    const { updateAuth, updateToken } = useAuth();
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
     const [email, setEmail] = useState("");
@@ -24,7 +24,7 @@ export const LogIn = ({ toast }) => {
     useEffect(() => {
         setCode("");
     }, [email]);
-
+    
     const onLogIn = () => {
         if(!email) toast('Please provide your email');
         else if(!password) toast('Please provide your password');
@@ -34,9 +34,10 @@ export const LogIn = ({ toast }) => {
         else {
             login({ email, password, code, originalCode: inputCode })
                 .then(res => {
-                    const { status, user: { email, name, type, visions } } = res;
+                    const { status, user: { email, name, type, visions }, accessToken, refreshToken } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         updateAuth({ email, name, type, visions });
+                        updateToken({ accessToken, refreshToken });
                         navigate('/home/calendar');
                     }
                     else if(status === RESPONSE_STATUS.INVALID_EMAIl) toast('Invalid email');
@@ -44,7 +45,10 @@ export const LogIn = ({ toast }) => {
                     else if(status === RESPONSE_STATUS.INVALID_PASSWORD) toast('Incorrect password');
                     else toast('Internal error');
                 })
-                .catch(err => toast('Internal error'));
+                .catch(err => {
+                    console.log(err);
+                    toast('Internal error');
+                });
         }
     }
 

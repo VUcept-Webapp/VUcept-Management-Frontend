@@ -9,7 +9,7 @@ import UsersIcon from '../../assets/icons/users.svg';
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
-import { useAuth, useCaption, useWindowSize } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest, useCaption, useWindowSize } from '../../lib/hooks';
 import { HOME_NAV_LABELS, ROUTES, USER_TYPE, WINDOW_TYPE } from '../../lib/constants';
 import { useState } from 'react';
 import { Caption } from '../../components/Caption';
@@ -18,7 +18,8 @@ const cx = classNames.bind(styles);
 
 // Layout of home pages
 export const HomeLayout = () => {
-    const { auth, updateAuth } = useAuth();
+    const { auth, updateAuth, token, updateToken } = useAuth();
+    const { post } = useAuthenticatedRequest();
     const { width, type } = useWindowSize();
     const [showMenu, setShowMenu] = useState(false);
     const navigate = useNavigate();
@@ -44,8 +45,18 @@ export const HomeLayout = () => {
         >
             <img src={MenuIcon} onClick={() => setShowMenu(!showMenu)} className={cx(styles.controlIcon, { [styles.small]: isSmall })}/>
             <img src={ExitIcon} onClick={() => {
-                updateAuth({});
-                navigate('/');
+                post({
+                    url: '/signOut',
+                    params: { refreshToken: token?.refreshToken },
+                    onResolve: () => {
+                        updateAuth({});
+                        updateToken({});
+                    },
+                    onReject: () => {
+                        updateAuth({});
+                        updateToken({});
+                    }
+                })
             }} className={cx(styles.controlIcon, {
                 [styles.small]: isSmall
             })}/>
