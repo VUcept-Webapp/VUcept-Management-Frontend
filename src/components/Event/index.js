@@ -23,7 +23,6 @@ export const Event = (props) => {
         getEvents,
         vision,
     } = props;
-    console.log('render');
     const { post } = useAuthenticatedRequest();
     const { startTime, endTime, title, date, description, location, eventId, mandatory, eventType, is_common } = events[idx];
     const { auth } = useAuth();

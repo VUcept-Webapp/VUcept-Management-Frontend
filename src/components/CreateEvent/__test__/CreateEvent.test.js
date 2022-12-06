@@ -1,7 +1,7 @@
-import { fireEvent, render, screen, waitForElement } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { CreateEvent } from '..';
-import { testStyle } from '../../../lib/testUtil';
+import { AuthContext } from '../../../lib/contexts';
 
 const defaultSetShowPopUp = () => undefined;
 const defaultDate = '2022-12-03';
@@ -16,13 +16,15 @@ const setUp = ({
     getEvents = defaultGetEvents,
     vision = defaultVision
 }) => {
-    const utils = render(<CreateEvent
-        setShowPopUp={setShowPopUp}
-        date={date}
-        startTime={startTime}
-        getEvents={getEvents}
-        vision={vision}
-    />);
+    const utils = render(<AuthContext.Provider value={{ token: { accessToken: '111' } }}>
+        <CreateEvent
+            setShowPopUp={setShowPopUp}
+            date={date}
+            startTime={startTime}
+            getEvents={getEvents}
+            vision={vision}
+        />
+    </AuthContext.Provider>);
     const eventType = utils.queryByTestId('create-event-type');
     const eventTitle = utils.queryByTestId('create-event-title');
     const eventLocation = utils.queryByTestId('create-event-location');

@@ -35,7 +35,7 @@ export const EventDetails = (props) => {
         vision
     } = props;
     const { auth } = useAuth();
-    const { get, post } = useAuthenticatedRequest();
+    const { post } = useAuthenticatedRequest();
     const { width, height, type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
     const [isMandatory, setIsMandatory] = useState(parseInt(mandatory) === 1);
@@ -180,7 +180,10 @@ export const EventDetails = (props) => {
     return <>
         <div className={cx(styles.blocker)}></div>
         <div 
-            className={cx(styles.eventPopUp, {[styles.mobile]: type === WINDOW_TYPE.MOBILE})}
+            className={cx(styles.eventPopUp, {
+                [styles.mobile]: type === WINDOW_TYPE.MOBILE,
+                [styles.isFy]: eventType === EVENT_TYPE.FIRST_YEAR
+            })}
             style={{
                 width: popUpLeft && `${EVENT.POPUP_WIDTH}px`,
                 top: popUpTop && `${popUpTop}px`,

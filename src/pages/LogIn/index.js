@@ -46,7 +46,6 @@ export const LogIn = ({ toast }) => {
                     else toast('Internal error');
                 })
                 .catch(err => {
-                    console.log(err);
                     toast('Internal error');
                 });
         }

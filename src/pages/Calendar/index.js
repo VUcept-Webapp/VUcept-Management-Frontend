@@ -16,7 +16,7 @@ const cx = classNames.bind(styles);
 
 // Calendar page
 export const Calendar = ({ toast }) => {
-    const { auth } = useAuth();
+    const { auth, token } = useAuth();
     const { get, post } = useAuthenticatedRequest();
     const { currentWeek, setPrevWeek, setNextWeek } = useWeek();
     const { startYear, startMonth, startDate, endYear, endMonth, endDate } = currentWeek;
@@ -90,7 +90,7 @@ export const Calendar = ({ toast }) => {
             },
             onReject: () => toast('Error fetching visions')
         });
-    }, []);
+    }, [token]);
 
     useEffect(() => {
         if(importFile && importType) {

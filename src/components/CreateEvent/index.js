@@ -27,7 +27,7 @@ export const CreateEvent = (props) => {
     const { type } = useWindowSize();
     const [eventDate, setEventDate] = useState(yyyymmddToDateObj(date).getTime());
     const [eventType, setEventType] = useState('VUceptor');
-    const [isCommon, setIsCommon] = useState(false);
+    const [isVisions, setIsVisions] = useState(false);
     const [isMandatory, setIsMandatory] = useState(false);
     const popUp = useRef();
     const calendarHolder = useRef();
@@ -73,7 +73,7 @@ export const CreateEvent = (props) => {
             else {
                 post({
                     url: '/createfyEvent',
-                    params: { ...inputs, is_common: isCommon, visions: vision || 0 },
+                    params: { ...inputs, is_common: isVisions ? 0 : 1, visions: vision || 0 },
                     onResolve: res => {
                         const { status } = res;
                         if(status === RESPONSE_STATUS.SUCCESS) {
@@ -168,12 +168,12 @@ export const CreateEvent = (props) => {
                 />
             </div>
             {eventType === 'First-year Student' && <div className={cx(styles.row)}>
-                <span className={cx(styles.label)} >{EVENT.FOR_ALL_GROUPS}</span>
+                <span className={cx(styles.label)} >{EVENT.IS_VISIONS}</span>
                 <input 
                     className={cx(styles.checkbox)} 
                     type='checkbox'
-                    checked={isCommon}
-                    onChange={(e) => setIsCommon(e.target.checked)}
+                    checked={isVisions}
+                    onChange={(e) => setIsVisions(e.target.checked)}
                 />
             </div>}
             {eventType === 'VUceptor' && <div className={cx(styles.row)}>

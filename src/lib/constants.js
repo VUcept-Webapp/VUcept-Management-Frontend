@@ -151,7 +151,7 @@ export const EVENT = {
     ENTER_LOCATION: 'Enter Location',
     ENTER_TITLE: 'Enter title',
     EVENT_TYPE: 'Type:',
-    FOR_ALL_GROUPS: 'For all groups',
+    IS_VISIONS: 'Is Visions',
     IS_MANDATORY: 'Is Mandatory',
     LOAD_VU_EVENT: 'Import VUceptor Event'
 }

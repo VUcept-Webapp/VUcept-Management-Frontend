@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { RESPONSE_STATUS } from "./constants";
 import { getAccessToken, getUserFromToken } from "./services";
@@ -11,6 +11,7 @@ export const AuthContext = createContext(null);
 export const AuthProvider = ({ children }) => {
     const [auth, setAuth] = useState({});
     const [token, setToken] = useState({});
+    const location = useLocation();
     const navigate = useNavigate();
 
     const obtainAccessToken = () => {
@@ -20,7 +21,6 @@ export const AuthProvider = ({ children }) => {
                 const { status, token: accessToken } = res;
                 if(status === RESPONSE_STATUS.SUCCESS) {
                     document.cookie = `accessToken=${accessToken}; max-age=1800;`;
-                    console.log('original token', token);
                     setToken({ refreshToken, accessToken });
                 }
                 else if(status === RESPONSE_STATUS.NOT_VALID_TOKEN) {
@@ -46,7 +46,7 @@ export const AuthProvider = ({ children }) => {
     }, []);
 
     useEffect(() => {
-        const { refreshToken, accessToken } = token;
+        const { refreshToken, accessToken } = getAllCookies();
         if(refreshToken && !accessToken) obtainAccessToken();
         else if(refreshToken && accessToken) {
             getUserFromToken({ token: accessToken })
@@ -54,7 +54,8 @@ export const AuthProvider = ({ children }) => {
                     const { status, user } = res;
                     if(status === RESPONSE_STATUS.SUCCESS) {
                         setAuth(user);
-                        navigate('/home/calendar');
+                        if(location.pathname === '/' || location.pathname === '/signUp' || location.pathname === '/resetPassword') navigate('/home/calendar');
+                        else navigate(location.pathname);
                     }
                     else {
                         toast('Error acquiring user info. Please log in again');
