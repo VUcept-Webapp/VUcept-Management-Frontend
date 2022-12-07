@@ -16,7 +16,7 @@ const cx = classNames.bind(styles);
 
 // VUceptor attendance page
 export const VUceptorAttendance = () => {
-    const { auth } = useAuth();
+    const { auth, token } = useAuth();
     const { get, post } = useAuthenticatedRequest();
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
@@ -244,7 +244,7 @@ export const VUceptorAttendance = () => {
 
     useEffect(() => {
         getAttendance();
-    }, [tablePage, presenceNum, nameSearch, nameSort, emailSearch, emailSort, 
+    }, [tablePage, presenceNum, nameSearch, nameSort, emailSearch, emailSort, token,
         visionsFilter, visionsSort, eventFilter, eventSort, statusFilter, startDate, endDate]);
     
     return <>

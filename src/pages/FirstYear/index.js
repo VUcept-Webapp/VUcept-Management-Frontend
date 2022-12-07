@@ -16,7 +16,7 @@ const cx = classNames.bind(styles);
 
 // First-year students attendance page
 export const FirstYear = () => {
-    const { auth } = useAuth();
+    const { auth, token } = useAuth();
     const { get, post } = useAuthenticatedRequest();
     const { width, type } = useWindowSize();
     const isMobile = type === WINDOW_TYPE.MOBILE;
@@ -246,7 +246,7 @@ export const FirstYear = () => {
     useEffect(() => {
         getAttendance();
     }, [tablePage, absenceNum, nameSearch, nameSort, emailSearch, emailSort, 
-        visionsFilter, visionsSort, eventFilter, eventSort, statusFilter, startDate, endDate]);
+        visionsFilter, visionsSort, eventFilter, eventSort, statusFilter, startDate, endDate, token]);
     
     return <>
         <BlockBlocker show={disableTable}/>

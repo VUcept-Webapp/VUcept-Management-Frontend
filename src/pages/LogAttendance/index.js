@@ -13,7 +13,7 @@ const cx = classNames.bind(styles);
 
 // Attendance logging page
 export const LogAttendance = ({ toast }) => {
-    const { auth } = useAuth();
+    const { auth, token } = useAuth();
     const { post, get } = useAuthenticatedRequest();
     const [event, setEvent] = useState(null);
     const [tablePage, setTablePage] = useState(0);
@@ -81,11 +81,11 @@ export const LogAttendance = ({ toast }) => {
 
     useEffect(() => {
         if(auth?.visions) getEvents();
-    }, [auth]);
+    }, [auth, token]);
 
     useEffect(() => {
         if(event && auth?.visions) getAttendance();
-    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, event, auth]);
+    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, event, auth, token]);
 
     const LOG_ATTENDANCE_COLUMNS = [
         {

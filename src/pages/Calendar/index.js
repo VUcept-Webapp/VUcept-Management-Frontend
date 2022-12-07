@@ -190,7 +190,7 @@ export const Calendar = ({ toast }) => {
 
     useEffect(() => {
         getEvents();
-    }, [currentWeek, selectedVision]);
+    }, [currentWeek, selectedVision, ]);
 
     useEffect(() => {
         const draggingMap = {};
@@ -222,9 +222,10 @@ export const Calendar = ({ toast }) => {
                 }}
                 placeholder={'Import'}
             />}
-            <TableSelect 
-                className={cx(styles.vision, {[styles.vuceptor]: auth?.type === USER_TYPE.VUCEPTOR})}
-                options={visions.map(v => ({label: `group ${v}`, value: v}))}
+            {auth?.type === USER_TYPE.VUCEPTOR 
+            ? <TableSelect 
+                className={cx(styles.vision, styles.vuceptor)}
+                options={[{ label: 'group' + auth?.visions, value: auth?.visions }]}
                 selected={selectedVision !== null ? { label: `group ${selectedVision}`, value: selectedVision } : null}
                 onChange={(selected) => {
                     if(!selected) setSelectedVision(null);
@@ -233,6 +234,17 @@ export const Calendar = ({ toast }) => {
                 isClearable
                 placeholder={'Vision'}
             />
+            : <TableSelect 
+                className={cx(styles.vision)}
+                options={visions.map(v => ({label: `group ${v}`, value: v}))}
+                selected={selectedVision !== null ? { label: `group ${selectedVision}`, value: selectedVision } : null}
+                onChange={(selected) => {
+                    if(!selected) setSelectedVision(null);
+                    else setSelectedVision(selected.value);
+                }}
+                isClearable
+                placeholder={'Vision'}
+            />}
             {auth?.type !== USER_TYPE.VUCEPTOR && <TableSelect 
                 className={cx(styles.reset)}
                 options={RESET_EVENT_OPTIONS}

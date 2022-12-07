@@ -1,7 +1,7 @@
 import styles from './index.module.css';
 import classNames from 'classnames/bind';
 import Papa from "papaparse";
-import { BUTTONS, RESPONSE_STATUS, TABLE } from '../../lib/constants';
+import { BUTTONS, RESPONSE_STATUS, TABLE, USER_TYPE } from '../../lib/constants';
 import { TableButton } from '../../components/TableButton';
 import { Table } from '../../components/Table';
 import { useEffect, useRef, useState } from 'react';
@@ -12,12 +12,13 @@ import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
 import { PopUpAddFy } from '../../components/PopUpAddFy';
 import { PopUpEditFy } from '../../components/PopUpEditFy';
-import { useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
 const cx = classNames.bind(styles);
 
 // Visions assignment page
 export const VisionsAssignment = ({ toast }) => {
     const isMobile = useWindowSize().type;
+    const { auth, token } = useAuth();
     const { get, post } = useAuthenticatedRequest();
     const [rows, setRows] = useState([]);
     const [showDeletePopUp, setShowDeletePopUp] = useState(false);
@@ -102,8 +103,12 @@ export const VisionsAssignment = ({ toast }) => {
     }
 
     useEffect(() => {
+        if(auth?.type === USER_TYPE.VUCEPTOR) setVisionsFilter([auth?.visions]);
+    }, [auth]);
+
+    useEffect(() => {
         getFy();
-    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, visionsFilter, vuceptorFilter, vuceptorSearch]);
+    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, visionsFilter, vuceptorFilter, vuceptorSearch, token]);
 
     useEffect(() => {
         if(importFile) {
@@ -256,13 +261,13 @@ export const VisionsAssignment = ({ toast }) => {
         {
             key: 'visions',
             label: 'Visions',
-            filter: {
+            ...(auth?.type !== USER_TYPE.VUCEPTOR && { filter: {
                 callback: (value) => {
                     setTablePage(0);
                     setVisionsFilter(getOptionValue(value));
                 },
                 options: visionOptions,
-            },
+            }}),
             render: (val) => <TableItem item={val} />
         },
         {

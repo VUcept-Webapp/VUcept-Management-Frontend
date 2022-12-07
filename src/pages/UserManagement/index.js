@@ -12,12 +12,13 @@ import { getOptionValue, getSortParam, importUsersToJSON, toUpperRows, updateOrd
 import { PopUpAddUser } from '../../components/PopUpAddUser';
 import { BlockBlocker } from '../../components/BlockBlocker';
 import { TableItem } from '../../components/TableItem';
-import { useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
+import { useAuth, useAuthenticatedRequest, useWindowSize } from '../../lib/hooks';
 import { toast } from 'react-toastify';
 const cx = classNames.bind(styles);
 
 // User management page
 export const UserManagement = () => {
+    const { token } = useAuth();
     const { get, post } = useAuthenticatedRequest();
     const isMobile = useWindowSize().type === WINDOW_TYPE.MOBILE;
     const [rows, setRows] = useState([]);
@@ -90,7 +91,7 @@ export const UserManagement = () => {
     useEffect(() => {
         setDisableTable(true);
         getUser();
-    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, typeFilter, statusFilter, visionsFilter]);
+    }, [tablePage, nameSearch, nameSort, emailSearch, emailSort, typeFilter, statusFilter, visionsFilter, token]);
 
     // for importing file
     useEffect(() => {
